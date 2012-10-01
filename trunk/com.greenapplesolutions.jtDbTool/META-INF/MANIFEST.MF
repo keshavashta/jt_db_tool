@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JtDbTool
+Bundle-SymbolicName: com.greenapplesolutions.jtDbTool; singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: com.greenapplesolutions.jtdbtool.Activator
+Bundle-Vendor: GREEN APPLE SOLUTIONS
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.databinding,
+ org.eclipse.core.databinding.beans,
+ org.eclipse.core.databinding.observable,
+ org.eclipse.core.databinding.property,
+ org.eclipse.jface.databinding,
+ com.ibm.icu
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/log4j-1.2.7.jar,
+ .,
+ lib/mysql-connector-java-5.1.15-bin.jar
