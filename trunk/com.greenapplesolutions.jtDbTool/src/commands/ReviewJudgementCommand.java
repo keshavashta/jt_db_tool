@@ -34,11 +34,13 @@ public class ReviewJudgementCommand implements IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ReadJudgement ins = new ReadJudgement(SelectedCourt.getInstance().getSelectedDatabaseName(), "localhost", "root", "");
+		ReadJudgement ins = new ReadJudgement(SelectedCourt.getInstance()
+				.getSelectedDatabaseName(), "localhost", "root", "");
 		if (ins.connectToDatabse()) {
 			List<Judgement> judgements = ins.getJudgements();
 			IEditorInput input = null;
-			input = new JudgmentEditorInput("Review Judgements", judgements);
+			input = new JudgmentEditorInput("Review Judgements", judgements,
+					false);
 
 			try {
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow()

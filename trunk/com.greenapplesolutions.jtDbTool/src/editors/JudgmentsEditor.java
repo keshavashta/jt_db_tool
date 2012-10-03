@@ -44,8 +44,11 @@ import org.eclipse.wb.swt.ResourceManager;
 
 public class JudgmentsEditor extends EditorPart {
 	private DataBindingContext m_bindingContext;
+
 	public JudgmentsEditor() {
-		setTitleImage(ResourceManager.getPluginImage("com.greenapplesolutions.jtDbTool", "icons/appIcons/16x16-1349202770_database_search.png"));
+		setTitleImage(ResourceManager.getPluginImage(
+				"com.greenapplesolutions.jtDbTool",
+				"icons/appIcons/16x16-1349202770_database_search.png"));
 	}
 
 	public static final String ID = "com.greenapplesolutions.jtDbTool.judgementeditor";
@@ -64,7 +67,7 @@ public class JudgmentsEditor extends EditorPart {
 		fd_composite.right = new FormAttachment(100, -10);
 		composite.setLayoutData(fd_composite);
 		createViewer(composite);
-		
+
 		Group group = new Group(parent, SWT.NONE);
 		fd_composite.top = new FormAttachment(group, 6);
 		group.setLayout(new FormLayout());
@@ -73,52 +76,52 @@ public class JudgmentsEditor extends EditorPart {
 		fd_group.right = new FormAttachment(100, -10);
 		fd_group.top = new FormAttachment(0, 10);
 		group.setLayoutData(fd_group);
-		
-				Button btnNewButton = new Button(group, SWT.NONE);
-				FormData fd_btnNewButton = new FormData();
-				fd_btnNewButton.top = new FormAttachment(0, -1);
-				btnNewButton.setLayoutData(fd_btnNewButton);
-				btnNewButton.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						Table table = viewer.getTable();
-						table.remove(table.getSelectionIndex());
 
-					}
-				});
-				btnNewButton.setText("New Button");
-				
-						Button btnNewButton_1 = new Button(group, SWT.NONE);
-						fd_btnNewButton.right = new FormAttachment(btnNewButton_1, -6);
-						FormData fd_btnNewButton_1 = new FormData();
-						fd_btnNewButton_1.right = new FormAttachment(100, -10);
-						fd_btnNewButton_1.top = new FormAttachment(0, -1);
-						btnNewButton_1.setLayoutData(fd_btnNewButton_1);
-						btnNewButton_1.addSelectionListener(new SelectionAdapter() {
-							@Override
-							public void widgetSelected(SelectionEvent e) {
+		Button btnNewButton = new Button(group, SWT.NONE);
+		FormData fd_btnNewButton = new FormData();
+		fd_btnNewButton.top = new FormAttachment(0, -1);
+		btnNewButton.setLayoutData(fd_btnNewButton);
+		btnNewButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Table table = viewer.getTable();
+				table.remove(table.getSelectionIndex());
 
-								int index = viewer.getTable().getSelectionIndex();
-								if (modelProvider.getJudgements().size() < index || index == -1)
-									MessageDialog.openInformation(new Shell(), "",
-											"Choose a judgement to edit");
-								else {
-									EditJudgementDialog dialog = new EditJudgementDialog(
-											new Shell(), modelProvider.getJudgements().get(
-													index).Keycode);
-									dialog.open();
-								}
-							}
-						});
-						btnNewButton_1.setText("Edit Judgement");
-						
-						lblNewLabel = new Label(group, SWT.NONE);
-						FormData fd_lblNewLabel = new FormData();
-						fd_lblNewLabel.top = new FormAttachment(btnNewButton, 5, SWT.TOP);
-						fd_lblNewLabel.right = new FormAttachment(btnNewButton, -12);
-						fd_lblNewLabel.left = new FormAttachment(0, 10);
-						lblNewLabel.setLayoutData(fd_lblNewLabel);
-						m_bindingContext = initDataBindings();
+			}
+		});
+		btnNewButton.setText("New Button");
+
+		Button btnNewButton_1 = new Button(group, SWT.NONE);
+		fd_btnNewButton.right = new FormAttachment(btnNewButton_1, -6);
+		FormData fd_btnNewButton_1 = new FormData();
+		fd_btnNewButton_1.right = new FormAttachment(100, -10);
+		fd_btnNewButton_1.top = new FormAttachment(0, -1);
+		btnNewButton_1.setLayoutData(fd_btnNewButton_1);
+		btnNewButton_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+
+				int index = viewer.getTable().getSelectionIndex();
+				if (modelProvider.getJudgements().size() < index || index == -1)
+					MessageDialog.openInformation(new Shell(), "",
+							"Choose a judgement to edit");
+				else {
+					EditJudgementDialog dialog = new EditJudgementDialog(
+							new Shell(), modelProvider.getJudgements().get(
+									index).Keycode);
+					dialog.open();
+				}
+			}
+		});
+		btnNewButton_1.setText("Edit Judgement");
+
+		lblNewLabel = new Label(group, SWT.NONE);
+		FormData fd_lblNewLabel = new FormData();
+		fd_lblNewLabel.top = new FormAttachment(btnNewButton, 5, SWT.TOP);
+		fd_lblNewLabel.right = new FormAttachment(btnNewButton, -12);
+		fd_lblNewLabel.left = new FormAttachment(0, 10);
+		lblNewLabel.setLayoutData(fd_lblNewLabel);
+		m_bindingContext = initDataBindings();
 	}
 
 	public void refresh() {
@@ -167,11 +170,12 @@ public class JudgmentsEditor extends EditorPart {
 	// This will create the columns for the table
 	private void createColumns(final Composite parent, final TableViewer viewer) {
 		int xAxis = (int) Toolkit.getDefaultToolkit().getScreenSize().width;
-		
+
 		String[] titles = { "Appellant", "Respondant", "CaseNumber", "Judges",
 				"Advocates", "Case Date" };
 		int colWidth = xAxis / titles.length;
-		int[] bounds = { colWidth, colWidth, colWidth, colWidth, colWidth, colWidth };
+		int[] bounds = { colWidth, colWidth, colWidth, colWidth, colWidth,
+				colWidth };
 
 		// First column is for the first Appellant
 		TableViewerColumn col = createTableViewerColumn(titles[0], bounds[0], 0);
@@ -274,7 +278,9 @@ public class JudgmentsEditor extends EditorPart {
 		setPartName(input.getName());
 		JudgmentEditorInput jei = (JudgmentEditorInput) input;
 		List<Judgement> judgements = jei.getJudgements();
-		modelProvider = new JudgmentsEditorModelProvider(judgements);
+		boolean isFileLoaded = jei.getIsFileLoaded();
+		modelProvider = new JudgmentsEditorModelProvider(judgements,
+				isFileLoaded);
 	}
 
 	@Override
@@ -288,12 +294,16 @@ public class JudgmentsEditor extends EditorPart {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
-		IObservableValue lblNewLabelObserveTextObserveWidget = SWTObservables.observeText(lblNewLabel);
-		IObservableValue modelProviderSelectedCourtLabelObserveValue = BeansObservables.observeValue(modelProvider, "selectedCourtLabel");
-		bindingContext.bindValue(lblNewLabelObserveTextObserveWidget, modelProviderSelectedCourtLabelObserveValue, null, null);
+		IObservableValue lblNewLabelObserveTextObserveWidget = SWTObservables
+				.observeText(lblNewLabel);
+		IObservableValue modelProviderSelectedCourtLabelObserveValue = BeansObservables
+				.observeValue(modelProvider, "selectedCourtLabel");
+		bindingContext.bindValue(lblNewLabelObserveTextObserveWidget,
+				modelProviderSelectedCourtLabelObserveValue, null, null);
 		//
 		return bindingContext;
 	}

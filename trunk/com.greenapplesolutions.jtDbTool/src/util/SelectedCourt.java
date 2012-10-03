@@ -32,40 +32,39 @@ public class SelectedCourt {
 		courtsAndDbMap.put("SIKKIM HIGH COURT", "jt_sikkim");
 		courtsAndDbMap.put("SUPREME COURT", "jt_sc");
 		courtsAndDbMap.put("UTTARAKHAND HIGH COURT", "jt_uttarakhand");
-		
-		
-		
-			courts=new ArrayList<String>();
-			courts.add("ALLAHABAD HIGH COURT");
-			courts.add("ANDHRA PRADESH HIGH COURT");
-			courts.add("BOMBAY HIGH COURT");
-			courts.add("CALCUTTA HIGH COURT");
-			courts.add("CHHATTISGARH HIGH COURT");
-			courts.add("DELHI HIGH COURT");
-			courts.add("GAUHATI HIGH COURT");
-			courts.add("GUJARAT HIGH COURT");
-			courts.add("HIMACHAL PRADESH HIGH COURT");
-			courts.add("JAMMU AND KASHMIR HIGH COURT");
-			courts.add("JHARKHAND HIGH COURT");
-			courts.add("KARNATAKA HIGH COURT");
-			courts.add("KERALA HIGH COURT");
-			courts.add("MADHYA PRADESH HIGH COURT");
-			courts.add("MADRAS HIGH COURT");
-			courts.add("ORISSA HIGH COURT");
-			courts.add("PATNA HIGH COURT");
-			courts.add("PUNJAB AND HARYANA HIGH COURT");
-			courts.add("RAJASTHAN HIGH COURT");
-			courts.add("SIKKIM HIGH COURT");
-			courts.add("SUPREME COURT");
-			courts.add("UTTARAKHAND HIGH COURT");
 
-		
+		courts = new ArrayList<String>();
+		courts.add("ALLAHABAD HIGH COURT");
+		courts.add("ANDHRA PRADESH HIGH COURT");
+		courts.add("BOMBAY HIGH COURT");
+		courts.add("CALCUTTA HIGH COURT");
+		courts.add("CHHATTISGARH HIGH COURT");
+		courts.add("DELHI HIGH COURT");
+		courts.add("GAUHATI HIGH COURT");
+		courts.add("GUJARAT HIGH COURT");
+		courts.add("HIMACHAL PRADESH HIGH COURT");
+		courts.add("JAMMU AND KASHMIR HIGH COURT");
+		courts.add("JHARKHAND HIGH COURT");
+		courts.add("KARNATAKA HIGH COURT");
+		courts.add("KERALA HIGH COURT");
+		courts.add("MADHYA PRADESH HIGH COURT");
+		courts.add("MADRAS HIGH COURT");
+		courts.add("ORISSA HIGH COURT");
+		courts.add("PATNA HIGH COURT");
+		courts.add("PUNJAB AND HARYANA HIGH COURT");
+		courts.add("RAJASTHAN HIGH COURT");
+		courts.add("SIKKIM HIGH COURT");
+		courts.add("SUPREME COURT");
+		courts.add("UTTARAKHAND HIGH COURT");
 
 	}
+
 	private List<String> courts;
-	public  List<String> getCourts(){
+
+	public List<String> getCourts() {
 		return courts;
 	}
+
 	private static SelectedCourt _instance;
 	private String selectedCourt = "SUPREME COURT";
 
@@ -83,6 +82,10 @@ public class SelectedCourt {
 
 	public void setSelectedCourt(String courtName) {
 		this.selectedCourt = courtName;
+	}
+
+	public String getDatabaseName(String value) {
+		return courtsAndDbMap.get(value);
 	}
 
 	public String getSelectedDatabaseName() {

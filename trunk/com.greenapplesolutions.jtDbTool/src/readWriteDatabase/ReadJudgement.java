@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import util.JTLogger;
 import util.Util;
 
 import com.greenapplesolutions.dbloader.domain.Citation;
@@ -48,8 +49,12 @@ public class ReadJudgement {
 
 			connect = DriverManager.getConnection(connectionString);
 		} catch (ClassNotFoundException e) {
+			JTLogger.getInstance().setInfo(
+					"Error in connecting with database" + e.getMessage());
 			return false;
 		} catch (SQLException e) {
+			JTLogger.getInstance().setInfo(
+					"Error in connecting with database" + e.getMessage());
 			return false;
 		}
 		return true;
@@ -60,7 +65,8 @@ public class ReadJudgement {
 		Judgement judgement = new Judgement();
 		String query = "select Keycode,Date,Advocates,Appellant,Respondent,Judges,Judgement ,CaseNo from "
 				+ databaseName
-				+ ".judgements where Keycode = " + Util.wrapQuotes(keycode);
+				+ ".judgements where Keycode = "
+				+ Util.wrapQuotes(keycode);
 		Calendar instance = Calendar.getInstance();
 		instance.set(1111, 10, 11);
 		Date invalidDate = instance.getTime();

@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.List;
 
 import util.JTLogger;
+import util.SelectedCourt;
 import util.Util;
 
 import com.greenapplesolutions.dbloader.domain.Citation;
@@ -69,7 +70,57 @@ public class UpdateJudgement {
 
 	}
 
+	public void insertJudgements(List<Judgement> judgements) {
+		for (Judgement j : judgements)
+			insertJudgement(j);
+	}
+
 	public void insertJudgement(Judgement j) {
+
+		try {
+
+			PreparedStatement pst = null;
+			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?)";
+			pst = connect.prepareStatement(query);
+			pst.setString(1, null);
+			pst.setString(2, j.Keycode);
+			pst.setString(3, SelectedCourt.getInstance().getSelectedCourt());
+			pst.setString(4, j.Judges);
+			pst.setInt(5, j.Bench);
+			pst.setString(6, j.CaseNumber);
+			pst.setString(7, j.Appellant);
+			pst.setString(8, j.Respondant);
+			pst.setDate(9, new java.sql.Date(j.CaseDate.getTime()));
+			pst.setString(10, j.Advocates);
+
+			pst.setString(11, j.FullText);
+			pst.setBoolean(12, false);
+
+			System.out.println("dumping row with keycode " + j.Keycode);
+			try {
+				pst.executeUpdate();
+				pst.close();
+				dumpToCitations(j.Citations);
+				dumpToHeadnotes(j.headnotesAndHelds);
+			} catch (Exception e) {
+				JTLogger.getInstance().setError(
+						"Exception in dumping judgement " + j.Keycode
+								+ "where appellant is " + j.Appellant
+								+ "due to " + e.getMessage() + "\n\n");
+
+			}
+
+		} catch (Exception e) {
+			System.out.println("error in dumping judgment" + e.getMessage());
+			JTLogger.getInstance().setError(
+					"Exception in dumping judgement " + j.Keycode
+							+ "where appellant is " + j.Appellant + "due to "
+							+ e.getMessage() + "\n\n");
+		}
+
+	}
+
+	public void updateJudgement(Judgement j) {
 
 		try {
 
@@ -164,7 +215,7 @@ public class UpdateJudgement {
 			String query = "insert into headnotes values(?,?,?,?)";
 			pst = connect.prepareStatement(query);
 			for (HeadnoteAndHeld hh : headnoteAndHelds) {
-				pst.setString(1,null);
+				pst.setString(1, null);
 				pst.setString(2, hh.Keycode);
 				pst.setString(3, hh.Headnote);
 

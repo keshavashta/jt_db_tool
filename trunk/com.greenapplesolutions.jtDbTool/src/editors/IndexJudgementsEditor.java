@@ -14,7 +14,9 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.GridLayout;
@@ -23,8 +25,16 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 import util.SelectedCourt;
+import util.Util;
+
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 public class IndexJudgementsEditor extends EditorPart {
+	private DataBindingContext m_bindingContext;
 	public static final String ID = "com.greenapplesolutions.jtDbTool.indexJudgements";
 	private Text text;
 	private IndexJudgementEditorModelProvider modelProvider;
@@ -99,13 +109,14 @@ public class IndexJudgementsEditor extends EditorPart {
 		lblChooseADirectory.setLayoutData(fd_lblChooseADirectory);
 		lblChooseADirectory.setText("Choose a directory");
 
-		text = new Text(parent, SWT.BORDER);
+		text = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
+		text.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		fd_composite.top = new FormAttachment(text, 6);
 		List<String> courts = SelectedCourt.getInstance().getCourts();
 		for (int ii = 0; ii < courts.size(); ii++) {
 			final Button btnCheckButton = new Button(composite, SWT.CHECK);
 			btnCheckButton.setText(courts.get(ii));
-			
+
 			btnCheckButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
@@ -113,7 +124,7 @@ public class IndexJudgementsEditor extends EditorPart {
 				}
 			});
 			btnCheckButton.setSelection(true);
-			
+
 		}
 		FormData fd_text = new FormData();
 		fd_text.left = new FormAttachment(lblChooseADirectory, 6);
@@ -121,12 +132,22 @@ public class IndexJudgementsEditor extends EditorPart {
 		text.setLayoutData(fd_text);
 
 		Button btnNewButton = new Button(parent, SWT.NONE);
+		btnNewButton.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				DirectoryDialog dialog = new DirectoryDialog(new Shell());
+				String dirPath = dialog.open();
+				if (!Util.isStringNullOrEmpty(dirPath))
+					modelProvider.setDirectoryPath(dirPath);
+			}
+		});
 		fd_text.right = new FormAttachment(btnNewButton, -6);
 		FormData fd_btnNewButton = new FormData();
 		fd_btnNewButton.top = new FormAttachment(label, 6);
 		fd_btnNewButton.right = new FormAttachment(100, -10);
 		btnNewButton.setLayoutData(fd_btnNewButton);
-		btnNewButton.setText("New Button");
+		btnNewButton.setText("Browse");
 
 		Button btnIndex = new Button(parent, SWT.NONE);
 		btnIndex.addSelectionListener(new SelectionAdapter() {
@@ -149,6 +170,7 @@ public class IndexJudgementsEditor extends EditorPart {
 		fd_label_1.right = new FormAttachment(100, -10);
 		fd_label_1.left = new FormAttachment(0, 10);
 		label_1.setLayoutData(fd_label_1);
+		m_bindingContext = initDataBindings();
 		// TODO Auto-generated method stub
 
 	}
@@ -157,5 +179,18 @@ public class IndexJudgementsEditor extends EditorPart {
 	public void setFocus() {
 		// TODO Auto-generated method stub
 
+	}
+
+	protected DataBindingContext initDataBindings() {
+		DataBindingContext bindingContext = new DataBindingContext();
+		//
+		IObservableValue observeTextTextObserveWidget = WidgetProperties.text(
+				SWT.Modify).observe(text);
+		IObservableValue directoryPathModelProviderObserveValue = BeanProperties
+				.value("directoryPath").observe(modelProvider);
+		bindingContext.bindValue(observeTextTextObserveWidget,
+				directoryPathModelProviderObserveValue, null, null);
+		//
+		return bindingContext;
 	}
 }

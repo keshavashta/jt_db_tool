@@ -1,7 +1,10 @@
 package modelProvider;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.FileInputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,7 +13,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
+import readWriteDatabase.UpdateJudgement;
+
+import util.SelectedCourt;
 import util.Util;
 
 import com.greenapplesolutions.dbloader.domain.Citation;
@@ -18,8 +32,12 @@ import com.greenapplesolutions.dbloader.domain.HeadnoteAndHeld;
 import com.greenapplesolutions.dbloader.domain.Judgement;
 import com.ibm.icu.text.SimpleDateFormat;
 
+import editorInput.JudgmentEditorInput;
+import editors.JudgmentsEditor;
+
 public class FileLoaderModelProvider {
 	private String filePath;
+
 	private Pattern citationPattern = Pattern.compile(
 			"^Jt\\s{0,4}\\d{4}\\s{0,4}\\(\\d{0,4}\\)\\s{0,4}\\d{0,4}",
 			Pattern.CASE_INSENSITIVE);
@@ -27,6 +45,7 @@ public class FileLoaderModelProvider {
 	private boolean isPartyProcessed;
 	private boolean isDateProcessed;
 	private boolean isAdvocateProcessed;
+	private boolean isHeadnoteProcessed;
 	private Pattern yearPattern = Pattern.compile("\\s\\d[^\\(]*");
 	private Pattern volumePattern = Pattern.compile("\\(\\d+\\)");
 	private Pattern pagePattern = Pattern.compile("\\d+$");
@@ -37,10 +56,18 @@ public class FileLoaderModelProvider {
 	private Pattern extractDate = Pattern
 			.compile("\\d+\\s{0,4}\\.\\s{0,4}\\d+\\s{0,4}\\.\\s{0,4}\\d+");
 	private Pattern advocatesPattern = Pattern.compile("^Appearances");
+	private List<String> courtsList;
 
-	public FileLoaderModelProvider(String filePath) {
-		this.filePath = filePath;
+	public FileLoaderModelProvider() {
+		courtsList = SelectedCourt.getInstance().getCourts();
+		setSelectedCourt(SelectedCourt.getInstance().getSelectedCourt());
 	}
+
+	public List<String> getCourts() {
+		return this.courtsList;
+	}
+
+	private String selectedCourt;
 
 	private String readFile() {
 		String fileText = "";
@@ -66,7 +93,7 @@ public class FileLoaderModelProvider {
 		Citation citation = new Citation();
 		citation.Page = 0;
 		citation.Volume = "";
-		citation.keycode = "";
+		citation.keycode = judgment.Keycode;
 		citation.Year = 0;
 		citation.Journal = "JT";
 		Matcher yearMatcher = yearPattern.matcher(textArray[index]);
@@ -85,7 +112,7 @@ public class FileLoaderModelProvider {
 		List<Citation> citations = new ArrayList<Citation>();
 		citations.add(citation);
 		judgment.Citations = citations;
-		return ++index;
+		return index;
 
 	}
 
@@ -94,6 +121,7 @@ public class FileLoaderModelProvider {
 		isAdvocateProcessed = false;
 		isDateProcessed = false;
 		isPartyProcessed = false;
+		isHeadnoteProcessed = false;
 	}
 
 	private Judgement getEmptyJudgement() {
@@ -107,7 +135,7 @@ public class FileLoaderModelProvider {
 		cal.set(1111, 10, 11);
 		j.CaseDate = cal.getTime();
 		j.CaseNumber = "";
-		j.Court = "";
+		j.Court = selectedCourt;
 		j.Citations = new ArrayList<Citation>();
 		j.FullText = "";
 		j.headnotesAndHelds = new ArrayList<HeadnoteAndHeld>();
@@ -123,24 +151,38 @@ public class FileLoaderModelProvider {
 
 		for (int index = 0; index < textArray.length; ++index) {
 			String headnote = textArray[index].trim();
-			Matcher citationMatcher = citationPattern.matcher(textArray[index].trim());
+			Matcher citationMatcher = citationPattern.matcher(textArray[index]
+					.trim());
 			Matcher partyMatcher = partyPattern.matcher(textArray[index]);
 			Matcher dateMatcher = datePattern.matcher(textArray[index]);
 			Matcher advMatcher = advocatesPattern.matcher(textArray[index]
 					.trim());
-			if (citationMatcher.find() && !isCitationProcessed)
+			if (citationMatcher.find() && !isCitationProcessed) {
 				index = processCitation(textArray, index, judgment);
-			else if (partyMatcher.find() && !isPartyProcessed) {
+				continue;
+			}
+			if (partyMatcher.find() && !isPartyProcessed) {
 				index = processParty(textArray, index, judgment);
-			} else if (dateMatcher.find() && !isDateProcessed)
+				continue;
+			}
+			if (dateMatcher.find() && !isDateProcessed) {
 				index = processDate(textArray, index, judgment);
-			else if (textArray[index].trim().toUpperCase().equals(headnote))
+				continue;
+			}
+			if (textArray[index].trim().toUpperCase().equals(headnote)
+					&& !isHeadnoteProcessed && isCitationProcessed) {
 				index = processHeadnote(textArray, index, judgment);
-			else if (advMatcher.find() && !isAdvocateProcessed) {
+				continue;
+			}
+			if (advMatcher.find() && !isAdvocateProcessed) {
 				index = processAdvocates(textArray, index, judgment);
-			} else if (textArray[index].trim().endsWith("J.")
-					|| textArray[index].trim().startsWith("ORDER"))
+				continue;
+			}
+			if (textArray[index].trim().endsWith("J.")
+					|| textArray[index].trim().startsWith("ORDER")) {
 				processJudgement(textArray, index, judgment);
+				break;
+			}
 		}
 		return judgment;
 	}
@@ -148,7 +190,8 @@ public class FileLoaderModelProvider {
 	private void processJudgement(String[] textArray, int index,
 			Judgement judgment) {
 		for (; index < textArray.length; ++index)
-			judgment.FullText = textArray[index];
+			judgment.FullText += textArray[index] + "\n";
+		judgment.FullText = judgment.FullText.trim();
 
 	}
 
@@ -161,7 +204,7 @@ public class FileLoaderModelProvider {
 			String headnote = textArray[index].trim();
 			if (textArray[index].trim().endsWith("J.")
 					|| textArray[index].trim().startsWith("ORDER")
-					|| headnote.equals(textArray[index].toUpperCase()))
+					|| headnote.equals(textArray[index].trim().toUpperCase()))
 				break;
 			adv += textArray[index].trim();
 			++index;
@@ -172,7 +215,7 @@ public class FileLoaderModelProvider {
 
 	private int processHeadnote(String[] textArray, int index,
 			Judgement judgment) {
-
+		isHeadnoteProcessed = true;
 		HeadnoteAndHeld hh = new HeadnoteAndHeld();
 		List<HeadnoteAndHeld> hhList = new ArrayList<HeadnoteAndHeld>();
 		hh.Keycode = judgment.Keycode;
@@ -180,12 +223,15 @@ public class FileLoaderModelProvider {
 		String headnote = "";
 		while (true && index < textArray.length - 2) {
 			if (textArray[index].trim().endsWith("J.")
-					|| textArray[index].trim().startsWith("ORDER"))
+					|| textArray[index].trim().startsWith("ORDER")) {
+				--index;
 				break;
-			headnote += textArray[index].trim();
+			}
+			headnote += textArray[index].trim() + "\n";
 			++index;
 		}
 		hh.Headnote = headnote;
+		hhList.add(hh);
 		judgment.headnotesAndHelds = hhList;
 		return index;
 	}
@@ -202,7 +248,7 @@ public class FileLoaderModelProvider {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		return ++index;
+		return index;
 	}
 
 	private int processParty(String[] textArray, int index, Judgement judgement) {
@@ -212,7 +258,7 @@ public class FileLoaderModelProvider {
 		judgement.Respondant = party[1];
 		while (true && index < textArray.length - 1) {
 			++index;
-			if (textArray[index].trim().equals("J.")) {
+			if (textArray[index].trim().endsWith("J.")) {
 				judgement.Judges = textArray[index].trim()
 						.replaceAll("j{1,10}\\.$", "").trim()
 						.replaceAll(",$", "").trim();
@@ -223,7 +269,7 @@ public class FileLoaderModelProvider {
 		}
 		if (!Util.isStringNullOrEmpty(judgement.CaseNumber))
 			judgement.CaseNumber = judgement.CaseNumber.trim();
-		return ++index;
+		return index;
 	}
 
 	public List<Judgement> extractJudgments() {
@@ -232,10 +278,113 @@ public class FileLoaderModelProvider {
 		String[] judgementTextArray = text.split("\\*{10}");
 		for (String judgementString : judgementTextArray) {
 			Judgement judgement = extractJudgment(judgementString);
-			if (judgement != null)
+			if (judgement != null && !judgement.equals(getEmptyJudgement()))
 				judgments.add(judgement);
 		}
 		return judgments;
 	}
 
+	public String getSelectedCourt() {
+		return selectedCourt;
+	}
+
+	public void setSelectedCourt(String selectedCourt) {
+		propertyChangeSupport.firePropertyChange("selectedCourt",
+				this.selectedCourt, this.selectedCourt = selectedCourt);
+		SelectedCourt.getInstance().setSelectedCourt(selectedCourt);
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		propertyChangeSupport.firePropertyChange("filePath", this.filePath,
+				this.filePath = filePath);
+	}
+
+	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(
+			this);
+
+	public void addPropertyChangeListener(String propertyName,
+			PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(listener);
+	}
+
+	private boolean isFileProcessed;
+
+	public boolean getIsFileProcessed() {
+		return isFileProcessed;
+	}
+
+	public boolean getIsDataInserted() {
+		return isDataInserted;
+	}
+
+	public boolean getIsResultsDisplayed() {
+		return isResultsDisplayed;
+	}
+
+	private boolean isDataInserted;
+	private boolean isResultsDisplayed;
+	IEditorInput input = null;
+
+	public void load() {
+		ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display
+				.getDefault().getActiveShell());
+
+		try {
+			dialog.run(true, true, new IRunnableWithProgress() {
+				public void run(IProgressMonitor monitor) {
+					monitor.beginTask("Loading Judgments", 3); // begin task
+					monitor.setTaskName("Parsing Judgements");
+					List<Judgement> judgements = extractJudgments();
+					isFileProcessed = true;
+
+					monitor.worked(1);
+					monitor.setTaskName("Inserting Judgements");
+					UpdateJudgement ins = new UpdateJudgement(SelectedCourt
+							.getInstance().getSelectedDatabaseName(),
+							"localhost", "root", "");
+					if (ins.connectToDatabse()) {
+						ins.insertJudgements(judgements);
+						isDataInserted = true;
+					}
+					monitor.worked(2);
+					monitor.setTaskName("Displaying Judgements");
+
+					input = new JudgmentEditorInput("Uploaded Judgements",
+							judgements, true);
+
+					Display.getDefault().asyncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							try {
+								PlatformUI.getWorkbench()
+										.getActiveWorkbenchWindow()
+										.getActivePage()
+										.openEditor(input, JudgmentsEditor.ID);
+								isResultsDisplayed = true;
+
+							} catch (PartInitException e3) {
+								e3.printStackTrace();
+							}
+						}
+					});
+					monitor.done();
+
+				}
+			});
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+
+	}
 }

@@ -17,6 +17,7 @@ public final class Fields {
 	public static String Subject = "Subject";
 	public static String Headnote = "Headnote";
 	public static String CHeadnote = "CHeadnote";
+	public static String CHeld = "CHeld";
 	public static String FullText = "Judgement";
 	public static String CFullText = "CJudgement";
 	public static String Keycode = "Keycode";

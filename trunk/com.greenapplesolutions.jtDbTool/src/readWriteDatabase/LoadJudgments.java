@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import util.Util;
 
 import com.greenapplesolutions.dbloader.domain.Citation;
 import com.greenapplesolutions.dbloader.domain.Fields;
+import com.greenapplesolutions.dbloader.domain.HeadnoteAndHeld;
 import com.greenapplesolutions.dbloader.domain.Judgement;
 import com.greenapplesolutions.dbloader.domain.Statue;
 import com.greenapplesolutions.lawsearch.config.LuceneConfig;
@@ -30,6 +32,25 @@ public class LoadJudgments {
 	private String password;
 	private String directoryPath;
 
+	public boolean connectToDatabse() {
+		String connectionString = "";
+
+		connectionString = "jdbc:mysql://" + hostName + "/" + databaseName
+				+ "?" + "user=" + userName;
+		if (this.password != null)
+			connectionString += "&password=" + password;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+
+			connect = DriverManager.getConnection(connectionString);
+		} catch (ClassNotFoundException e) {
+			return false;
+		} catch (SQLException e) {
+			return false;
+		}
+		return true;
+	}
+
 	public LoadJudgments(String databaseName, String hostName, String userName,
 			String password, String directoryPath) {
 		this.databaseName = databaseName;
@@ -41,162 +62,148 @@ public class LoadJudgments {
 		// Checking password is there or not
 		if (!Util.isStringNullOrEmpty(password))
 			connectionString += "&password=" + password;
+		this.directoryPath = directoryPath;
 	}
 
-	public void readDataBase() throws Exception {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-
-			connect = DriverManager.getConnection(connectionString);
-			statement = connect.createStatement();
-
-			resultSet = statement.executeQuery("select * from " + databaseName
-					+ ".citation");
-			readEquivicitAndactsReferredTable(resultSet);
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			close();
-		}
-
-	}
-
-	private List<Statue> getStatueList(String keycode) throws Exception {
-		List<Statue> statues = new ArrayList<Statue>();
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			connect = DriverManager.getConnection(connectionString);
-			statement = connect.createStatement();
-
-			resultSet = statement.executeQuery("select * from " + databaseName
-					+ ".actsreferred where " + Fields.Keycode + "=" + keycode);
-
-			while (resultSet.next()) {
-				Statue statue = new Statue();
-				statue.ActName = resultSet.getString(Fields.ActName) == null ? ""
-						: resultSet.getString(Fields.ActName);
-
-				statue.ClauseName = resultSet.getString(Fields.ClauseName) == null ? ""
-						: resultSet.getString(Fields.ClauseName);
-
-				statues.add(statue);
-
-			}
-
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			close();
-		}
-		return statues;
-	}
-
-	private List<Citation> getCitationList(String keycode) throws Exception {
-		List<Citation> citations = new ArrayList<Citation>();
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			connect = DriverManager.getConnection(connectionString);
-			statement = connect.createStatement();
-
-			resultSet = statement.executeQuery("select * from " + databaseName
-					+ ".equivicit where " + Fields.Keycode + "=" + keycode);
-
-			while (resultSet.next()) {
-				Citation citation = new Citation();
-				citation.Journal = resultSet.getString(Fields.Journal) == null ? ""
-						: resultSet.getString(Fields.Journal);
-
-				citation.Volume = resultSet.getString(Fields.Volume) == null ? ""
-						: resultSet.getString(Fields.Volume);
-
-				citation.Year = Integer.parseInt(resultSet.getString(
-						Fields.Year).toString());
-				citation.Page = Integer.parseInt(resultSet.getString(
-						Fields.Page).toString());
-				citations.add(citation);
-
-			}
-
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			close();
-		}
-		return citations;
-	}
-
-	private void readEquivicitAndactsReferredTable(ResultSet resultSet) {
-		List<Judgement> judgements = new ArrayList<Judgement>();
-		int count = 0;
+	public void indexJudgements() {
+		Calendar instance = Calendar.getInstance();
+		instance.set(1111, 10, 11);
+		Date invalidDate = instance.getTime();
 		LuceneConfig config = LuceneConfig.INSTANCE();
 		config.setIndexPath(directoryPath);
 		CaseIndexer caseIndexer = new CaseIndexer();
+
+		String query = "select Keycode,Date,Advocates,Appellant,Respondent,Judges ,CaseNo,Judgement from "
+				+ databaseName + ".judgements order by Date";
+
+		// List<Judgement> judgementList = new ArrayList<Judgement>();
+		List<Judgement> judgementList = new ArrayList<Judgement>();
 		try {
+			statement = connect.createStatement();
+			resultSet = statement.executeQuery(query);
 			while (resultSet.next()) {
-				Judgement j = new Judgement();
-				j.Advocates = resultSet.getString(Fields.Advocates) == null ? ""
-						: resultSet.getString(Fields.Advocates);
-				j.Appellant = resultSet.getString(Fields.Appellant) == null ? ""
-						: resultSet.getString(Fields.Appellant);
-
 				try {
-					j.Bench = Integer.parseInt(resultSet
-							.getString(Fields.Bench).toString());
-				} catch (Exception ex) {
-					// LELogger.INSTANCE().setError(ex.getMessage());
-					j.Bench = 0;
-				}
-				j.CaseDate = (Date) resultSet.getDate(Fields.CaseDate);
+					Judgement judgement = new Judgement();
+					judgement.Advocates = resultSet.getString(Fields.Advocates) == null ? ""
+							: resultSet.getString(Fields.Advocates);
+					judgement.Appellant = resultSet.getString(Fields.Appellant) == null ? ""
+							: resultSet.getString(Fields.Appellant);
 
-				j.CaseNumber = resultSet.getString(Fields.CaseNumber) == null ? ""
-						: resultSet.getString(Fields.CaseNumber);
+					// try {
+					// j.Bench = Integer.parseInt(resultSet.getString(
+					// Fields.Bench).toString());
+					// } catch (Exception ex) {
+					// // LELogger.INSTANCE().setError(ex.getMessage());
+					// j.Bench = 0;
+					// }
+					try {
+						judgement.CaseDate = (Date) resultSet
+								.getDate(Fields.CaseDate);
+					} catch (Exception e) {
+						judgement.CaseDate = invalidDate;
+					}
 
-				j.Court = resultSet.getString(Fields.Court) == null ? ""
-						: resultSet.getString(Fields.Court);
-				j.FullText = resultSet.getString(Fields.FullText) == null ? ""
-						: resultSet.getString(Fields.FullText);
-				
-				j.Judges = resultSet.getString(Fields.Judges) == null ? ""
-						: resultSet.getString(Fields.Judges);
-				j.Keycode = resultSet.getString(Fields.Keycode) == null ? ""
-						: resultSet.getString(Fields.Keycode);
-				j.Respondant = resultSet.getString(Fields.Respondant) == null ? ""
-						: resultSet.getString(Fields.Respondant);
-				j.Subject = "";
-				try {
-					j.Citations = getCitationList(j.Keycode);
+					judgement.CaseNumber = resultSet
+							.getString(Fields.CaseNumber) == null ? ""
+							: resultSet.getString(Fields.CaseNumber);
+
+					// j.Court = resultSet.getString(Fields.Court) == null ? ""
+					// : resultSet.getString(Fields.Court);
+					judgement.FullText = resultSet.getString(Fields.FullText) == null ? ""
+							: resultSet.getString(Fields.FullText);
+					// j.Headnote = resultSet.getString(Fields.Headnote) == null
+					// ? ""
+					// : resultSet.getString(Fields.Headnote);
+					judgement.Judges = resultSet.getString(Fields.Judges) == null ? ""
+							: resultSet.getString(Fields.Judges);
+					judgement.Keycode = resultSet.getString(Fields.Keycode);
+					judgement.Respondant = resultSet
+							.getString(Fields.Respondant) == null ? ""
+							: resultSet.getString(Fields.Respondant);
+
+					judgement.Citations = getCitations(judgement.Keycode);
+					judgement.headnotesAndHelds = getHeadnoteAndHelds(judgement.Keycode);
+					judgementList.add(judgement);
+					if (judgementList.size() > 1000) {
+						caseIndexer.indexJudgements(judgementList);
+						judgementList.clear();
+					}
+
 				} catch (Exception e) {
-
-				}
-				try {
-					j.Statues = getStatueList(j.Keycode);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				judgements.add(j);
-				++count;
-
-				if (judgements.size() >= 1500) {
-
-					caseIndexer.indexJudgements(judgements);
-					System.out.println("Total " + count + " added");
-					judgements.clear();
-					// if (count >= 5000)
-					// break;
+					System.out.println("Error in processing indiv"
+							+ e.getMessage());
 				}
 			}
-
-			if (judgements.size() > 0) {
-				caseIndexer.indexJudgements(judgements);
+			if (judgementList.size() > 0) {
+				caseIndexer.indexJudgements(judgementList);
+				judgementList.clear();
 			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("Error in main" + e.getMessage());
 		}
+		close();
 
+	}
+
+	private List<Citation> getCitations(String keycode) {
+		String query = "select Journal,Year,Volume,Page from " + databaseName
+				+ ".citations where Keycode = " + Util.wrapQuotes(keycode);
+		List<Citation> citationList = new ArrayList<Citation>();
+		try {
+			statement = connect.createStatement();
+			resultSet = statement.executeQuery(query);
+			while (resultSet.next()) {
+				try {
+					Citation j = new Citation();
+					j.Journal = resultSet.getString(Fields.Journal) == null ? ""
+							: resultSet.getString(Fields.Journal);
+					j.Volume = resultSet.getString(Fields.Volume) == null ? ""
+							: resultSet.getString(Fields.Volume);
+					j.Year = Integer
+							.parseInt(resultSet.getString(Fields.Year) == null ? "0"
+									: resultSet.getString(Fields.Year));
+					j.Page = Integer
+							.parseInt(resultSet.getString(Fields.Page) == null ? "0"
+									: resultSet.getString(Fields.Page));
+					citationList.add(j);
+
+				} catch (Exception e) {
+					System.out.println("Error in processing indiv"
+							+ e.getMessage());
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("Error in main" + e.getMessage());
+		}
+		return citationList;
+	}
+
+	private List<HeadnoteAndHeld> getHeadnoteAndHelds(String keycode) {
+		String query = "select held,headnote from " + databaseName
+				+ ".headnotes where Keycode = " + Util.wrapQuotes(keycode);
+		List<HeadnoteAndHeld> headnoteList = new ArrayList<HeadnoteAndHeld>();
+		try {
+			statement = connect.createStatement();
+			resultSet = statement.executeQuery(query);
+			while (resultSet.next()) {
+				try {
+					HeadnoteAndHeld hh = new HeadnoteAndHeld();
+					hh.Headnote = resultSet.getString(Fields.Headnote) == null ? ""
+							: resultSet.getString(Fields.Headnote);
+					hh.Held = resultSet.getString(Fields.Held) == null ? ""
+							: resultSet.getString(Fields.Held);
+
+					headnoteList.add(hh);
+
+				} catch (Exception e) {
+					System.out.println("Error in processing indiv"
+							+ e.getMessage());
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("Error in main" + e.getMessage());
+		}
+		return headnoteList;
 	}
 
 	private void close() {

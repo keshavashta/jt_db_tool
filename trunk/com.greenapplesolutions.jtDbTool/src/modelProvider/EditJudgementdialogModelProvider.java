@@ -351,7 +351,7 @@ public class EditJudgementdialogModelProvider {
 				"");
 		if (upInstance.connectToDatabse()) {
 			upInstance.deleteJudgement(keycode);
-			upInstance.insertJudgement(judgement);
+			upInstance.updateJudgement(judgement);
 			return true;
 		} else
 			return false;

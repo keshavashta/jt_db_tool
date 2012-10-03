@@ -1,49 +1,81 @@
 package modelProvider;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Shell;
+
+import dialogs.IndexProgressBarDialog;
 
 public class IndexJudgementEditorModelProvider {
 
-	public IndexJudgementEditorModelProvider() {
-		selectedCourt=new ArrayList<String>();
-		selectedCourt.add("ALLAHABAD HIGH COURT");
-		selectedCourt.add("ANDHRA PRADESH HIGH COURT");
-		selectedCourt.add("BOMBAY HIGH COURT");
-		selectedCourt.add("CALCUTTA HIGH COURT");
-		selectedCourt.add("CHHATTISGARH HIGH COURT");
-		selectedCourt.add("DELHI HIGH COURT");
-		selectedCourt.add("GAUHATI HIGH COURT");
-		selectedCourt.add("GUJARAT HIGH COURT");
-		selectedCourt.add("HIMACHAL PRADESH HIGH COURT");
-		selectedCourt.add("JAMMU AND KASHMIR HIGH COURT");
-		selectedCourt.add("JHARKHAND HIGH COURT");
-		selectedCourt.add("KARNATAKA HIGH COURT");
-		selectedCourt.add("KERALA HIGH COURT");
-		selectedCourt.add("MADHYA PRADESH HIGH COURT");
-		selectedCourt.add("MADRAS HIGH COURT");
-		selectedCourt.add("ORISSA HIGH COURT");
-		selectedCourt.add("PATNA HIGH COURT");
-		selectedCourt.add("PUNJAB AND HARYANA HIGH COURT");
-		selectedCourt.add("RAJASTHAN HIGH COURT");
-		selectedCourt.add("SIKKIM HIGH COURT");
-		selectedCourt.add("SUPREME COURT");
-		selectedCourt.add("UTTARAKHAND HIGH COURT");
+	private String directoryPath;
+
+	public String getDirectoryPath() {
+		return directoryPath;
 	}
 
-	private List<String> selectedCourt;
-	public void changeCourtStatus(Button button){
-		String text=button.getText();
-		if(button.getSelection())
-			selectedCourt.add(text);
-		else
-			selectedCourt.remove(text);
-		Collections.sort(selectedCourt);
+	public void setDirectoryPath(String directoryPath) {
+		propertyChangeSupport.firePropertyChange("directoryPath",
+				this.directoryPath, this.directoryPath = directoryPath);
 	}
-	public boolean indexJudgements(){
-		return false;
+
+	public IndexJudgementEditorModelProvider() {
+		selectedCourtList = new ArrayList<String>();
+		selectedCourtList.add("ALLAHABAD HIGH COURT");
+		selectedCourtList.add("ANDHRA PRADESH HIGH COURT");
+		selectedCourtList.add("BOMBAY HIGH COURT");
+		selectedCourtList.add("CALCUTTA HIGH COURT");
+		selectedCourtList.add("CHHATTISGARH HIGH COURT");
+		selectedCourtList.add("DELHI HIGH COURT");
+		selectedCourtList.add("GAUHATI HIGH COURT");
+		selectedCourtList.add("GUJARAT HIGH COURT");
+		selectedCourtList.add("HIMACHAL PRADESH HIGH COURT");
+		selectedCourtList.add("JAMMU AND KASHMIR HIGH COURT");
+		selectedCourtList.add("JHARKHAND HIGH COURT");
+		selectedCourtList.add("KARNATAKA HIGH COURT");
+		selectedCourtList.add("KERALA HIGH COURT");
+		selectedCourtList.add("MADHYA PRADESH HIGH COURT");
+		selectedCourtList.add("MADRAS HIGH COURT");
+		selectedCourtList.add("ORISSA HIGH COURT");
+		selectedCourtList.add("PATNA HIGH COURT");
+		selectedCourtList.add("PUNJAB AND HARYANA HIGH COURT");
+		selectedCourtList.add("RAJASTHAN HIGH COURT");
+		selectedCourtList.add("SIKKIM HIGH COURT");
+		selectedCourtList.add("SUPREME COURT");
+		selectedCourtList.add("UTTARAKHAND HIGH COURT");
+	}
+
+	private List<String> selectedCourtList;
+
+	public void changeCourtStatus(Button button) {
+		String text = button.getText();
+		if (button.getSelection())
+			selectedCourtList.add(text);
+		else
+			selectedCourtList.remove(text);
+		Collections.sort(selectedCourtList);
+	}
+
+	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(
+			this);
+
+	public void addPropertyChangeListener(String propertyName,
+			PropertyChangeListener listener) {
+		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(listener);
+	}
+
+	public void indexJudgements() {
+		IndexProgressBarDialog dialog = new IndexProgressBarDialog(new Shell(),
+				selectedCourtList, directoryPath);
+		dialog.open();
 	}
 }

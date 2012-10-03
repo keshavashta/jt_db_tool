@@ -2,7 +2,6 @@ package modelProvider;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
 import java.util.List;
 
 import util.SelectedCourt;
@@ -11,10 +10,16 @@ import com.greenapplesolutions.dbloader.domain.Judgement;
 
 public class JudgmentsEditorModelProvider {
 
-	public JudgmentsEditorModelProvider(List<Judgement> judgements) {
+	public JudgmentsEditorModelProvider(List<Judgement> judgements,
+			boolean isFileLoaded) {
+
 		this.judgements = judgements;
-		setSelectedCourtLabel("Results of "
-				+ SelectedCourt.getInstance().getSelectedCourt());
+		if (!isFileLoaded)
+			setSelectedCourtLabel("Results of "
+					+ SelectedCourt.getInstance().getSelectedCourt());
+		else
+			setSelectedCourtLabel("Number of judgements loaded : "
+					+ judgements.size());
 	}
 
 	private List<Judgement> judgements;

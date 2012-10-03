@@ -1,5 +1,6 @@
 package editorInput;
 
+import java.io.ObjectInputStream.GetField;
 import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -12,10 +13,17 @@ public class JudgmentEditorInput implements IEditorInput {
 
 	private String name;
 	private List<Judgement> judgements;
+	private boolean isFileLoaded;
 
-	public JudgmentEditorInput(String name, List<Judgement> judgements) {
+	public JudgmentEditorInput(String name, List<Judgement> judgements,
+			boolean isFileLoaded) {
 		this.name = name;
 		this.judgements = judgements;
+		this.isFileLoaded = isFileLoaded;
+	}
+
+	public boolean getIsFileLoaded() {
+		return isFileLoaded;
 	}
 
 	public List<Judgement> getJudgements() {

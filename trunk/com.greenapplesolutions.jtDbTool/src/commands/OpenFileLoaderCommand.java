@@ -7,11 +7,14 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IHandlerListener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import com.greenapplesolutions.dbloader.domain.Judgement;
+
+import dialogs.FileLoaderDialog;
 
 import editorInput.JudgmentEditorInput;
 import editors.JudgmentsEditor;
@@ -32,17 +35,8 @@ public class OpenFileLoaderCommand implements IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		List<Judgement> judgments = new ArrayList<Judgement>();
-		IEditorInput input1 = null;
-		input1 = new JudgmentEditorInput("",judgments);
-
-		try {
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage().openEditor(input1, JudgmentsEditor.ID);
-
-		} catch (PartInitException e3) {
-			e3.printStackTrace();
-		}
+		FileLoaderDialog dialog = new FileLoaderDialog(new Shell());
+		dialog.open();
 		return null;
 	}
 
