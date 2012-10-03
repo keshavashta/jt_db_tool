@@ -16,6 +16,7 @@ import editorInput.JudgmentEditorInput;
 import editors.JudgmentsEditor;
 
 import readWriteDatabase.ReadJudgement;
+import util.SelectedCourt;
 
 public class ReviewJudgementCommand implements IHandler {
 
@@ -33,7 +34,7 @@ public class ReviewJudgementCommand implements IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ReadJudgement ins = new ReadJudgement("jt_sc", "localhost", "root", "");
+		ReadJudgement ins = new ReadJudgement(SelectedCourt.getInstance().getSelectedDatabaseName(), "localhost", "root", "");
 		if (ins.connectToDatabse()) {
 			List<Judgement> judgements = ins.getJudgements();
 			IEditorInput input = null;

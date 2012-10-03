@@ -3,10 +3,8 @@ package readWriteDatabase;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Calendar;
 import java.util.List;
 
 import util.JTLogger;
@@ -71,15 +69,16 @@ public class UpdateJudgement {
 
 	}
 
-	public void dumpToJudgements(Judgement j) {
+	public void insertJudgement(Judgement j) {
 
 		try {
 
 			PreparedStatement pst = null;
-			String query = "insert into judgements values(null,?,?,?,?,?,?,?,?,?,?,?)";
+			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?)";
 			pst = connect.prepareStatement(query);
+			pst.setString(1, null);
 			pst.setString(2, j.Keycode);
-			pst.setString(3, j.Court);
+			pst.setString(3, "sc");
 			pst.setString(4, j.Judges);
 			pst.setInt(5, j.Bench);
 			pst.setString(6, j.CaseNumber);
@@ -120,10 +119,10 @@ public class UpdateJudgement {
 		try {
 
 			PreparedStatement pst = null;
-			String query = "insert into citations values(null,?,?,?,?,?)";
+			String query = "insert into citations values(?,?,?,?,?,?)";
 			pst = connect.prepareStatement(query);
 			for (Citation citation : citations) {
-
+				pst.setString(1, null);
 				pst.setString(2, citation.keycode);
 				pst.setString(3, citation.Journal);
 				pst.setInt(4, citation.Year);
@@ -162,10 +161,10 @@ public class UpdateJudgement {
 		try {
 
 			PreparedStatement pst = null;
-			String query = "insert into headnotes values(null,?,?,?)";
+			String query = "insert into headnotes values(?,?,?,?)";
 			pst = connect.prepareStatement(query);
 			for (HeadnoteAndHeld hh : headnoteAndHelds) {
-
+				pst.setString(1,null);
 				pst.setString(2, hh.Keycode);
 				pst.setString(3, hh.Headnote);
 

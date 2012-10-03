@@ -28,13 +28,29 @@
                id="jtDbTool.toolbar.main">
             <command
                   commandId="com.greenapplesolutions.jtDbTool.fileLoaderCommand"
+                  icon="icons/appIcons/add-db32x32.png"
                   label="Open File Loader"
                   mode="FORCE_TEXT"
                   style="push">
             </command>
             <command
                   commandId="com.greenapplesolutions.jtDbTool.reviewJudgementCommand"
+                  icon="icons/appIcons/search-db32x32.png"
                   label="Review Judgements"
+                  mode="FORCE_TEXT"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.greenapplesolutions.jtDbTool.changeCourt"
+                  icon="icons/appIcons/court32x32.png"
+                  label="Change Court"
+                  mode="FORCE_TEXT"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.greenapplesolutions.jtDbTool.openIndexEditorCommand"
+                  label="Index Judgements"
+                  mode="FORCE_TEXT"
                   style="push">
             </command>
          </toolbar>
@@ -52,6 +68,16 @@
             id="com.greenapplesolutions.jtDbTool.reviewJudgementCommand"
             name="Review Judgements Command">
       </command>
+      <command
+            defaultHandler="commands.ChangeCourtCommand"
+            id="com.greenapplesolutions.jtDbTool.changeCourt"
+            name="Change Court">
+      </command>
+      <command
+            defaultHandler="commands.OpenIndexEditorCommand"
+            id="com.greenapplesolutions.jtDbTool.openIndexEditorCommand"
+            name="Open Index Editor Command">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.editors">
@@ -60,6 +86,12 @@
             default="false"
             id="com.greenapplesolutions.jtDbTool.judgementeditor"
             name="Judgment Viewer">
+      </editor>
+      <editor
+            class="editors.IndexJudgementsEditor"
+            default="false"
+            id="com.greenapplesolutions.jtDbTool.indexJudgements"
+            name="Index Judgements">
       </editor>
    </extension>
 

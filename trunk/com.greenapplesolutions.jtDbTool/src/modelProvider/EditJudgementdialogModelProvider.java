@@ -3,11 +3,13 @@ package modelProvider;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import readWriteDatabase.ReadJudgement;
 import readWriteDatabase.UpdateJudgement;
+import util.SelectedCourt;
 import util.Util;
 
 import com.greenapplesolutions.dbloader.domain.Citation;
@@ -104,42 +106,42 @@ public class EditJudgementdialogModelProvider {
 			setCitation1_journal(citation.Journal);
 			setCitation1_page("" + citation.Page);
 			setCitation1_volume(citation.Volume);
-			setCitation1_year("" + citation.Page);
+			setCitation1_year("" + citation.Year);
 		}
 			break;
 		case 1: {
 			setCitation2_journal(citation.Journal);
 			setCitation2_page("" + citation.Page);
 			setCitation2_volume(citation.Volume);
-			setCitation2_year("" + citation.Page);
+			setCitation2_year("" + citation.Year);
 		}
 			break;
 		case 2: {
 			setCitation3_journal(citation.Journal);
 			setCitation3_page("" + citation.Page);
 			setCitation3_volume(citation.Volume);
-			setCitation3_year("" + citation.Page);
+			setCitation3_year("" + citation.Year);
 		}
 			break;
 		case 3: {
 			setCitation4_journal(citation.Journal);
 			setCitation4_page("" + citation.Page);
 			setCitation4_volume(citation.Volume);
-			setCitation4_year("" + citation.Page);
+			setCitation4_year("" + citation.Year);
 		}
 			break;
 		case 4: {
 			setCitation5_journal(citation.Journal);
 			setCitation5_page("" + citation.Page);
 			setCitation5_volume(citation.Volume);
-			setCitation5_year("" + citation.Page);
+			setCitation5_year("" + citation.Year);
 		}
 			break;
 		case 5: {
 			setCitation6_journal(citation.Journal);
 			setCitation6_page("" + citation.Page);
 			setCitation6_volume(citation.Volume);
-			setCitation6_year("" + citation.Page);
+			setCitation6_year("" + citation.Year);
 		}
 			break;
 		default:
@@ -306,8 +308,27 @@ public class EditJudgementdialogModelProvider {
 		return citationList;
 	}
 
-	public void updateJudgement() {
-		Judgement judgement = new Judgement();
+	private Judgement getEmptyJudgement() {
+		Judgement j = new Judgement();
+		j.Appellant = "";
+		j.Respondant = "";
+		j.Bench = 0;
+		j.Advocates = "";
+		Calendar cal = Calendar.getInstance();
+		cal.set(1111, 10, 11);
+		j.CaseDate = cal.getTime();
+		j.CaseNumber = "";
+		j.Court = "";
+		j.Citations = new ArrayList<Citation>();
+		j.FullText = "";
+		j.headnotesAndHelds = new ArrayList<HeadnoteAndHeld>();
+		j.Judges = "";
+		return j;
+
+	}
+
+	public boolean updateJudgement() {
+		Judgement judgement = getEmptyJudgement();
 		judgement.Keycode = keycode;
 		if (!Util.isStringNullOrEmpty(getAppellant()))
 			judgement.Appellant = getAppellant();
@@ -325,12 +346,15 @@ public class EditJudgementdialogModelProvider {
 			judgement.CaseDate = getCaseDate();
 		judgement.Citations = getCitations();
 		judgement.headnotesAndHelds = getHeadnoteAndHeld();
-		UpdateJudgement upInstance = new UpdateJudgement("jt_sc", "localhost",
-				"root", "");
+		UpdateJudgement upInstance = new UpdateJudgement(SelectedCourt
+				.getInstance().getSelectedDatabaseName(), "localhost", "root",
+				"");
 		if (upInstance.connectToDatabse()) {
 			upInstance.deleteJudgement(keycode);
-			upInstance.dumpToJudgements(judgement);
-		}
+			upInstance.insertJudgement(judgement);
+			return true;
+		} else
+			return false;
 	}
 
 	private void setHeadnoteAndHeld(int index, HeadnoteAndHeld headnoteAndHeld) {
@@ -361,7 +385,8 @@ public class EditJudgementdialogModelProvider {
 	}
 
 	private void getJudgementFromdatabase() {
-		ReadJudgement ins = new ReadJudgement("jt_sc", "localhost", "root", "");
+		ReadJudgement ins = new ReadJudgement(SelectedCourt.getInstance()
+				.getSelectedDatabaseName(), "localhost", "root", "");
 		if (ins.connectToDatabse()) {
 			this.judgement = ins.getJudgement(keycode);
 		}

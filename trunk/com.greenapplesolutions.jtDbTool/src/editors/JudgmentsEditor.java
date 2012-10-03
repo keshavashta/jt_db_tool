@@ -35,15 +35,22 @@ import editorInput.JudgmentEditorInput;
 
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.wb.swt.ResourceManager;
 
 public class JudgmentsEditor extends EditorPart {
+	private DataBindingContext m_bindingContext;
 	public JudgmentsEditor() {
+		setTitleImage(ResourceManager.getPluginImage("com.greenapplesolutions.jtDbTool", "icons/appIcons/16x16-1349202770_database_search.png"));
 	}
 
 	public static final String ID = "com.greenapplesolutions.jtDbTool.judgementeditor";
 	private TableViewer viewer;
 	private JudgmentsEditorModelProvider modelProvider;
-	// We use icons
 	private Label lblNewLabel;
 
 	public void createPartControl(Composite parent) {
@@ -52,58 +59,66 @@ public class JudgmentsEditor extends EditorPart {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new FormLayout());
 		FormData fd_composite = new FormData();
+		fd_composite.left = new FormAttachment(0, 10);
 		fd_composite.bottom = new FormAttachment(100, -10);
 		fd_composite.right = new FormAttachment(100, -10);
-		fd_composite.left = new FormAttachment(0, 10);
 		composite.setLayoutData(fd_composite);
-
-		lblNewLabel = new Label(parent, SWT.NONE);
-		fd_composite.top = new FormAttachment(lblNewLabel, 6);
-		FormData fd_lblNewLabel = new FormData();
-		fd_lblNewLabel.left = new FormAttachment(0, 10);
-		fd_lblNewLabel.right = new FormAttachment(100, -266);
-		fd_lblNewLabel.top = new FormAttachment(0, 10);
-		lblNewLabel.setLayoutData(fd_lblNewLabel);
-		lblNewLabel.setText("New Label");
 		createViewer(composite);
+		
+		Group group = new Group(parent, SWT.NONE);
+		fd_composite.top = new FormAttachment(group, 6);
+		group.setLayout(new FormLayout());
+		FormData fd_group = new FormData();
+		fd_group.left = new FormAttachment(0, 10);
+		fd_group.right = new FormAttachment(100, -10);
+		fd_group.top = new FormAttachment(0, 10);
+		group.setLayoutData(fd_group);
+		
+				Button btnNewButton = new Button(group, SWT.NONE);
+				FormData fd_btnNewButton = new FormData();
+				fd_btnNewButton.top = new FormAttachment(0, -1);
+				btnNewButton.setLayoutData(fd_btnNewButton);
+				btnNewButton.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						Table table = viewer.getTable();
+						table.remove(table.getSelectionIndex());
 
-		Button btnNewButton = new Button(parent, SWT.NONE);
-		btnNewButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				Table table = viewer.getTable();
-				table.remove(table.getSelectionIndex());
+					}
+				});
+				btnNewButton.setText("New Button");
+				
+						Button btnNewButton_1 = new Button(group, SWT.NONE);
+						fd_btnNewButton.right = new FormAttachment(btnNewButton_1, -6);
+						FormData fd_btnNewButton_1 = new FormData();
+						fd_btnNewButton_1.right = new FormAttachment(100, -10);
+						fd_btnNewButton_1.top = new FormAttachment(0, -1);
+						btnNewButton_1.setLayoutData(fd_btnNewButton_1);
+						btnNewButton_1.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(SelectionEvent e) {
 
-			}
-		});
-		FormData fd_btnNewButton = new FormData();
-		fd_btnNewButton.top = new FormAttachment(lblNewLabel, -5, SWT.TOP);
-		fd_btnNewButton.left = new FormAttachment(lblNewLabel, 64);
-		btnNewButton.setLayoutData(fd_btnNewButton);
-		btnNewButton.setText("New Button");
-
-		Button btnNewButton_1 = new Button(parent, SWT.NONE);
-		btnNewButton_1.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-
-				int index = viewer.getTable().getSelectionIndex();
-				if (modelProvider.getJudgements().size() < index || index == -1)
-					MessageDialog.openInformation(new Shell(), "",
-							"Choose a judgement to edit");
-				else {
-					EditJudgementDialog dialog = new EditJudgementDialog(
-							new Shell(), modelProvider.getJudgements().get(
-									index).Keycode);
-					dialog.open();
-				}
-			}
-		});
-		FormData fd_btnNewButton_1 = new FormData();
-		fd_btnNewButton_1.top = new FormAttachment(btnNewButton, 0, SWT.TOP);
-		fd_btnNewButton_1.right = new FormAttachment(100, -22);
-		btnNewButton_1.setLayoutData(fd_btnNewButton_1);
-		btnNewButton_1.setText("Edit Judgement");
+								int index = viewer.getTable().getSelectionIndex();
+								if (modelProvider.getJudgements().size() < index || index == -1)
+									MessageDialog.openInformation(new Shell(), "",
+											"Choose a judgement to edit");
+								else {
+									EditJudgementDialog dialog = new EditJudgementDialog(
+											new Shell(), modelProvider.getJudgements().get(
+													index).Keycode);
+									dialog.open();
+								}
+							}
+						});
+						btnNewButton_1.setText("Edit Judgement");
+						
+						lblNewLabel = new Label(group, SWT.NONE);
+						FormData fd_lblNewLabel = new FormData();
+						fd_lblNewLabel.top = new FormAttachment(btnNewButton, 5, SWT.TOP);
+						fd_lblNewLabel.right = new FormAttachment(btnNewButton, -12);
+						fd_lblNewLabel.left = new FormAttachment(0, 10);
+						lblNewLabel.setLayoutData(fd_lblNewLabel);
+						m_bindingContext = initDataBindings();
 	}
 
 	public void refresh() {
@@ -127,9 +142,9 @@ public class JudgmentsEditor extends EditorPart {
 			}
 		});
 		FormData fd_table = new FormData();
-		fd_table.bottom = new FormAttachment(100, -10);
-		fd_table.right = new FormAttachment(100, -10);
-		fd_table.top = new FormAttachment(0, 5);
+		fd_table.bottom = new FormAttachment(100);
+		fd_table.right = new FormAttachment(100);
+		fd_table.top = new FormAttachment(0);
 		fd_table.left = new FormAttachment(0, 5);
 		table.setLayoutData(fd_table);
 		table.setHeaderVisible(true);
@@ -272,5 +287,14 @@ public class JudgmentsEditor extends EditorPart {
 	public boolean isSaveAsAllowed() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	protected DataBindingContext initDataBindings() {
+		DataBindingContext bindingContext = new DataBindingContext();
+		//
+		IObservableValue lblNewLabelObserveTextObserveWidget = SWTObservables.observeText(lblNewLabel);
+		IObservableValue modelProviderSelectedCourtLabelObserveValue = BeansObservables.observeValue(modelProvider, "selectedCourtLabel");
+		bindingContext.bindValue(lblNewLabelObserveTextObserveWidget, modelProviderSelectedCourtLabelObserveValue, null, null);
+		//
+		return bindingContext;
 	}
 }
