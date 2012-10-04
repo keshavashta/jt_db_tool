@@ -1,6 +1,8 @@
 package util;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
@@ -26,6 +28,11 @@ public class Util {
 			value = value + "\"";
 
 		return value;
+	}
+	public static String getDateInString(String format,Date date){
+		 SimpleDateFormat sdf = new SimpleDateFormat(format);
+         String d = sdf.format(date);
+         return d;
 	}
 	public static String encryptText(String plainText) {
 		String userPassword = LuceneConfig.INSTANCE().getPassword();

@@ -32,6 +32,7 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.wb.swt.ResourceManager;
 
 public class IndexJudgementsEditor extends EditorPart {
 	private DataBindingContext m_bindingContext;
@@ -40,6 +41,7 @@ public class IndexJudgementsEditor extends EditorPart {
 	private IndexJudgementEditorModelProvider modelProvider;
 
 	public IndexJudgementsEditor() {
+		setTitleImage(ResourceManager.getPluginImage("com.greenapplesolutions.jtDbTool", "icons/appIcons/db_save16.png"));
 		// TODO Auto-generated constructor stub
 	}
 
@@ -99,7 +101,7 @@ public class IndexJudgementsEditor extends EditorPart {
 		fd_label.top = new FormAttachment(lblNewLabel, 6);
 		fd_label.bottom = new FormAttachment(lblNewLabel, 8, SWT.BOTTOM);
 		fd_label.left = new FormAttachment(0, 10);
-		fd_label.right = new FormAttachment(0, 584);
+		fd_label.right = new FormAttachment(100, -10);
 		label.setLayoutData(fd_label);
 
 		Label lblChooseADirectory = new Label(parent, SWT.NONE);

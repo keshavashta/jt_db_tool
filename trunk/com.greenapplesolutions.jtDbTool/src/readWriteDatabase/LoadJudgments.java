@@ -18,7 +18,6 @@ import com.greenapplesolutions.dbloader.domain.Citation;
 import com.greenapplesolutions.dbloader.domain.Fields;
 import com.greenapplesolutions.dbloader.domain.HeadnoteAndHeld;
 import com.greenapplesolutions.dbloader.domain.Judgement;
-import com.greenapplesolutions.dbloader.domain.Statue;
 import com.greenapplesolutions.lawsearch.config.LuceneConfig;
 
 public class LoadJudgments {
@@ -88,7 +87,8 @@ public class LoadJudgments {
 							: resultSet.getString(Fields.Advocates);
 					judgement.CasesReferred = resultSet.getString(Fields.CasesReferred) == null ? ""
 							: resultSet.getString(Fields.CasesReferred);
-
+					judgement.Appellant = resultSet.getString(Fields.Appellant) == null ? ""
+							: resultSet.getString(Fields.Appellant);
 					// try {
 					// j.Bench = Integer.parseInt(resultSet.getString(
 					// Fields.Bench).toString());

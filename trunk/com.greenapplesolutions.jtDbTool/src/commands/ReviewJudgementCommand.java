@@ -2,10 +2,14 @@ package commands;
 
 import java.util.List;
 
+import org.apache.lucene.messages.Message;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IHandlerListener;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -49,7 +53,8 @@ public class ReviewJudgementCommand implements IHandler {
 			} catch (PartInitException e3) {
 				e3.printStackTrace();
 			}
-		}
+		}else
+		MessageDialog.openInformation(new Shell(), "Error", "Error in connecting with database either database not found or database server is off.");
 		return null;
 	}
 

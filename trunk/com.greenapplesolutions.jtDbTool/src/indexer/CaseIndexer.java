@@ -1,13 +1,10 @@
 package indexer;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.NumericField;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
@@ -107,10 +104,11 @@ public class CaseIndexer {
 
 					doc.add(new NumericField(Fields.Bench, Field.Store.YES,
 							true).setIntValue(judgement.Bench));
+					
 					for (HeadnoteAndHeld hh : judgement.headnotesAndHelds) {
 						Document citationDoc = new Document();
 						citationDoc.add(new Field(Fields.DocumentType,
-								Citation.DocumentType, Field.Store.YES,
+								HeadnoteAndHeld.DocumentType, Field.Store.YES,
 								Field.Index.ANALYZED_NO_NORMS));
 						citationDoc.add(new Field(Fields.Headnote, hh.Headnote,
 								Field.Store.NO, Field.Index.ANALYZED));

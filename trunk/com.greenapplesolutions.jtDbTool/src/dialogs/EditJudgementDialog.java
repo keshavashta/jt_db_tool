@@ -1,7 +1,5 @@
 package dialogs;
 
-import java.util.Date;
-
 import modelProvider.EditJudgementdialogModelProvider;
 
 import org.eclipse.swt.widgets.Dialog;
@@ -12,12 +10,12 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.DateTime;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Button;
@@ -27,13 +25,13 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.wb.swt.ResourceManager;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.layout.GridData;
 
 public class EditJudgementDialog extends Dialog {
 	private DataBindingContext m_bindingContext;
@@ -71,15 +69,15 @@ public class EditJudgementDialog extends Dialog {
 	private Combo combo_5;
 	private DateTime dateTime;
 	private Text text_22;
-	private Text text_23;
-	private Text text_24;
-	private Text text_25;
-	private Text text_26;
-	private Text text_27;
-	private Text text_28;
-	private Text text_29;
-	private Text text_30;
 	private Text text_31;
+	private Text text_32;
+	private Text text_33;
+	private Text text_34;
+	private Text text_35;
+	private Text scHeadnote3;
+	private Text scHeld3;
+	private Text scHeadnote4;
+	private Text scHeld4;
 
 	/**
 	 * Create the dialog.
@@ -115,6 +113,7 @@ public class EditJudgementDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
+		int headnoteTextHeight = 200;
 		shlVieweditJudgement = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.MAX
 				| SWT.APPLICATION_MODAL);
 		shlVieweditJudgement.setImage(ResourceManager.getPluginImage(
@@ -223,15 +222,16 @@ public class EditJudgementDialog extends Dialog {
 		fd_text_22.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
 		fd_text_22.bottom = new FormAttachment(100);
 		text_22.setLayoutData(fd_text_22);
-		
+
 		Label lblCasesReferred = new Label(composite, SWT.NONE);
 		FormData fd_lblCasesReferred = new FormData();
 		fd_lblCasesReferred.top = new FormAttachment(text_3, 6);
 		fd_lblCasesReferred.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
 		lblCasesReferred.setLayoutData(fd_lblCasesReferred);
 		lblCasesReferred.setText("Cases Referred");
-		
-		text_31 = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
+
+		text_31 = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL
+				| SWT.MULTI);
 		fd_lblJudgement.bottom = new FormAttachment(text_31, 21, SWT.BOTTOM);
 		fd_lblJudgement.top = new FormAttachment(text_31, 6);
 		FormData fd_text_31 = new FormData();
@@ -279,6 +279,16 @@ public class EditJudgementDialog extends Dialog {
 		text_6 = new Text(grpCitation, SWT.BORDER);
 		text_6.setBounds(284, 49, 76, 21);
 
+		Button btnClear = new Button(grpCitation, SWT.NONE);
+		btnClear.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				modelProvider.clearCitation1();
+			}
+		});
+		btnClear.setBounds(374, 47, 75, 25);
+		btnClear.setText("Clear");
+
 		Group grpCitation_1 = new Group(composite_1, SWT.NONE);
 		grpCitation_1.setText("Citation 2");
 		grpCitation_1.setBounds(10, 98, 970, 82);
@@ -310,6 +320,16 @@ public class EditJudgementDialog extends Dialog {
 
 		text_9 = new Text(grpCitation_1, SWT.BORDER);
 		text_9.setBounds(284, 49, 76, 21);
+
+		Button btnClear_1 = new Button(grpCitation_1, SWT.NONE);
+		btnClear_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				modelProvider.clearCitation2();
+			}
+		});
+		btnClear_1.setBounds(375, 47, 75, 25);
+		btnClear_1.setText("Clear");
 
 		Group grpCitation_2 = new Group(composite_1, SWT.NONE);
 		grpCitation_2.setText("Citation 3");
@@ -343,6 +363,16 @@ public class EditJudgementDialog extends Dialog {
 		text_12 = new Text(grpCitation_2, SWT.BORDER);
 		text_12.setBounds(284, 49, 76, 21);
 
+		Button btnClear_2 = new Button(grpCitation_2, SWT.NONE);
+		btnClear_2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				modelProvider.clearCitation3();
+			}
+		});
+		btnClear_2.setBounds(376, 47, 75, 25);
+		btnClear_2.setText("Clear");
+
 		Group grpCitation_3 = new Group(composite_1, SWT.NONE);
 		grpCitation_3.setText("Citation 4");
 		grpCitation_3.setBounds(10, 280, 970, 82);
@@ -374,6 +404,16 @@ public class EditJudgementDialog extends Dialog {
 
 		text_15 = new Text(grpCitation_3, SWT.BORDER);
 		text_15.setBounds(284, 49, 76, 21);
+
+		Button btnClear_3 = new Button(grpCitation_3, SWT.NONE);
+		btnClear_3.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				modelProvider.clearCitation4();
+			}
+		});
+		btnClear_3.setBounds(377, 45, 75, 25);
+		btnClear_3.setText("Clear");
 
 		Group grpCitation_4 = new Group(composite_1, SWT.NONE);
 		grpCitation_4.setText("Citation 5");
@@ -407,6 +447,16 @@ public class EditJudgementDialog extends Dialog {
 		text_18 = new Text(grpCitation_4, SWT.BORDER);
 		text_18.setBounds(284, 49, 76, 21);
 
+		Button btnClear_4 = new Button(grpCitation_4, SWT.NONE);
+		btnClear_4.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				modelProvider.clearCitation5();
+			}
+		});
+		btnClear_4.setBounds(376, 47, 75, 25);
+		btnClear_4.setText("Clear");
+
 		Group grpCitation_5 = new Group(composite_1, SWT.NONE);
 		grpCitation_5.setText("Citation 6");
 		grpCitation_5.setBounds(10, 456, 970, 82);
@@ -439,114 +489,214 @@ public class EditJudgementDialog extends Dialog {
 		text_21 = new Text(grpCitation_5, SWT.BORDER);
 		text_21.setBounds(284, 49, 76, 21);
 
-		TabItem tbtmHeadnote = new TabItem(tabFolder, SWT.NONE);
-		tbtmHeadnote.setText("Headnote");
-
-		Composite composite_2 = new Composite(tabFolder, SWT.NONE);
-		tbtmHeadnote.setControl(composite_2);
-
-		Group grpHeadnoteAndHeld = new Group(composite_2, SWT.NONE);
-		grpHeadnoteAndHeld.setText("Headnote And Held Number 1");
-		grpHeadnoteAndHeld.setBounds(10, 10, 970, 132);
-
-		Label lblHeld = new Label(grpHeadnoteAndHeld, SWT.NONE);
-		lblHeld.setBounds(10, 21, 55, 15);
-		lblHeld.setText("Held");
-
-		Label label_20 = new Label(grpHeadnoteAndHeld, SWT.SEPARATOR
-				| SWT.VERTICAL);
-		label_20.setBounds(434, 21, 2, 101);
-
-		Label lblHeadnote = new Label(grpHeadnoteAndHeld, SWT.NONE);
-		lblHeadnote.setBounds(442, 21, 55, 15);
-		lblHeadnote.setText("Headnote");
-
-		text_23 = new Text(grpHeadnoteAndHeld, SWT.BORDER | SWT.WRAP
-				| SWT.V_SCROLL | SWT.MULTI);
-		text_23.setBounds(10, 42, 418, 80);
-
-		text_24 = new Text(grpHeadnoteAndHeld, SWT.BORDER | SWT.WRAP
-				| SWT.V_SCROLL | SWT.MULTI);
-		text_24.setBounds(442, 42, 518, 80);
-
-		Group group = new Group(composite_2, SWT.NONE);
-		group.setText("Headnote And Held Number 1");
-		group.setBounds(10, 148, 970, 132);
-
-		Label label_21 = new Label(group, SWT.NONE);
-		label_21.setText("Held");
-		label_21.setBounds(10, 21, 55, 15);
-
-		Label label_22 = new Label(group, SWT.SEPARATOR);
-		label_22.setBounds(434, 21, 2, 101);
-
-		Label label_23 = new Label(group, SWT.NONE);
-		label_23.setText("Headnote");
-		label_23.setBounds(442, 21, 55, 15);
-
-		text_25 = new Text(group, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL
-				| SWT.MULTI);
-		text_25.setBounds(10, 42, 418, 80);
-
-		text_26 = new Text(group, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL
-				| SWT.MULTI);
-		text_26.setBounds(442, 42, 518, 80);
-
-		Group group_1 = new Group(composite_2, SWT.NONE);
-		group_1.setText("Headnote And Held Number 1");
-		group_1.setBounds(10, 289, 970, 132);
-
-		Label label_24 = new Label(group_1, SWT.NONE);
-		label_24.setText("Held");
-		label_24.setBounds(10, 21, 55, 15);
-
-		Label label_25 = new Label(group_1, SWT.SEPARATOR);
-		label_25.setBounds(434, 21, 2, 101);
-
-		Label label_26 = new Label(group_1, SWT.NONE);
-		label_26.setText("Headnote");
-		label_26.setBounds(442, 21, 55, 15);
-
-		text_27 = new Text(group_1, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL
-				| SWT.MULTI);
-		text_27.setBounds(10, 42, 418, 80);
-
-		text_28 = new Text(group_1, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL
-				| SWT.MULTI);
-		text_28.setBounds(442, 42, 518, 80);
-
-		Group group_2 = new Group(composite_2, SWT.NONE);
-		group_2.setText("Headnote And Held Number 1");
-		group_2.setBounds(10, 427, 970, 132);
-
-		Label label_27 = new Label(group_2, SWT.NONE);
-		label_27.setText("Held");
-		label_27.setBounds(10, 21, 55, 15);
-
-		Label label_28 = new Label(group_2, SWT.SEPARATOR);
-		label_28.setBounds(434, 21, 2, 101);
-
-		Label label_29 = new Label(group_2, SWT.NONE);
-		label_29.setText("Headnote");
-		label_29.setBounds(442, 21, 55, 15);
-
-		text_29 = new Text(group_2, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL
-				| SWT.MULTI);
-		text_29.setBounds(10, 42, 418, 80);
-
-		text_30 = new Text(group_2, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL
-				| SWT.MULTI);
-		text_30.setBounds(442, 42, 518, 80);
+		Button btnClear_5 = new Button(grpCitation_5, SWT.NONE);
+		btnClear_5.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				modelProvider.clearCitation6();
+			}
+		});
+		btnClear_5.setBounds(375, 47, 75, 25);
+		btnClear_5.setText("Clear");
 
 		Button btnClose = new Button(shlVieweditJudgement, SWT.NONE);
 		fd_tabFolder.bottom = new FormAttachment(btnClose, -18);
-		
+
 		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
-		tbtmNewItem.setText("New Item");
-		
-		Composite composite_3 = new Composite(tabFolder, SWT.NONE);
-		tbtmNewItem.setControl(composite_3);
-		composite_3.setLayout(new FillLayout(SWT.HORIZONTAL));
+		tbtmNewItem.setText("Headnote");
+
+		ScrolledComposite scrolledComposite = new ScrolledComposite(tabFolder,
+				SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		tbtmNewItem.setControl(scrolledComposite);
+		scrolledComposite.setExpandHorizontal(true);
+		scrolledComposite.setExpandVertical(true);
+		Composite scrolledChildComposite = new Composite(scrolledComposite,
+				SWT.NONE);
+		scrolledChildComposite.setLayout(new GridLayout(1, true));
+
+		Group group_3 = new Group(scrolledChildComposite, SWT.NONE);
+		GridData gd_group_3 = new GridData(SWT.FILL, SWT.CENTER, false, false,
+				1, 1);
+		gd_group_3.heightHint = headnoteTextHeight;
+		gd_group_3.grabExcessHorizontalSpace = true;
+		group_3.setLayoutData(gd_group_3);
+		group_3.setText("Headnote And Held Number 1");
+		group_3.setLayout(new FormLayout());
+
+		Label lblHeadnote_1 = new Label(group_3, SWT.NONE);
+		FormData fd_lblHeadnote_1 = new FormData();
+		fd_lblHeadnote_1.top = new FormAttachment(0, 10);
+		fd_lblHeadnote_1.left = new FormAttachment(0, 10);
+		lblHeadnote_1.setLayoutData(fd_lblHeadnote_1);
+		lblHeadnote_1.setText("Headnote");
+
+		text_32 = new Text(group_3, SWT.BORDER);
+		FormData fd_text_32 = new FormData();
+		fd_text_32.right = new FormAttachment(0, 512);
+		fd_text_32.top = new FormAttachment(lblHeadnote_1, 7);
+		fd_text_32.left = new FormAttachment(0, 10);
+		fd_text_32.bottom = new FormAttachment(100, -17);
+		text_32.setLayoutData(fd_text_32);
+
+		Label label_30 = new Label(group_3, SWT.SEPARATOR | SWT.VERTICAL);
+		FormData fd_label_30 = new FormData();
+		fd_label_30.left = new FormAttachment(text_32, 6);
+		fd_label_30.top = new FormAttachment(0);
+		fd_label_30.bottom = new FormAttachment(100);
+		label_30.setLayoutData(fd_label_30);
+
+		Label lblHeld_1 = new Label(group_3, SWT.NONE);
+		FormData fd_lblHeld_1 = new FormData();
+		fd_lblHeld_1.bottom = new FormAttachment(lblHeadnote_1, 0, SWT.BOTTOM);
+		fd_lblHeld_1.left = new FormAttachment(label_30, 6);
+		lblHeld_1.setLayoutData(fd_lblHeld_1);
+		lblHeld_1.setText("Held");
+
+		text_33 = new Text(group_3, SWT.BORDER);
+		FormData fd_text_33 = new FormData();
+		fd_text_33.bottom = new FormAttachment(label_30, -17, SWT.BOTTOM);
+		fd_text_33.top = new FormAttachment(text_32, 0, SWT.TOP);
+		fd_text_33.right = new FormAttachment(100, -10);
+		fd_text_33.left = new FormAttachment(label_30, 9);
+		text_33.setLayoutData(fd_text_33);
+
+		Group grpHeadnoteAndHeld_1 = new Group(scrolledChildComposite, SWT.NONE);
+		GridData gd_grpHeadnoteAndHeld_1 = new GridData(SWT.FILL, SWT.CENTER,
+				false, false, 1, 1);
+		gd_grpHeadnoteAndHeld_1.heightHint = headnoteTextHeight;
+		grpHeadnoteAndHeld_1.setLayoutData(gd_grpHeadnoteAndHeld_1);
+		grpHeadnoteAndHeld_1.setText("Headnote And Held Number 2");
+		grpHeadnoteAndHeld_1.setLayout(new FormLayout());
+
+		Label label_31 = new Label(grpHeadnoteAndHeld_1, SWT.NONE);
+		label_31.setText("Headnote");
+		FormData fd_label_31 = new FormData();
+		fd_label_31.top = new FormAttachment(0, 10);
+		fd_label_31.left = new FormAttachment(0, 10);
+		label_31.setLayoutData(fd_label_31);
+
+		text_34 = new Text(grpHeadnoteAndHeld_1, SWT.BORDER);
+		FormData fd_text_34 = new FormData();
+		fd_text_34.bottom = new FormAttachment(100, -17);
+		fd_text_34.top = new FormAttachment(label_31, 7);
+		fd_text_34.right = new FormAttachment(0, 512);
+		fd_text_34.left = new FormAttachment(0, 10);
+		text_34.setLayoutData(fd_text_34);
+
+		Label label_32 = new Label(grpHeadnoteAndHeld_1, SWT.SEPARATOR);
+		FormData fd_label_32 = new FormData();
+		fd_label_32.bottom = new FormAttachment(100);
+		fd_label_32.top = new FormAttachment(0);
+		fd_label_32.left = new FormAttachment(text_34, 6);
+		label_32.setLayoutData(fd_label_32);
+
+		Label label_33 = new Label(grpHeadnoteAndHeld_1, SWT.NONE);
+		label_33.setText("Held");
+		FormData fd_label_33 = new FormData();
+		fd_label_33.bottom = new FormAttachment(label_31, 0, SWT.BOTTOM);
+		fd_label_33.left = new FormAttachment(label_32, 6);
+		label_33.setLayoutData(fd_label_33);
+
+		text_35 = new Text(grpHeadnoteAndHeld_1, SWT.BORDER);
+		FormData fd_text_35 = new FormData();
+		fd_text_35.bottom = new FormAttachment(label_32, -17, SWT.BOTTOM);
+		fd_text_35.top = new FormAttachment(text_34, 0, SWT.TOP);
+		fd_text_35.right = new FormAttachment(100, -10);
+		fd_text_35.left = new FormAttachment(label_32, 9);
+		text_35.setLayoutData(fd_text_35);
+
+		Group grpHeadnoteAndHeld_2 = new Group(scrolledChildComposite, SWT.NONE);
+		GridData gd_grpHeadnoteAndHeld_2 = new GridData(SWT.FILL, SWT.CENTER,
+				false, false, 1, 1);
+		gd_grpHeadnoteAndHeld_2.heightHint = headnoteTextHeight;
+		grpHeadnoteAndHeld_2.setLayoutData(gd_grpHeadnoteAndHeld_2);
+		grpHeadnoteAndHeld_2.setText("Headnote And Held Number 3");
+		grpHeadnoteAndHeld_2.setLayout(new FormLayout());
+
+		Label label_34 = new Label(grpHeadnoteAndHeld_2, SWT.NONE);
+		label_34.setText("Headnote");
+		FormData fd_label_34 = new FormData();
+		fd_label_34.top = new FormAttachment(0, 10);
+		fd_label_34.left = new FormAttachment(0, 10);
+		label_34.setLayoutData(fd_label_34);
+
+		scHeadnote3 = new Text(grpHeadnoteAndHeld_2, SWT.BORDER);
+		FormData fd_scHeadnote3 = new FormData();
+		fd_scHeadnote3.bottom = new FormAttachment(100, -17);
+		fd_scHeadnote3.top = new FormAttachment(label_34, 7);
+		fd_scHeadnote3.right = new FormAttachment(0, 512);
+		fd_scHeadnote3.left = new FormAttachment(0, 10);
+		scHeadnote3.setLayoutData(fd_scHeadnote3);
+
+		Label label_35 = new Label(grpHeadnoteAndHeld_2, SWT.SEPARATOR);
+		FormData fd_label_35 = new FormData();
+		fd_label_35.bottom = new FormAttachment(100);
+		fd_label_35.top = new FormAttachment(0);
+		fd_label_35.left = new FormAttachment(scHeadnote3, 6);
+		label_35.setLayoutData(fd_label_35);
+
+		Label label_36 = new Label(grpHeadnoteAndHeld_2, SWT.NONE);
+		label_36.setText("Held");
+		FormData fd_label_36 = new FormData();
+		fd_label_36.bottom = new FormAttachment(label_34, 0, SWT.BOTTOM);
+		fd_label_36.left = new FormAttachment(label_35, 6);
+		label_36.setLayoutData(fd_label_36);
+
+		scHeld3 = new Text(grpHeadnoteAndHeld_2, SWT.BORDER);
+		FormData fd_scHeld3 = new FormData();
+		fd_scHeld3.bottom = new FormAttachment(label_35, -17, SWT.BOTTOM);
+		fd_scHeld3.top = new FormAttachment(scHeadnote3, 0, SWT.TOP);
+		fd_scHeld3.right = new FormAttachment(100, -10);
+		fd_scHeld3.left = new FormAttachment(label_35, 9);
+		scHeld3.setLayoutData(fd_scHeld3);
+
+		Group grpHeadnoteAndHeld_3 = new Group(scrolledChildComposite, SWT.NONE);
+		GridData gd_grpHeadnoteAndHeld_3 = new GridData(SWT.FILL, SWT.CENTER,
+				false, false, 1, 1);
+		gd_grpHeadnoteAndHeld_3.heightHint = headnoteTextHeight;
+		grpHeadnoteAndHeld_3.setLayoutData(gd_grpHeadnoteAndHeld_3);
+		grpHeadnoteAndHeld_3.setText("Headnote And Held Number4");
+		grpHeadnoteAndHeld_3.setLayout(new FormLayout());
+
+		Label label_37 = new Label(grpHeadnoteAndHeld_3, SWT.NONE);
+		label_37.setText("Headnote");
+		FormData fd_label_37 = new FormData();
+		fd_label_37.top = new FormAttachment(0, 10);
+		fd_label_37.left = new FormAttachment(0, 10);
+		label_37.setLayoutData(fd_label_37);
+
+		scHeadnote4 = new Text(grpHeadnoteAndHeld_3, SWT.BORDER);
+		FormData fd_scHeadnote4 = new FormData();
+		fd_scHeadnote4.bottom = new FormAttachment(100, -17);
+		fd_scHeadnote4.top = new FormAttachment(label_37, 7);
+		fd_scHeadnote4.right = new FormAttachment(0, 512);
+		fd_scHeadnote4.left = new FormAttachment(0, 10);
+		scHeadnote4.setLayoutData(fd_scHeadnote4);
+
+		Label label_38 = new Label(grpHeadnoteAndHeld_3, SWT.SEPARATOR);
+		FormData fd_label_38 = new FormData();
+		fd_label_38.bottom = new FormAttachment(100);
+		fd_label_38.top = new FormAttachment(0);
+		fd_label_38.left = new FormAttachment(scHeadnote4, 6);
+		label_38.setLayoutData(fd_label_38);
+
+		Label label_39 = new Label(grpHeadnoteAndHeld_3, SWT.NONE);
+		label_39.setText("Held");
+		FormData fd_label_39 = new FormData();
+		fd_label_39.bottom = new FormAttachment(label_37, 0, SWT.BOTTOM);
+		fd_label_39.left = new FormAttachment(label_38, 6);
+		label_39.setLayoutData(fd_label_39);
+
+		scHeld4 = new Text(grpHeadnoteAndHeld_3, SWT.BORDER);
+		FormData fd_scHeld4 = new FormData();
+		fd_scHeld4.bottom = new FormAttachment(label_38, -17, SWT.BOTTOM);
+		fd_scHeld4.top = new FormAttachment(scHeadnote4, 0, SWT.TOP);
+		fd_scHeld4.right = new FormAttachment(100, -10);
+		fd_scHeld4.left = new FormAttachment(label_38, 9);
+		scHeld4.setLayoutData(fd_scHeld4);
+		scrolledComposite.setContent(scrolledChildComposite);
+		scrolledComposite.setMinSize(scrolledChildComposite.computeSize(
+				SWT.DEFAULT, SWT.DEFAULT));
 		btnClose.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -575,186 +725,330 @@ public class EditJudgementDialog extends Dialog {
 		fd_btnUpdate.bottom = new FormAttachment(100, -10);
 		btnUpdate.setLayoutData(fd_btnUpdate);
 		btnUpdate.setText("Update");
+
+		Button btnIsverified = new Button(shlVieweditJudgement, SWT.NONE);
+		btnIsverified.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+			}
+		});
+		FormData fd_btnIsverified = new FormData();
+		fd_btnIsverified.bottom = new FormAttachment(btnClose, 0, SWT.BOTTOM);
+		fd_btnIsverified.right = new FormAttachment(btnUpdate, -6);
+		btnIsverified.setLayoutData(fd_btnIsverified);
+		btnIsverified.setText("IsVerified");
 		m_bindingContext = initDataBindings();
 
 	}
+
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
-		IObservableList itemsComboObserveWidget = WidgetProperties.items().observe(combo);
-		IObservableList journalsModelProviderObserveList = BeanProperties.list("journals").observe(modelProvider);
-		bindingContext.bindList(itemsComboObserveWidget, journalsModelProviderObserveList, null, null);
+		IObservableList itemsComboObserveWidget = WidgetProperties.items()
+				.observe(combo);
+		IObservableList journalsModelProviderObserveList = BeanProperties.list(
+				"journals").observe(modelProvider);
+		bindingContext.bindList(itemsComboObserveWidget,
+				journalsModelProviderObserveList, null, null);
 		//
-		IObservableList itemsCombo_1ObserveWidget = WidgetProperties.items().observe(combo_1);
-		bindingContext.bindList(itemsCombo_1ObserveWidget, journalsModelProviderObserveList, null, null);
+		IObservableList itemsCombo_1ObserveWidget = WidgetProperties.items()
+				.observe(combo_1);
+		bindingContext.bindList(itemsCombo_1ObserveWidget,
+				journalsModelProviderObserveList, null, null);
 		//
-		IObservableList itemsCombo_2ObserveWidget = WidgetProperties.items().observe(combo_2);
-		bindingContext.bindList(itemsCombo_2ObserveWidget, journalsModelProviderObserveList, null, null);
+		IObservableList itemsCombo_2ObserveWidget = WidgetProperties.items()
+				.observe(combo_2);
+		bindingContext.bindList(itemsCombo_2ObserveWidget,
+				journalsModelProviderObserveList, null, null);
 		//
-		IObservableList itemsCombo_3ObserveWidget = WidgetProperties.items().observe(combo_3);
-		bindingContext.bindList(itemsCombo_3ObserveWidget, journalsModelProviderObserveList, null, null);
+		IObservableList itemsCombo_3ObserveWidget = WidgetProperties.items()
+				.observe(combo_3);
+		bindingContext.bindList(itemsCombo_3ObserveWidget,
+				journalsModelProviderObserveList, null, null);
 		//
-		IObservableList itemsCombo_4ObserveWidget = WidgetProperties.items().observe(combo_4);
-		bindingContext.bindList(itemsCombo_4ObserveWidget, journalsModelProviderObserveList, null, null);
+		IObservableList itemsCombo_4ObserveWidget = WidgetProperties.items()
+				.observe(combo_4);
+		bindingContext.bindList(itemsCombo_4ObserveWidget,
+				journalsModelProviderObserveList, null, null);
 		//
-		IObservableList itemsCombo_5ObserveWidget = WidgetProperties.items().observe(combo_5);
-		bindingContext.bindList(itemsCombo_5ObserveWidget, journalsModelProviderObserveList, null, null);
+		IObservableList itemsCombo_5ObserveWidget = WidgetProperties.items()
+				.observe(combo_5);
+		bindingContext.bindList(itemsCombo_5ObserveWidget,
+				journalsModelProviderObserveList, null, null);
 		//
-		IObservableValue observeTextText_4ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_4);
-		IObservableValue citation1_yearModelProviderObserveValue = BeanProperties.value("citation1_year").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_4ObserveWidget, citation1_yearModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_4ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_4);
+		IObservableValue citation1_yearModelProviderObserveValue = BeanProperties
+				.value("citation1_year").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_4ObserveWidget,
+				citation1_yearModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_5ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_5);
-		IObservableValue citation1_volumeModelProviderObserveValue = BeanProperties.value("citation1_volume").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_5ObserveWidget, citation1_volumeModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_5ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_5);
+		IObservableValue citation1_volumeModelProviderObserveValue = BeanProperties
+				.value("citation1_volume").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_5ObserveWidget,
+				citation1_volumeModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_6ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_6);
-		IObservableValue citation1_pageModelProviderObserveValue = BeanProperties.value("citation1_page").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_6ObserveWidget, citation1_pageModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_6ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_6);
+		IObservableValue citation1_pageModelProviderObserveValue = BeanProperties
+				.value("citation1_page").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_6ObserveWidget,
+				citation1_pageModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_7ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_7);
-		IObservableValue citation2_yearModelProviderObserveValue = BeanProperties.value("citation2_year").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_7ObserveWidget, citation2_yearModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_7ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_7);
+		IObservableValue citation2_yearModelProviderObserveValue = BeanProperties
+				.value("citation2_year").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_7ObserveWidget,
+				citation2_yearModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_8ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_8);
-		IObservableValue citation2_volumeModelProviderObserveValue = BeanProperties.value("citation2_volume").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_8ObserveWidget, citation2_volumeModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_8ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_8);
+		IObservableValue citation2_volumeModelProviderObserveValue = BeanProperties
+				.value("citation2_volume").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_8ObserveWidget,
+				citation2_volumeModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_9ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_9);
-		IObservableValue citation2_pageModelProviderObserveValue = BeanProperties.value("citation2_page").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_9ObserveWidget, citation2_pageModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_9ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_9);
+		IObservableValue citation2_pageModelProviderObserveValue = BeanProperties
+				.value("citation2_page").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_9ObserveWidget,
+				citation2_pageModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_10ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_10);
-		IObservableValue citation3_yearModelProviderObserveValue = BeanProperties.value("citation3_year").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_10ObserveWidget, citation3_yearModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_10ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_10);
+		IObservableValue citation3_yearModelProviderObserveValue = BeanProperties
+				.value("citation3_year").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_10ObserveWidget,
+				citation3_yearModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_11ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_11);
-		IObservableValue citation3_volumeModelProviderObserveValue = BeanProperties.value("citation3_volume").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_11ObserveWidget, citation3_volumeModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_11ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_11);
+		IObservableValue citation3_volumeModelProviderObserveValue = BeanProperties
+				.value("citation3_volume").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_11ObserveWidget,
+				citation3_volumeModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_12ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_12);
-		IObservableValue citation3_pageModelProviderObserveValue = BeanProperties.value("citation3_page").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_12ObserveWidget, citation3_pageModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_12ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_12);
+		IObservableValue citation3_pageModelProviderObserveValue = BeanProperties
+				.value("citation3_page").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_12ObserveWidget,
+				citation3_pageModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_13ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_13);
-		IObservableValue citation4_yearModelProviderObserveValue = BeanProperties.value("citation4_year").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_13ObserveWidget, citation4_yearModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_13ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_13);
+		IObservableValue citation4_yearModelProviderObserveValue = BeanProperties
+				.value("citation4_year").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_13ObserveWidget,
+				citation4_yearModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_14ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_14);
-		IObservableValue citation4_volumeModelProviderObserveValue = BeanProperties.value("citation4_volume").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_14ObserveWidget, citation4_volumeModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_14ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_14);
+		IObservableValue citation4_volumeModelProviderObserveValue = BeanProperties
+				.value("citation4_volume").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_14ObserveWidget,
+				citation4_volumeModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_15ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_15);
-		IObservableValue citation4_pageModelProviderObserveValue = BeanProperties.value("citation4_page").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_15ObserveWidget, citation4_pageModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_15ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_15);
+		IObservableValue citation4_pageModelProviderObserveValue = BeanProperties
+				.value("citation4_page").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_15ObserveWidget,
+				citation4_pageModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_16ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_16);
-		IObservableValue citation5_yearModelProviderObserveValue = BeanProperties.value("citation5_year").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_16ObserveWidget, citation5_yearModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_16ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_16);
+		IObservableValue citation5_yearModelProviderObserveValue = BeanProperties
+				.value("citation5_year").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_16ObserveWidget,
+				citation5_yearModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_17ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_17);
-		IObservableValue citation5_volumeModelProviderObserveValue = BeanProperties.value("citation5_volume").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_17ObserveWidget, citation5_volumeModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_17ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_17);
+		IObservableValue citation5_volumeModelProviderObserveValue = BeanProperties
+				.value("citation5_volume").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_17ObserveWidget,
+				citation5_volumeModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_18ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_18);
-		IObservableValue citation5_pageModelProviderObserveValue = BeanProperties.value("citation5_page").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_18ObserveWidget, citation5_pageModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_18ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_18);
+		IObservableValue citation5_pageModelProviderObserveValue = BeanProperties
+				.value("citation5_page").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_18ObserveWidget,
+				citation5_pageModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_19ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_19);
-		IObservableValue citation6_yearModelProviderObserveValue = BeanProperties.value("citation6_year").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_19ObserveWidget, citation6_yearModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_19ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_19);
+		IObservableValue citation6_yearModelProviderObserveValue = BeanProperties
+				.value("citation6_year").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_19ObserveWidget,
+				citation6_yearModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_20ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_20);
-		IObservableValue citation6_volumeModelProviderObserveValue = BeanProperties.value("citation6_volume").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_20ObserveWidget, citation6_volumeModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_20ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_20);
+		IObservableValue citation6_volumeModelProviderObserveValue = BeanProperties
+				.value("citation6_volume").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_20ObserveWidget,
+				citation6_volumeModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_21ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_21);
-		IObservableValue citation6_pageModelProviderObserveValue = BeanProperties.value("citation6_page").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_21ObserveWidget, citation6_pageModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_21ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_21);
+		IObservableValue citation6_pageModelProviderObserveValue = BeanProperties
+				.value("citation6_page").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_21ObserveWidget,
+				citation6_pageModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionComboObserveWidget = WidgetProperties.selection().observe(combo);
-		IObservableValue citation1_journalModelProviderObserveValue = BeanProperties.value("citation1_journal").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionComboObserveWidget, citation1_journalModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionComboObserveWidget = WidgetProperties
+				.selection().observe(combo);
+		IObservableValue citation1_journalModelProviderObserveValue = BeanProperties
+				.value("citation1_journal").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionComboObserveWidget,
+				citation1_journalModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionCombo_1ObserveWidget = WidgetProperties.selection().observe(combo_1);
-		IObservableValue citation2_journalModelProviderObserveValue = BeanProperties.value("citation2_journal").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionCombo_1ObserveWidget, citation2_journalModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionCombo_1ObserveWidget = WidgetProperties
+				.selection().observe(combo_1);
+		IObservableValue citation2_journalModelProviderObserveValue = BeanProperties
+				.value("citation2_journal").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionCombo_1ObserveWidget,
+				citation2_journalModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionCombo_2ObserveWidget = WidgetProperties.selection().observe(combo_2);
-		IObservableValue citation3_journalModelProviderObserveValue = BeanProperties.value("citation3_journal").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionCombo_2ObserveWidget, citation3_journalModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionCombo_2ObserveWidget = WidgetProperties
+				.selection().observe(combo_2);
+		IObservableValue citation3_journalModelProviderObserveValue = BeanProperties
+				.value("citation3_journal").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionCombo_2ObserveWidget,
+				citation3_journalModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionCombo_3ObserveWidget = WidgetProperties.selection().observe(combo_3);
-		IObservableValue citation4_journalModelProviderObserveValue = BeanProperties.value("citation4_journal").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionCombo_3ObserveWidget, citation4_journalModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionCombo_3ObserveWidget = WidgetProperties
+				.selection().observe(combo_3);
+		IObservableValue citation4_journalModelProviderObserveValue = BeanProperties
+				.value("citation4_journal").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionCombo_3ObserveWidget,
+				citation4_journalModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionCombo_4ObserveWidget = WidgetProperties.selection().observe(combo_4);
-		IObservableValue citation5_journalModelProviderObserveValue = BeanProperties.value("citation5_journal").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionCombo_4ObserveWidget, citation5_journalModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionCombo_4ObserveWidget = WidgetProperties
+				.selection().observe(combo_4);
+		IObservableValue citation5_journalModelProviderObserveValue = BeanProperties
+				.value("citation5_journal").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionCombo_4ObserveWidget,
+				citation5_journalModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionCombo_5ObserveWidget = WidgetProperties.selection().observe(combo_5);
-		IObservableValue citation6_journalModelProviderObserveValue = BeanProperties.value("citation6_journal").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionCombo_5ObserveWidget, citation6_journalModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionCombo_5ObserveWidget = WidgetProperties
+				.selection().observe(combo_5);
+		IObservableValue citation6_journalModelProviderObserveValue = BeanProperties
+				.value("citation6_journal").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionCombo_5ObserveWidget,
+				citation6_journalModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionDateTimeObserveWidget = WidgetProperties.selection().observe(dateTime);
-		IObservableValue caseDateModelProviderObserveValue = BeanProperties.value("caseDate").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionDateTimeObserveWidget, caseDateModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionDateTimeObserveWidget = WidgetProperties
+				.selection().observe(dateTime);
+		IObservableValue caseDateModelProviderObserveValue = BeanProperties
+				.value("caseDate").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionDateTimeObserveWidget,
+				caseDateModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(text);
-		IObservableValue appellantModelProviderObserveValue = BeanProperties.value("appellant").observe(modelProvider);
-		bindingContext.bindValue(observeTextTextObserveWidget, appellantModelProviderObserveValue, null, null);
+		IObservableValue observeTextTextObserveWidget = WidgetProperties.text(
+				SWT.Modify).observe(text);
+		IObservableValue appellantModelProviderObserveValue = BeanProperties
+				.value("appellant").observe(modelProvider);
+		bindingContext.bindValue(observeTextTextObserveWidget,
+				appellantModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_1ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_1);
-		IObservableValue respondantModelProviderObserveValue = BeanProperties.value("respondant").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_1ObserveWidget, respondantModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_1ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_1);
+		IObservableValue respondantModelProviderObserveValue = BeanProperties
+				.value("respondant").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_1ObserveWidget,
+				respondantModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_2ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_2);
-		IObservableValue judgesModelProviderObserveValue = BeanProperties.value("judges").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_2ObserveWidget, judgesModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_2ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_2);
+		IObservableValue judgesModelProviderObserveValue = BeanProperties
+				.value("judges").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_2ObserveWidget,
+				judgesModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_3ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_3);
-		IObservableValue advocatesModelProviderObserveValue = BeanProperties.value("advocates").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_3ObserveWidget, advocatesModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_3ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_3);
+		IObservableValue advocatesModelProviderObserveValue = BeanProperties
+				.value("advocates").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_3ObserveWidget,
+				advocatesModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_22ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_22);
-		IObservableValue judgementTextModelProviderObserveValue = BeanProperties.value("judgementText").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_22ObserveWidget, judgementTextModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_22ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_22);
+		IObservableValue judgementTextModelProviderObserveValue = BeanProperties
+				.value("judgementText").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_22ObserveWidget,
+				judgementTextModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_23ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_23);
-		IObservableValue held1ModelProviderObserveValue = BeanProperties.value("held1").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_23ObserveWidget, held1ModelProviderObserveValue, null, null);
+		IObservableValue text_31ObserveTextObserveWidget = SWTObservables
+				.observeText(text_31, SWT.Modify);
+		IObservableValue modelProviderCasesReferredObserveValue = BeansObservables
+				.observeValue(modelProvider, "casesReferred");
+		bindingContext.bindValue(text_31ObserveTextObserveWidget,
+				modelProviderCasesReferredObserveValue, null, null);
 		//
-		IObservableValue observeTextText_24ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_24);
-		IObservableValue headnote1ModelProviderObserveValue = BeanProperties.value("headnote1").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_24ObserveWidget, headnote1ModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_32ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_32);
+		IObservableValue headnote1ModelProviderObserveValue = BeanProperties
+				.value("headnote1").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_32ObserveWidget,
+				headnote1ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_25ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_25);
-		IObservableValue held2ModelProviderObserveValue = BeanProperties.value("held2").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_25ObserveWidget, held2ModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_33ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_33);
+		IObservableValue held1ModelProviderObserveValue = BeanProperties.value(
+				"held1").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_33ObserveWidget,
+				held1ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_26ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_26);
-		IObservableValue headnote2ModelProviderObserveValue = BeanProperties.value("headnote2").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_26ObserveWidget, headnote2ModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_34ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_34);
+		IObservableValue headnote2ModelProviderObserveValue = BeanProperties
+				.value("headnote2").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_34ObserveWidget,
+				headnote2ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_27ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_27);
-		IObservableValue held3ModelProviderObserveValue = BeanProperties.value("held3").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_27ObserveWidget, held3ModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_35ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(text_35);
+		IObservableValue held2ModelProviderObserveValue = BeanProperties.value(
+				"held2").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_35ObserveWidget,
+				held2ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_28ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_28);
-		IObservableValue headnote3ModelProviderObserveValue = BeanProperties.value("headnote3").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_28ObserveWidget, headnote3ModelProviderObserveValue, null, null);
+		IObservableValue observeTextScHeadnote3ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(scHeadnote3);
+		IObservableValue headnote3ModelProviderObserveValue = BeanProperties
+				.value("headnote3").observe(modelProvider);
+		bindingContext.bindValue(observeTextScHeadnote3ObserveWidget,
+				headnote3ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_29ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_29);
-		IObservableValue held4ModelProviderObserveValue = BeanProperties.value("held4").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_29ObserveWidget, held4ModelProviderObserveValue, null, null);
+		IObservableValue observeTextScHeld3ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(scHeld3);
+		IObservableValue held3ModelProviderObserveValue = BeanProperties.value(
+				"held3").observe(modelProvider);
+		bindingContext.bindValue(observeTextScHeld3ObserveWidget,
+				held3ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_30ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_30);
-		IObservableValue headnote4ModelProviderObserveValue = BeanProperties.value("headnote4").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_30ObserveWidget, headnote4ModelProviderObserveValue, null, null);
+		IObservableValue observeTextScHeadnote4ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(scHeadnote4);
+		IObservableValue headnote4ModelProviderObserveValue = BeanProperties
+				.value("headnote4").observe(modelProvider);
+		bindingContext.bindValue(observeTextScHeadnote4ObserveWidget,
+				headnote4ModelProviderObserveValue, null, null);
 		//
-		IObservableValue text_31ObserveTextObserveWidget = SWTObservables.observeText(text_31, SWT.Modify);
-		IObservableValue modelProviderCasesReferredObserveValue = BeansObservables.observeValue(modelProvider, "casesReferred");
-		bindingContext.bindValue(text_31ObserveTextObserveWidget, modelProviderCasesReferredObserveValue, null, null);
+		IObservableValue observeTextScHeld4ObserveWidget = WidgetProperties
+				.text(SWT.Modify).observe(scHeld4);
+		IObservableValue held4ModelProviderObserveValue = BeanProperties.value(
+				"held4").observe(modelProvider);
+		bindingContext.bindValue(observeTextScHeld4ObserveWidget,
+				held4ModelProviderObserveValue, null, null);
 		//
 		return bindingContext;
 	}

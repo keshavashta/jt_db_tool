@@ -25,9 +25,9 @@ public final class Fields {
 	public static String Citations = "FullEquivicit";
 	public static String ReferredKeyCode = "ReferredCase";
 	public static String ReferredStatus = "status";
-	public static String Held="Held";
-	public static String CasesReferred="CasesReferred";
-	public static String CCasesReferred="CCasesReferred";
+	public static String Held = "Held";
+	public static String CasesReferred = "CasesReferred";
+	public static String CCasesReferred = "CCasesReferred";
 	public static String UAppellant = "UAppellant";
 	public static String URespondant = "URespondent";
 	public static String UJudge = "UJudge";

@@ -63,6 +63,8 @@ public class ReadJudgement {
 	public Judgement getJudgement(String keycode) {
 
 		Judgement judgement = new Judgement();
+		judgement.Citations = new ArrayList<Citation>();
+		judgement.headnotesAndHelds = new ArrayList<HeadnoteAndHeld>();
 		String query = "select Keycode,Date,Advocates,Appellant,CasesReferred,Respondent,Judges,Judgement ,CaseNo from "
 				+ databaseName
 				+ ".judgements where Keycode = "
@@ -200,7 +202,7 @@ public class ReadJudgement {
 
 		String query = "select Keycode,Date,Advocates,CasesReferred,Appellant,Respondent,Judges ,CaseNo from "
 				+ databaseName
-				+ ".judgements where Is_Verified=0 order by Date ";
+				+ ".judgements where Is_Verified=0 order by Date desc";
 
 		// List<Judgement> judgementList = new ArrayList<Judgement>();
 		List<Judgement> judgementList = new ArrayList<Judgement>();

@@ -42,6 +42,8 @@ import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.wb.swt.ResourceManager;
 
+import util.Util;
+
 public class JudgmentsEditor extends EditorPart {
 	private DataBindingContext m_bindingContext;
 
@@ -77,22 +79,7 @@ public class JudgmentsEditor extends EditorPart {
 		fd_group.top = new FormAttachment(0, 10);
 		group.setLayoutData(fd_group);
 
-		Button btnNewButton = new Button(group, SWT.NONE);
-		FormData fd_btnNewButton = new FormData();
-		fd_btnNewButton.top = new FormAttachment(0, -1);
-		btnNewButton.setLayoutData(fd_btnNewButton);
-		btnNewButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				Table table = viewer.getTable();
-				table.remove(table.getSelectionIndex());
-
-			}
-		});
-		btnNewButton.setText("New Button");
-
 		Button btnNewButton_1 = new Button(group, SWT.NONE);
-		fd_btnNewButton.right = new FormAttachment(btnNewButton_1, -6);
 		FormData fd_btnNewButton_1 = new FormData();
 		fd_btnNewButton_1.right = new FormAttachment(100, -10);
 		fd_btnNewButton_1.top = new FormAttachment(0, -1);
@@ -117,8 +104,8 @@ public class JudgmentsEditor extends EditorPart {
 
 		lblNewLabel = new Label(group, SWT.NONE);
 		FormData fd_lblNewLabel = new FormData();
-		fd_lblNewLabel.top = new FormAttachment(btnNewButton, 5, SWT.TOP);
-		fd_lblNewLabel.right = new FormAttachment(btnNewButton, -12);
+		fd_lblNewLabel.top = new FormAttachment(0, 4);
+		fd_lblNewLabel.right = new FormAttachment(btnNewButton_1, -93);
 		fd_lblNewLabel.left = new FormAttachment(0, 10);
 		lblNewLabel.setLayoutData(fd_lblNewLabel);
 		m_bindingContext = initDataBindings();
@@ -232,7 +219,7 @@ public class JudgmentsEditor extends EditorPart {
 			@Override
 			public String getText(Object element) {
 				Judgement p = (Judgement) element;
-				return p.CaseDate.toString();
+				return Util.getDateInString("dd-MM-yyyy", p.CaseDate);
 			}
 
 		});

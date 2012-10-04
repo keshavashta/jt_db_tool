@@ -50,8 +50,8 @@ public class FileLoaderModelProvider {
 	private Pattern volumePattern = Pattern.compile("\\(\\d+\\)");
 	private Pattern pagePattern = Pattern.compile("\\d+$");
 	private Pattern partyPattern = Pattern.compile(".*v\\..*");
-	private Pattern casesTeferred = Pattern
-			.compile("Cases Referred:",Pattern.CASE_INSENSITIVE);
+	private Pattern casesTeferred = Pattern.compile("Cases Referred:",
+			Pattern.CASE_INSENSITIVE);
 	private Pattern datePattern = Pattern.compile(
 			"d.*\\d+\\s{0,4}\\.\\s{0,4}\\d+\\s{0,4}\\.\\s{0,4}\\d+",
 			Pattern.CASE_INSENSITIVE);
@@ -143,12 +143,14 @@ public class FileLoaderModelProvider {
 		j.FullText = "";
 		j.headnotesAndHelds = new ArrayList<HeadnoteAndHeld>();
 		j.Judges = "";
-		j.CasesReferred="";
+		j.CasesReferred = "";
 		return j;
 
 	}
 
 	private Judgement extractJudgment(String text) {
+		if (Util.isStringNullOrEmpty(text))
+			return null;
 		Judgement judgment = getEmptyJudgement();
 		reset();
 		String textArray[] = text.split("\n");
@@ -325,7 +327,7 @@ public class FileLoaderModelProvider {
 	public void setSelectedCourt(String selectedCourt) {
 		propertyChangeSupport.firePropertyChange("selectedCourt",
 				this.selectedCourt, this.selectedCourt = selectedCourt);
-		// SelectedCourt.getInstance().setSelectedCourt(selectedCourt);
+		 SelectedCourt.getInstance().setSelectedCourt(selectedCourt);
 	}
 
 	public String getFilePath() {

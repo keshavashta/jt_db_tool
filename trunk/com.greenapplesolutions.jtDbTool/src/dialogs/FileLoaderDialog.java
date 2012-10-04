@@ -33,7 +33,7 @@ public class FileLoaderDialog extends Dialog {
 	private DataBindingContext m_bindingContext;
 
 	protected Object result;
-	protected Shell shell;
+	protected Shell shlFileLoader;
 	private Text text;
 	private FileLoaderModelProvider modelProvider;
 	private Combo combo;
@@ -57,10 +57,10 @@ public class FileLoaderDialog extends Dialog {
 	 */
 	public Object open() {
 		createContents();
-		shell.open();
-		shell.layout();
+		shlFileLoader.open();
+		shlFileLoader.layout();
 		Display display = getParent().getDisplay();
-		while (!shell.isDisposed()) {
+		while (!shlFileLoader.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
@@ -72,74 +72,56 @@ public class FileLoaderDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
-		shell = new Shell(getParent());
-		shell.setSize(450, 300);
-		shell.setText(getText());
-		shell.setLayout(new FormLayout());
+		shlFileLoader = new Shell(getParent());
+		shlFileLoader.setSize(450, 300);
+		shlFileLoader.setText("File Loader");
+		shlFileLoader.setLayout(new FormLayout());
 
-		Label lblNewLabel = new Label(shell, SWT.NONE);
-		FormData fd_lblNewLabel = new FormData();
-		fd_lblNewLabel.right = new FormAttachment(0, 434);
-		fd_lblNewLabel.top = new FormAttachment(0, 10);
-		fd_lblNewLabel.left = new FormAttachment(0, 10);
-		lblNewLabel.setLayoutData(fd_lblNewLabel);
-		lblNewLabel
-				.setText("Mattis mid sit elit sed magna turpis odio, scelerisque? Turpis.");
-
-		Label label = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
-		FormData fd_label = new FormData();
-		fd_label.top = new FormAttachment(lblNewLabel, 6);
-		fd_label.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
-		fd_label.bottom = new FormAttachment(lblNewLabel, 8, SWT.BOTTOM);
-		fd_label.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
-		label.setLayoutData(fd_label);
-
-		Label lblSelectCourt = new Label(shell, SWT.NONE);
+		Label lblSelectCourt = new Label(shlFileLoader, SWT.NONE);
 		FormData fd_lblSelectCourt = new FormData();
-		fd_lblSelectCourt.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
+		fd_lblSelectCourt.top = new FormAttachment(0, 10);
+		fd_lblSelectCourt.left = new FormAttachment(0, 10);
 		lblSelectCourt.setLayoutData(fd_lblSelectCourt);
 		lblSelectCourt.setText("Select Court");
 
-		combo = new Combo(shell, SWT.READ_ONLY);
-		fd_lblSelectCourt.top = new FormAttachment(combo, 3, SWT.TOP);
+		combo = new Combo(shlFileLoader, SWT.READ_ONLY);
 		FormData fd_combo = new FormData();
 		fd_combo.right = new FormAttachment(100, -10);
 		fd_combo.left = new FormAttachment(lblSelectCourt, 6);
-		fd_combo.top = new FormAttachment(label, 6);
+		fd_combo.top = new FormAttachment(lblSelectCourt, -3, SWT.TOP);
 		combo.setLayoutData(fd_combo);
 
-		Label lblSelectFile = new Label(shell, SWT.NONE);
+		Label lblSelectFile = new Label(shlFileLoader, SWT.NONE);
 		FormData fd_lblSelectFile = new FormData();
-		fd_lblSelectFile.top = new FormAttachment(lblSelectCourt, 24);
-		fd_lblSelectFile.left = new FormAttachment(0, 10);
+		fd_lblSelectFile.top = new FormAttachment(lblSelectCourt, 22);
+		fd_lblSelectFile.left = new FormAttachment(lblSelectCourt, 0, SWT.LEFT);
 		lblSelectFile.setLayoutData(fd_lblSelectFile);
 		lblSelectFile.setText("Select File");
 
-		text = new Text(shell, SWT.BORDER);
+		text = new Text(shlFileLoader, SWT.BORDER);
 		FormData fd_text = new FormData();
-		fd_text.top = new FormAttachment(combo, 13);
+		fd_text.top = new FormAttachment(lblSelectFile, -3, SWT.TOP);
 		fd_text.left = new FormAttachment(lblSelectFile, 6);
 		text.setLayoutData(fd_text);
 
-		Button btnNewButton = new Button(shell, SWT.NONE);
+		Button btnNewButton = new Button(shlFileLoader, SWT.NONE);
+		fd_text.right = new FormAttachment(btnNewButton, -6);
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				FileDialog dialog = new FileDialog(shell);
+				FileDialog dialog = new FileDialog(shlFileLoader);
 				String path = dialog.open();
 				if (!Util.isStringNullOrEmpty(path))
 					modelProvider.setFilePath(path);
 			}
 		});
-		fd_text.right = new FormAttachment(btnNewButton, -6);
 		FormData fd_btnNewButton = new FormData();
-		fd_btnNewButton.bottom = new FormAttachment(lblSelectFile, 0,
-				SWT.BOTTOM);
-		fd_btnNewButton.right = new FormAttachment(100, -10);
+		fd_btnNewButton.top = new FormAttachment(lblSelectFile, -5, SWT.TOP);
+		fd_btnNewButton.right = new FormAttachment(combo, 0, SWT.RIGHT);
 		btnNewButton.setLayoutData(fd_btnNewButton);
 		btnNewButton.setText("Browse");
 
-		Button btnLoad = new Button(shell, SWT.NONE);
+		Button btnLoad = new Button(shlFileLoader, SWT.NONE);
 		btnLoad.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -147,7 +129,7 @@ public class FileLoaderDialog extends Dialog {
 				if (modelProvider.getIsDataInserted()
 						&& modelProvider.getIsFileProcessed()
 						&& modelProvider.getIsResultsDisplayed())
-					shell.close();
+					shlFileLoader.close();
 				else if (!modelProvider.getIsFileProcessed())
 					MessageDialog.openInformation(new Shell(), "Error",
 							"Error in Reading File");
@@ -160,17 +142,17 @@ public class FileLoaderDialog extends Dialog {
 			}
 		});
 		FormData fd_btnLoad = new FormData();
+		fd_btnLoad.right = new FormAttachment(100, -10);
 		fd_btnLoad.bottom = new FormAttachment(100, -10);
-		fd_btnLoad.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
 		btnLoad.setLayoutData(fd_btnLoad);
 		btnLoad.setText("Load");
 
-		Label label_1 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
+		Label label_1 = new Label(shlFileLoader, SWT.SEPARATOR | SWT.HORIZONTAL);
 		FormData fd_label_1 = new FormData();
-		fd_label_1.top = new FormAttachment(btnLoad, -8, SWT.TOP);
-		fd_label_1.right = new FormAttachment(lblNewLabel, 424);
-		fd_label_1.bottom = new FormAttachment(btnLoad, -6);
 		fd_label_1.left = new FormAttachment(0, 10);
+		fd_label_1.right = new FormAttachment(100, -10);
+		fd_label_1.top = new FormAttachment(btnLoad, -8, SWT.TOP);
+		fd_label_1.bottom = new FormAttachment(btnLoad, -6);
 		label_1.setLayoutData(fd_label_1);
 		m_bindingContext = initDataBindings();
 

@@ -49,6 +49,7 @@
             </command>
             <command
                   commandId="com.greenapplesolutions.jtDbTool.openIndexEditorCommand"
+                  icon="icons/appIcons/dbsave32.png"
                   label="Index Judgements"
                   mode="FORCE_TEXT"
                   style="push">

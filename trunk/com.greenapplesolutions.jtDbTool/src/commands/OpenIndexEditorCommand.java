@@ -30,7 +30,7 @@ public class OpenIndexEditorCommand implements IHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IEditorInput input1 = null;
-		input1 = new IndexJudgementsditorInput("");
+		input1 = new IndexJudgementsditorInput("Index Judgements");
 
 		try {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow()

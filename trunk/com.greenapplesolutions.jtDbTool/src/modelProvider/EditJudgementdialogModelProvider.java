@@ -23,6 +23,7 @@ public class EditJudgementdialogModelProvider {
 		this.keycode = keycode;
 		getJudgementFromdatabase();
 		journals = new ArrayList<String>();
+		journals.add("");
 		journals.add("AIR");
 		journals.add("JT");
 		journals.add("SCC");
@@ -79,6 +80,7 @@ public class EditJudgementdialogModelProvider {
 	}
 
 	private void setJudgement() {
+		
 		if (!Util.isStringNullOrEmpty(judgement.Appellant))
 			setAppellant(judgement.Appellant.trim());
 		if (!Util.isStringNullOrEmpty(getJudgement().Respondant))
@@ -95,7 +97,7 @@ public class EditJudgementdialogModelProvider {
 			setCasesReferred(judgement.CasesReferred.trim());
 		if (!Util.isStringNullOrEmpty(judgement.Advocates))
 			setAdvocates(judgement.Advocates.trim());
-
+		
 		for (int index = 0; index < judgement.Citations.size(); ++index) {
 			setCitation(index, judgement.Citations.get(index));
 		}
@@ -153,47 +155,55 @@ public class EditJudgementdialogModelProvider {
 		}
 	}
 
+	private HeadnoteAndHeld getEmptyHeadnoteAndHeld() {
+		HeadnoteAndHeld hh = new HeadnoteAndHeld();
+		hh.Keycode = keycode;
+		hh.Headnote = "";
+		hh.Held = "";
+		return hh;
+	}
+
+	// private Citation getEmptyCitation(){
+	// Citation cit=new Citation();
+	//
+	// }
 	private List<HeadnoteAndHeld> getHeadnoteAndHeld() {
 		List<HeadnoteAndHeld> hhList = new ArrayList<HeadnoteAndHeld>();
 
 		if (!Util.isStringNullOrEmpty(getHeadnote1())
 				|| !Util.isStringNullOrEmpty(getHeld1())) {
-			HeadnoteAndHeld hh = new HeadnoteAndHeld();
+			HeadnoteAndHeld hh = getEmptyHeadnoteAndHeld();
 			if (!Util.isStringNullOrEmpty(getHeadnote1()))
 				hh.Headnote = getHeadnote1();
 			if (!Util.isStringNullOrEmpty(getHeld1()))
 				hh.Held = getHeld1();
-			hh.Keycode = keycode;
 			hhList.add(hh);
 		}
 		if (!Util.isStringNullOrEmpty(getHeadnote2())
 				|| !Util.isStringNullOrEmpty(getHeld2())) {
-			HeadnoteAndHeld hh = new HeadnoteAndHeld();
+			HeadnoteAndHeld hh = getEmptyHeadnoteAndHeld();
 			if (!Util.isStringNullOrEmpty(getHeadnote2()))
 				hh.Headnote = getHeadnote2();
 			if (!Util.isStringNullOrEmpty(getHeld2()))
 				hh.Held = getHeld2();
-			hh.Keycode = keycode;
 			hhList.add(hh);
 		}
 		if (!Util.isStringNullOrEmpty(getHeadnote3())
 				|| !Util.isStringNullOrEmpty(getHeld3())) {
-			HeadnoteAndHeld hh = new HeadnoteAndHeld();
+			HeadnoteAndHeld hh = getEmptyHeadnoteAndHeld();
 			if (!Util.isStringNullOrEmpty(getHeadnote3()))
 				hh.Headnote = getHeadnote3();
 			if (!Util.isStringNullOrEmpty(getHeld3()))
 				hh.Held = getHeld3();
-			hh.Keycode = keycode;
 			hhList.add(hh);
 		}
 		if (!Util.isStringNullOrEmpty(getHeadnote4())
 				|| !Util.isStringNullOrEmpty(getHeld4())) {
-			HeadnoteAndHeld hh = new HeadnoteAndHeld();
+			HeadnoteAndHeld hh = getEmptyHeadnoteAndHeld();
 			if (!Util.isStringNullOrEmpty(getHeadnote4()))
 				hh.Headnote = getHeadnote4();
 			if (!Util.isStringNullOrEmpty(getHeld4()))
 				hh.Held = getHeld4();
-			hh.Keycode = keycode;
 			hhList.add(hh);
 		}
 		return hhList;
@@ -790,6 +800,52 @@ public class EditJudgementdialogModelProvider {
 	public void setCasesReferred(String casesReferred) {
 		propertyChangeSupport.firePropertyChange("casesReferred",
 				this.casesReferred, this.casesReferred = casesReferred);
+	}
+
+	public void clearCitation1() {
+		setCitation1_journal("");
+		setCitation1_page("");
+		setCitation1_volume("");
+		setCitation1_year("");
+
+	}
+
+	public void clearCitation2() {
+		setCitation2_journal("");
+		setCitation2_page("");
+		setCitation2_volume("");
+		setCitation2_year("");
+
+	}
+
+	public void clearCitation3() {
+		setCitation3_journal("");
+		setCitation3_page("");
+		setCitation3_volume("");
+		setCitation3_year("");
+
+	}
+
+	public void clearCitation4() {
+		setCitation4_journal("");
+		setCitation4_page("");
+		setCitation4_volume("");
+		setCitation4_year("");
+	}
+
+	public void clearCitation5() {
+		setCitation5_journal("");
+		setCitation5_page("");
+		setCitation5_volume("");
+		setCitation5_year("");
+	}
+
+	public void clearCitation6() {
+		setCitation6_journal("");
+		setCitation6_page("");
+		setCitation6_volume("");
+		setCitation6_year("");
+
 	}
 
 }
