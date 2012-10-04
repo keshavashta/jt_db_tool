@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -46,10 +45,13 @@ public class FileLoaderModelProvider {
 	private boolean isDateProcessed;
 	private boolean isAdvocateProcessed;
 	private boolean isHeadnoteProcessed;
+	private boolean isCasesReferredProcessed;
 	private Pattern yearPattern = Pattern.compile("\\s\\d[^\\(]*");
 	private Pattern volumePattern = Pattern.compile("\\(\\d+\\)");
 	private Pattern pagePattern = Pattern.compile("\\d+$");
 	private Pattern partyPattern = Pattern.compile(".*v\\..*");
+	private Pattern casesTeferred = Pattern
+			.compile("Cases Referred:",Pattern.CASE_INSENSITIVE);
 	private Pattern datePattern = Pattern.compile(
 			"d.*\\d+\\s{0,4}\\.\\s{0,4}\\d+\\s{0,4}\\.\\s{0,4}\\d+",
 			Pattern.CASE_INSENSITIVE);
@@ -122,6 +124,7 @@ public class FileLoaderModelProvider {
 		isDateProcessed = false;
 		isPartyProcessed = false;
 		isHeadnoteProcessed = false;
+		isCasesReferredProcessed = false;
 	}
 
 	private Judgement getEmptyJudgement() {
@@ -140,6 +143,7 @@ public class FileLoaderModelProvider {
 		j.FullText = "";
 		j.headnotesAndHelds = new ArrayList<HeadnoteAndHeld>();
 		j.Judges = "";
+		j.CasesReferred="";
 		return j;
 
 	}
@@ -157,6 +161,9 @@ public class FileLoaderModelProvider {
 			Matcher dateMatcher = datePattern.matcher(textArray[index]);
 			Matcher advMatcher = advocatesPattern.matcher(textArray[index]
 					.trim());
+			Matcher casesReferredMAtcher = casesTeferred
+					.matcher(textArray[index]);
+
 			if (citationMatcher.find() && !isCitationProcessed) {
 				index = processCitation(textArray, index, judgment);
 				continue;
@@ -172,6 +179,10 @@ public class FileLoaderModelProvider {
 			if (textArray[index].trim().toUpperCase().equals(headnote)
 					&& !isHeadnoteProcessed && isCitationProcessed) {
 				index = processHeadnote(textArray, index, judgment);
+				continue;
+			}
+			if (casesReferredMAtcher.find() && !isCasesReferredProcessed) {
+				index = processCasesReferred(textArray, index, judgment);
 				continue;
 			}
 			if (advMatcher.find() && !isAdvocateProcessed) {
@@ -213,6 +224,27 @@ public class FileLoaderModelProvider {
 		return index;
 	}
 
+	private int processCasesReferred(String[] textArray, int index,
+			Judgement judgment) {
+		isCasesReferredProcessed = true;
+
+		String casesReferred = "";
+		while (true && index < textArray.length - 2) {
+
+			if (textArray[index].trim().endsWith("J.")
+					|| textArray[index].trim().startsWith("ORDER")) {
+				--index;
+				break;
+			}
+			casesReferred += textArray[index].trim() + "\n";
+			++index;
+		}
+		judgment.CasesReferred = casesReferred.replaceFirst(
+				"(?i)cases referre(d|(d:))", "").trim();
+
+		return index;
+	}
+
 	private int processHeadnote(String[] textArray, int index,
 			Judgement judgment) {
 		isHeadnoteProcessed = true;
@@ -222,8 +254,10 @@ public class FileLoaderModelProvider {
 		hh.Held = "";
 		String headnote = "";
 		while (true && index < textArray.length - 2) {
+			Matcher mat = casesTeferred.matcher(textArray[index]);
 			if (textArray[index].trim().endsWith("J.")
-					|| textArray[index].trim().startsWith("ORDER")) {
+					|| textArray[index].trim().startsWith("ORDER")
+					|| mat.find()) {
 				--index;
 				break;
 			}
@@ -291,7 +325,7 @@ public class FileLoaderModelProvider {
 	public void setSelectedCourt(String selectedCourt) {
 		propertyChangeSupport.firePropertyChange("selectedCourt",
 				this.selectedCourt, this.selectedCourt = selectedCourt);
-		SelectedCourt.getInstance().setSelectedCourt(selectedCourt);
+		// SelectedCourt.getInstance().setSelectedCourt(selectedCourt);
 	}
 
 	public String getFilePath() {
@@ -348,7 +382,7 @@ public class FileLoaderModelProvider {
 					monitor.worked(1);
 					monitor.setTaskName("Inserting Judgements");
 					UpdateJudgement ins = new UpdateJudgement(SelectedCourt
-							.getInstance().getSelectedDatabaseName(),
+							.getInstance().getDatabaseName(selectedCourt),
 							"localhost", "root", "");
 					if (ins.connectToDatabse()) {
 						ins.insertJudgements(judgements);

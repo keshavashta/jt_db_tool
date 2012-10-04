@@ -31,6 +31,8 @@ public class IndexProgressbarDialogModelProvider {
 					LoadJudgments ins = new LoadJudgments(SelectedCourt
 							.getInstance().getDatabaseName(courts.get(index)),
 							"localhost", "root", "", path);
+					setIndexLabelMessage("Indexing " + courts.get(index) + " ,"
+							+ (courts.size() - (index + 1)) + " courts left.");
 					if (ins.connectToDatabse()) {
 						setLogMessage((logMessage + "\n Indexing "
 								+ courts.get(index) + " judgements").trim());
@@ -47,11 +49,9 @@ public class IndexProgressbarDialogModelProvider {
 								+ courts.get(index) + " judgements").trim());
 					fireCustomPropertyChangeEvent(new PropertyChangeEvent(this,
 							"totalProgress", index + 1));
-					setIndexLabelMessage("Indexing " + courts.get(index) + " ,"
-							+ (courts.size() - (index + 1)) + " courts left.");
 
 				}
-
+				setIndexLabelMessage("Completed");
 			}
 		};
 

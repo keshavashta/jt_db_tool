@@ -80,7 +80,7 @@ public class UpdateJudgement {
 		try {
 
 			PreparedStatement pst = null;
-			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?)";
+			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			pst = connect.prepareStatement(query);
 			pst.setString(1, null);
 			pst.setString(2, j.Keycode);
@@ -92,9 +92,9 @@ public class UpdateJudgement {
 			pst.setString(8, j.Respondant);
 			pst.setDate(9, new java.sql.Date(j.CaseDate.getTime()));
 			pst.setString(10, j.Advocates);
-
-			pst.setString(11, j.FullText);
-			pst.setBoolean(12, false);
+			pst.setString(11, j.CasesReferred);
+			pst.setString(12, j.FullText);
+			pst.setBoolean(13, false);
 
 			System.out.println("dumping row with keycode " + j.Keycode);
 			try {
@@ -125,11 +125,11 @@ public class UpdateJudgement {
 		try {
 
 			PreparedStatement pst = null;
-			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?)";
+			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			pst = connect.prepareStatement(query);
 			pst.setString(1, null);
 			pst.setString(2, j.Keycode);
-			pst.setString(3, "sc");
+			pst.setString(3, SelectedCourt.getInstance().getSelectedCourt());
 			pst.setString(4, j.Judges);
 			pst.setInt(5, j.Bench);
 			pst.setString(6, j.CaseNumber);
@@ -137,9 +137,9 @@ public class UpdateJudgement {
 			pst.setString(8, j.Respondant);
 			pst.setDate(9, new java.sql.Date(j.CaseDate.getTime()));
 			pst.setString(10, j.Advocates);
-
-			pst.setString(11, j.FullText);
-			pst.setBoolean(12, true);
+			pst.setString(11, j.CasesReferred);
+			pst.setString(12, j.FullText);
+			pst.setBoolean(13, true);
 
 			System.out.println("dumping row with keycode " + j.Keycode);
 			try {

@@ -72,7 +72,8 @@ public class IndexProgressBarDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
-		shlIndexingJudgements = new Shell(getParent());
+		shlIndexingJudgements = new Shell(getParent(),SWT.DIALOG_TRIM
+				| SWT.APPLICATION_MODAL);
 		shlIndexingJudgements.setSize(450, 300);
 		shlIndexingJudgements.setText("Indexing Judgements");
 		shlIndexingJudgements.setLayout(new FormLayout());

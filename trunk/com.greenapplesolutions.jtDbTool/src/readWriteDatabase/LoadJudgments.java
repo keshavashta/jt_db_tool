@@ -73,7 +73,7 @@ public class LoadJudgments {
 		config.setIndexPath(directoryPath);
 		CaseIndexer caseIndexer = new CaseIndexer();
 
-		String query = "select Keycode,Date,Advocates,Appellant,Respondent,Judges ,CaseNo,Judgement from "
+		String query = "select Keycode,Date,Advocates,Appellant,Respondent,Judges ,COURT,CasesReferred,CaseNo,Judgement from "
 				+ databaseName + ".judgements order by Date";
 
 		// List<Judgement> judgementList = new ArrayList<Judgement>();
@@ -86,8 +86,8 @@ public class LoadJudgments {
 					Judgement judgement = new Judgement();
 					judgement.Advocates = resultSet.getString(Fields.Advocates) == null ? ""
 							: resultSet.getString(Fields.Advocates);
-					judgement.Appellant = resultSet.getString(Fields.Appellant) == null ? ""
-							: resultSet.getString(Fields.Appellant);
+					judgement.CasesReferred = resultSet.getString(Fields.CasesReferred) == null ? ""
+							: resultSet.getString(Fields.CasesReferred);
 
 					// try {
 					// j.Bench = Integer.parseInt(resultSet.getString(
@@ -107,8 +107,8 @@ public class LoadJudgments {
 							.getString(Fields.CaseNumber) == null ? ""
 							: resultSet.getString(Fields.CaseNumber);
 
-					// j.Court = resultSet.getString(Fields.Court) == null ? ""
-					// : resultSet.getString(Fields.Court);
+					judgement.Court = resultSet.getString(Fields.Court) == null ? ""
+					 : resultSet.getString(Fields.Court);
 					judgement.FullText = resultSet.getString(Fields.FullText) == null ? ""
 							: resultSet.getString(Fields.FullText);
 					// j.Headnote = resultSet.getString(Fields.Headnote) == null
@@ -150,8 +150,8 @@ public class LoadJudgments {
 				+ ".citations where Keycode = " + Util.wrapQuotes(keycode);
 		List<Citation> citationList = new ArrayList<Citation>();
 		try {
-			statement = connect.createStatement();
-			resultSet = statement.executeQuery(query);
+			Statement statement = connect.createStatement();
+			ResultSet resultSet = statement.executeQuery(query);
 			while (resultSet.next()) {
 				try {
 					Citation j = new Citation();
@@ -165,6 +165,7 @@ public class LoadJudgments {
 					j.Page = Integer
 							.parseInt(resultSet.getString(Fields.Page) == null ? "0"
 									: resultSet.getString(Fields.Page));
+					j.keycode = keycode;
 					citationList.add(j);
 
 				} catch (Exception e) {
@@ -183,8 +184,8 @@ public class LoadJudgments {
 				+ ".headnotes where Keycode = " + Util.wrapQuotes(keycode);
 		List<HeadnoteAndHeld> headnoteList = new ArrayList<HeadnoteAndHeld>();
 		try {
-			statement = connect.createStatement();
-			resultSet = statement.executeQuery(query);
+			Statement statement = connect.createStatement();
+			ResultSet resultSet = statement.executeQuery(query);
 			while (resultSet.next()) {
 				try {
 					HeadnoteAndHeld hh = new HeadnoteAndHeld();
@@ -192,6 +193,7 @@ public class LoadJudgments {
 							: resultSet.getString(Fields.Headnote);
 					hh.Held = resultSet.getString(Fields.Held) == null ? ""
 							: resultSet.getString(Fields.Held);
+					hh.Keycode = keycode;
 
 					headnoteList.add(hh);
 

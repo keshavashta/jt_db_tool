@@ -16,7 +16,7 @@ public class Judgement implements Comparable<Judgement> {
 	public String Advocates;
 	public Date CaseDate;
 	public String CaseNumber;
-	public String Subject;
+	public String CasesReferred;
 	public String Keycode;
 	public int Bench;
 	public String Parties;

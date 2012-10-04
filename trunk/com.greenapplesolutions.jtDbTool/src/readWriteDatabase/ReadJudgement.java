@@ -63,7 +63,7 @@ public class ReadJudgement {
 	public Judgement getJudgement(String keycode) {
 
 		Judgement judgement = new Judgement();
-		String query = "select Keycode,Date,Advocates,Appellant,Respondent,Judges,Judgement ,CaseNo from "
+		String query = "select Keycode,Date,Advocates,Appellant,CasesReferred,Respondent,Judges,Judgement ,CaseNo from "
 				+ databaseName
 				+ ".judgements where Keycode = "
 				+ Util.wrapQuotes(keycode);
@@ -81,7 +81,9 @@ public class ReadJudgement {
 							: resultSet.getString(Fields.Advocates);
 					judgement.Appellant = resultSet.getString(Fields.Appellant) == null ? ""
 							: resultSet.getString(Fields.Appellant);
-
+					judgement.CasesReferred = resultSet
+							.getString(Fields.CasesReferred) == null ? ""
+							: resultSet.getString(Fields.CasesReferred);
 					// try {
 					// j.Bench = Integer.parseInt(resultSet.getString(
 					// Fields.Bench).toString());
@@ -196,7 +198,7 @@ public class ReadJudgement {
 		instance.set(1111, 10, 11);
 		Date invalidDate = instance.getTime();
 
-		String query = "select Keycode,Date,Advocates,Appellant,Respondent,Judges ,CaseNo from "
+		String query = "select Keycode,Date,Advocates,CasesReferred,Appellant,Respondent,Judges ,CaseNo from "
 				+ databaseName
 				+ ".judgements where Is_Verified=0 order by Date ";
 
@@ -212,7 +214,8 @@ public class ReadJudgement {
 							: resultSet.getString(Fields.Advocates);
 					j.Appellant = resultSet.getString(Fields.Appellant) == null ? ""
 							: resultSet.getString(Fields.Appellant);
-
+					j.CasesReferred = resultSet.getString(Fields.CasesReferred) == null ? ""
+							: resultSet.getString(Fields.CasesReferred);
 					// try {
 					// j.Bench = Integer.parseInt(resultSet.getString(
 					// Fields.Bench).toString());

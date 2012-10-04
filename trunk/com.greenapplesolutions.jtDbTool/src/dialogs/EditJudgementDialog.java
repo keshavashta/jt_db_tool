@@ -31,6 +31,9 @@ import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.wb.swt.ResourceManager;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.BeansObservables;
 
 public class EditJudgementDialog extends Dialog {
 	private DataBindingContext m_bindingContext;
@@ -76,6 +79,7 @@ public class EditJudgementDialog extends Dialog {
 	private Text text_28;
 	private Text text_29;
 	private Text text_30;
+	private Text text_31;
 
 	/**
 	 * Create the dialog.
@@ -111,11 +115,12 @@ public class EditJudgementDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
-		shlVieweditJudgement = new Shell(getParent(), SWT.DIALOG_TRIM
+		shlVieweditJudgement = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.MAX
 				| SWT.APPLICATION_MODAL);
 		shlVieweditJudgement.setImage(ResourceManager.getPluginImage(
 				"com.greenapplesolutions.jtDbTool",
 				"icons/appIcons/edit_txt32x32.png"));
+
 		shlVieweditJudgement.setSize(1024, 670);
 		shlVieweditJudgement.setText("View/Edit Judgement");
 		shlVieweditJudgement.setLayout(new FormLayout());
@@ -124,8 +129,8 @@ public class EditJudgementDialog extends Dialog {
 		FormData fd_tabFolder = new FormData();
 		fd_tabFolder.top = new FormAttachment(0, 10);
 		fd_tabFolder.left = new FormAttachment(0, 10);
-		fd_tabFolder.bottom = new FormAttachment(0, 599);
-		fd_tabFolder.right = new FormAttachment(0, 1008);
+
+		fd_tabFolder.right = new FormAttachment(100, -10);
 		tabFolder.setLayoutData(fd_tabFolder);
 
 		TabItem tbtmJudgement = new TabItem(tabFolder, SWT.NONE);
@@ -206,7 +211,6 @@ public class EditJudgementDialog extends Dialog {
 
 		Label lblJudgement = new Label(composite, SWT.NONE);
 		FormData fd_lblJudgement = new FormData();
-		fd_lblJudgement.top = new FormAttachment(text_3, 6);
 		fd_lblJudgement.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
 		lblJudgement.setLayoutData(fd_lblJudgement);
 		lblJudgement.setText("Judgement");
@@ -214,11 +218,28 @@ public class EditJudgementDialog extends Dialog {
 		text_22 = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL
 				| SWT.MULTI);
 		FormData fd_text_22 = new FormData();
-		fd_text_22.right = new FormAttachment(text, 0, SWT.RIGHT);
-		fd_text_22.bottom = new FormAttachment(lblJudgement, 269, SWT.BOTTOM);
 		fd_text_22.top = new FormAttachment(lblJudgement, 6);
-		fd_text_22.left = new FormAttachment(0, 10);
+		fd_text_22.right = new FormAttachment(text, 0, SWT.RIGHT);
+		fd_text_22.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
+		fd_text_22.bottom = new FormAttachment(100);
 		text_22.setLayoutData(fd_text_22);
+		
+		Label lblCasesReferred = new Label(composite, SWT.NONE);
+		FormData fd_lblCasesReferred = new FormData();
+		fd_lblCasesReferred.top = new FormAttachment(text_3, 6);
+		fd_lblCasesReferred.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
+		lblCasesReferred.setLayoutData(fd_lblCasesReferred);
+		lblCasesReferred.setText("Cases Referred");
+		
+		text_31 = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
+		fd_lblJudgement.bottom = new FormAttachment(text_31, 21, SWT.BOTTOM);
+		fd_lblJudgement.top = new FormAttachment(text_31, 6);
+		FormData fd_text_31 = new FormData();
+		fd_text_31.top = new FormAttachment(lblCasesReferred, 6);
+		fd_text_31.bottom = new FormAttachment(100, -187);
+		fd_text_31.right = new FormAttachment(text, 0, SWT.RIGHT);
+		fd_text_31.left = new FormAttachment(0, 10);
+		text_31.setLayoutData(fd_text_31);
 
 		TabItem tbtmCitation = new TabItem(tabFolder, SWT.NONE);
 		tbtmCitation.setText("Citation");
@@ -518,6 +539,14 @@ public class EditJudgementDialog extends Dialog {
 		text_30.setBounds(442, 42, 518, 80);
 
 		Button btnClose = new Button(shlVieweditJudgement, SWT.NONE);
+		fd_tabFolder.bottom = new FormAttachment(btnClose, -18);
+		
+		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
+		tbtmNewItem.setText("New Item");
+		
+		Composite composite_3 = new Composite(tabFolder, SWT.NONE);
+		tbtmNewItem.setControl(composite_3);
+		composite_3.setLayout(new FillLayout(SWT.HORIZONTAL));
 		btnClose.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -526,12 +555,11 @@ public class EditJudgementDialog extends Dialog {
 			}
 		});
 		FormData fd_btnClose = new FormData();
-		fd_btnClose.top = new FormAttachment(tabFolder, 8);
-		fd_btnClose.right = new FormAttachment(100, -10);
 		btnClose.setLayoutData(fd_btnClose);
 		btnClose.setText("Close");
-
 		Button btnUpdate = new Button(shlVieweditJudgement, SWT.NONE);
+		fd_btnClose.top = new FormAttachment(btnUpdate, 0, SWT.TOP);
+		fd_btnClose.left = new FormAttachment(btnUpdate, 6);
 		btnUpdate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -543,314 +571,190 @@ public class EditJudgementDialog extends Dialog {
 			}
 		});
 		FormData fd_btnUpdate = new FormData();
-		fd_btnUpdate.bottom = new FormAttachment(btnClose, 0, SWT.BOTTOM);
-		fd_btnUpdate.right = new FormAttachment(btnClose, -6);
+		fd_btnUpdate.right = new FormAttachment(100, -57);
+		fd_btnUpdate.bottom = new FormAttachment(100, -10);
 		btnUpdate.setLayoutData(fd_btnUpdate);
 		btnUpdate.setText("Update");
 		m_bindingContext = initDataBindings();
 
 	}
-
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
-		IObservableList itemsComboObserveWidget = WidgetProperties.items()
-				.observe(combo);
-		IObservableList journalsModelProviderObserveList = BeanProperties.list(
-				"journals").observe(modelProvider);
-		bindingContext.bindList(itemsComboObserveWidget,
-				journalsModelProviderObserveList, null, null);
+		IObservableList itemsComboObserveWidget = WidgetProperties.items().observe(combo);
+		IObservableList journalsModelProviderObserveList = BeanProperties.list("journals").observe(modelProvider);
+		bindingContext.bindList(itemsComboObserveWidget, journalsModelProviderObserveList, null, null);
 		//
-		IObservableList itemsCombo_1ObserveWidget = WidgetProperties.items()
-				.observe(combo_1);
-		bindingContext.bindList(itemsCombo_1ObserveWidget,
-				journalsModelProviderObserveList, null, null);
+		IObservableList itemsCombo_1ObserveWidget = WidgetProperties.items().observe(combo_1);
+		bindingContext.bindList(itemsCombo_1ObserveWidget, journalsModelProviderObserveList, null, null);
 		//
-		IObservableList itemsCombo_2ObserveWidget = WidgetProperties.items()
-				.observe(combo_2);
-		bindingContext.bindList(itemsCombo_2ObserveWidget,
-				journalsModelProviderObserveList, null, null);
+		IObservableList itemsCombo_2ObserveWidget = WidgetProperties.items().observe(combo_2);
+		bindingContext.bindList(itemsCombo_2ObserveWidget, journalsModelProviderObserveList, null, null);
 		//
-		IObservableList itemsCombo_3ObserveWidget = WidgetProperties.items()
-				.observe(combo_3);
-		bindingContext.bindList(itemsCombo_3ObserveWidget,
-				journalsModelProviderObserveList, null, null);
+		IObservableList itemsCombo_3ObserveWidget = WidgetProperties.items().observe(combo_3);
+		bindingContext.bindList(itemsCombo_3ObserveWidget, journalsModelProviderObserveList, null, null);
 		//
-		IObservableList itemsCombo_4ObserveWidget = WidgetProperties.items()
-				.observe(combo_4);
-		bindingContext.bindList(itemsCombo_4ObserveWidget,
-				journalsModelProviderObserveList, null, null);
+		IObservableList itemsCombo_4ObserveWidget = WidgetProperties.items().observe(combo_4);
+		bindingContext.bindList(itemsCombo_4ObserveWidget, journalsModelProviderObserveList, null, null);
 		//
-		IObservableList itemsCombo_5ObserveWidget = WidgetProperties.items()
-				.observe(combo_5);
-		bindingContext.bindList(itemsCombo_5ObserveWidget,
-				journalsModelProviderObserveList, null, null);
+		IObservableList itemsCombo_5ObserveWidget = WidgetProperties.items().observe(combo_5);
+		bindingContext.bindList(itemsCombo_5ObserveWidget, journalsModelProviderObserveList, null, null);
 		//
-		IObservableValue observeTextText_4ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_4);
-		IObservableValue citation1_yearModelProviderObserveValue = BeanProperties
-				.value("citation1_year").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_4ObserveWidget,
-				citation1_yearModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_4ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_4);
+		IObservableValue citation1_yearModelProviderObserveValue = BeanProperties.value("citation1_year").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_4ObserveWidget, citation1_yearModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_5ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_5);
-		IObservableValue citation1_volumeModelProviderObserveValue = BeanProperties
-				.value("citation1_volume").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_5ObserveWidget,
-				citation1_volumeModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_5ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_5);
+		IObservableValue citation1_volumeModelProviderObserveValue = BeanProperties.value("citation1_volume").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_5ObserveWidget, citation1_volumeModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_6ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_6);
-		IObservableValue citation1_pageModelProviderObserveValue = BeanProperties
-				.value("citation1_page").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_6ObserveWidget,
-				citation1_pageModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_6ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_6);
+		IObservableValue citation1_pageModelProviderObserveValue = BeanProperties.value("citation1_page").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_6ObserveWidget, citation1_pageModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_7ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_7);
-		IObservableValue citation2_yearModelProviderObserveValue = BeanProperties
-				.value("citation2_year").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_7ObserveWidget,
-				citation2_yearModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_7ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_7);
+		IObservableValue citation2_yearModelProviderObserveValue = BeanProperties.value("citation2_year").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_7ObserveWidget, citation2_yearModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_8ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_8);
-		IObservableValue citation2_volumeModelProviderObserveValue = BeanProperties
-				.value("citation2_volume").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_8ObserveWidget,
-				citation2_volumeModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_8ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_8);
+		IObservableValue citation2_volumeModelProviderObserveValue = BeanProperties.value("citation2_volume").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_8ObserveWidget, citation2_volumeModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_9ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_9);
-		IObservableValue citation2_pageModelProviderObserveValue = BeanProperties
-				.value("citation2_page").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_9ObserveWidget,
-				citation2_pageModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_9ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_9);
+		IObservableValue citation2_pageModelProviderObserveValue = BeanProperties.value("citation2_page").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_9ObserveWidget, citation2_pageModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_10ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_10);
-		IObservableValue citation3_yearModelProviderObserveValue = BeanProperties
-				.value("citation3_year").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_10ObserveWidget,
-				citation3_yearModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_10ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_10);
+		IObservableValue citation3_yearModelProviderObserveValue = BeanProperties.value("citation3_year").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_10ObserveWidget, citation3_yearModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_11ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_11);
-		IObservableValue citation3_volumeModelProviderObserveValue = BeanProperties
-				.value("citation3_volume").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_11ObserveWidget,
-				citation3_volumeModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_11ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_11);
+		IObservableValue citation3_volumeModelProviderObserveValue = BeanProperties.value("citation3_volume").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_11ObserveWidget, citation3_volumeModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_12ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_12);
-		IObservableValue citation3_pageModelProviderObserveValue = BeanProperties
-				.value("citation3_page").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_12ObserveWidget,
-				citation3_pageModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_12ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_12);
+		IObservableValue citation3_pageModelProviderObserveValue = BeanProperties.value("citation3_page").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_12ObserveWidget, citation3_pageModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_13ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_13);
-		IObservableValue citation4_yearModelProviderObserveValue = BeanProperties
-				.value("citation4_year").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_13ObserveWidget,
-				citation4_yearModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_13ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_13);
+		IObservableValue citation4_yearModelProviderObserveValue = BeanProperties.value("citation4_year").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_13ObserveWidget, citation4_yearModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_14ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_14);
-		IObservableValue citation4_volumeModelProviderObserveValue = BeanProperties
-				.value("citation4_volume").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_14ObserveWidget,
-				citation4_volumeModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_14ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_14);
+		IObservableValue citation4_volumeModelProviderObserveValue = BeanProperties.value("citation4_volume").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_14ObserveWidget, citation4_volumeModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_15ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_15);
-		IObservableValue citation4_pageModelProviderObserveValue = BeanProperties
-				.value("citation4_page").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_15ObserveWidget,
-				citation4_pageModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_15ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_15);
+		IObservableValue citation4_pageModelProviderObserveValue = BeanProperties.value("citation4_page").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_15ObserveWidget, citation4_pageModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_16ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_16);
-		IObservableValue citation5_yearModelProviderObserveValue = BeanProperties
-				.value("citation5_year").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_16ObserveWidget,
-				citation5_yearModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_16ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_16);
+		IObservableValue citation5_yearModelProviderObserveValue = BeanProperties.value("citation5_year").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_16ObserveWidget, citation5_yearModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_17ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_17);
-		IObservableValue citation5_volumeModelProviderObserveValue = BeanProperties
-				.value("citation5_volume").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_17ObserveWidget,
-				citation5_volumeModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_17ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_17);
+		IObservableValue citation5_volumeModelProviderObserveValue = BeanProperties.value("citation5_volume").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_17ObserveWidget, citation5_volumeModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_18ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_18);
-		IObservableValue citation5_pageModelProviderObserveValue = BeanProperties
-				.value("citation5_page").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_18ObserveWidget,
-				citation5_pageModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_18ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_18);
+		IObservableValue citation5_pageModelProviderObserveValue = BeanProperties.value("citation5_page").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_18ObserveWidget, citation5_pageModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_19ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_19);
-		IObservableValue citation6_yearModelProviderObserveValue = BeanProperties
-				.value("citation6_year").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_19ObserveWidget,
-				citation6_yearModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_19ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_19);
+		IObservableValue citation6_yearModelProviderObserveValue = BeanProperties.value("citation6_year").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_19ObserveWidget, citation6_yearModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_20ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_20);
-		IObservableValue citation6_volumeModelProviderObserveValue = BeanProperties
-				.value("citation6_volume").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_20ObserveWidget,
-				citation6_volumeModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_20ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_20);
+		IObservableValue citation6_volumeModelProviderObserveValue = BeanProperties.value("citation6_volume").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_20ObserveWidget, citation6_volumeModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_21ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_21);
-		IObservableValue citation6_pageModelProviderObserveValue = BeanProperties
-				.value("citation6_page").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_21ObserveWidget,
-				citation6_pageModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_21ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_21);
+		IObservableValue citation6_pageModelProviderObserveValue = BeanProperties.value("citation6_page").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_21ObserveWidget, citation6_pageModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionComboObserveWidget = WidgetProperties
-				.selection().observe(combo);
-		IObservableValue citation1_journalModelProviderObserveValue = BeanProperties
-				.value("citation1_journal").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionComboObserveWidget,
-				citation1_journalModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionComboObserveWidget = WidgetProperties.selection().observe(combo);
+		IObservableValue citation1_journalModelProviderObserveValue = BeanProperties.value("citation1_journal").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionComboObserveWidget, citation1_journalModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionCombo_1ObserveWidget = WidgetProperties
-				.selection().observe(combo_1);
-		IObservableValue citation2_journalModelProviderObserveValue = BeanProperties
-				.value("citation2_journal").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionCombo_1ObserveWidget,
-				citation2_journalModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionCombo_1ObserveWidget = WidgetProperties.selection().observe(combo_1);
+		IObservableValue citation2_journalModelProviderObserveValue = BeanProperties.value("citation2_journal").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionCombo_1ObserveWidget, citation2_journalModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionCombo_2ObserveWidget = WidgetProperties
-				.selection().observe(combo_2);
-		IObservableValue citation3_journalModelProviderObserveValue = BeanProperties
-				.value("citation3_journal").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionCombo_2ObserveWidget,
-				citation3_journalModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionCombo_2ObserveWidget = WidgetProperties.selection().observe(combo_2);
+		IObservableValue citation3_journalModelProviderObserveValue = BeanProperties.value("citation3_journal").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionCombo_2ObserveWidget, citation3_journalModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionCombo_3ObserveWidget = WidgetProperties
-				.selection().observe(combo_3);
-		IObservableValue citation4_journalModelProviderObserveValue = BeanProperties
-				.value("citation4_journal").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionCombo_3ObserveWidget,
-				citation4_journalModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionCombo_3ObserveWidget = WidgetProperties.selection().observe(combo_3);
+		IObservableValue citation4_journalModelProviderObserveValue = BeanProperties.value("citation4_journal").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionCombo_3ObserveWidget, citation4_journalModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionCombo_4ObserveWidget = WidgetProperties
-				.selection().observe(combo_4);
-		IObservableValue citation5_journalModelProviderObserveValue = BeanProperties
-				.value("citation5_journal").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionCombo_4ObserveWidget,
-				citation5_journalModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionCombo_4ObserveWidget = WidgetProperties.selection().observe(combo_4);
+		IObservableValue citation5_journalModelProviderObserveValue = BeanProperties.value("citation5_journal").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionCombo_4ObserveWidget, citation5_journalModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionCombo_5ObserveWidget = WidgetProperties
-				.selection().observe(combo_5);
-		IObservableValue citation6_journalModelProviderObserveValue = BeanProperties
-				.value("citation6_journal").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionCombo_5ObserveWidget,
-				citation6_journalModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionCombo_5ObserveWidget = WidgetProperties.selection().observe(combo_5);
+		IObservableValue citation6_journalModelProviderObserveValue = BeanProperties.value("citation6_journal").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionCombo_5ObserveWidget, citation6_journalModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeSelectionDateTimeObserveWidget = WidgetProperties
-				.selection().observe(dateTime);
-		IObservableValue caseDateModelProviderObserveValue = BeanProperties
-				.value("caseDate").observe(modelProvider);
-		bindingContext.bindValue(observeSelectionDateTimeObserveWidget,
-				caseDateModelProviderObserveValue, null, null);
+		IObservableValue observeSelectionDateTimeObserveWidget = WidgetProperties.selection().observe(dateTime);
+		IObservableValue caseDateModelProviderObserveValue = BeanProperties.value("caseDate").observe(modelProvider);
+		bindingContext.bindValue(observeSelectionDateTimeObserveWidget, caseDateModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextTextObserveWidget = WidgetProperties.text(
-				SWT.Modify).observe(text);
-		IObservableValue appellantModelProviderObserveValue = BeanProperties
-				.value("appellant").observe(modelProvider);
-		bindingContext.bindValue(observeTextTextObserveWidget,
-				appellantModelProviderObserveValue, null, null);
+		IObservableValue observeTextTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(text);
+		IObservableValue appellantModelProviderObserveValue = BeanProperties.value("appellant").observe(modelProvider);
+		bindingContext.bindValue(observeTextTextObserveWidget, appellantModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_1ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_1);
-		IObservableValue respondantModelProviderObserveValue = BeanProperties
-				.value("respondant").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_1ObserveWidget,
-				respondantModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_1ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_1);
+		IObservableValue respondantModelProviderObserveValue = BeanProperties.value("respondant").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_1ObserveWidget, respondantModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_2ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_2);
-		IObservableValue judgesModelProviderObserveValue = BeanProperties
-				.value("judges").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_2ObserveWidget,
-				judgesModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_2ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_2);
+		IObservableValue judgesModelProviderObserveValue = BeanProperties.value("judges").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_2ObserveWidget, judgesModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_3ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_3);
-		IObservableValue advocatesModelProviderObserveValue = BeanProperties
-				.value("advocates").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_3ObserveWidget,
-				advocatesModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_3ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_3);
+		IObservableValue advocatesModelProviderObserveValue = BeanProperties.value("advocates").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_3ObserveWidget, advocatesModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_22ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_22);
-		IObservableValue judgementTextModelProviderObserveValue = BeanProperties
-				.value("judgementText").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_22ObserveWidget,
-				judgementTextModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_22ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_22);
+		IObservableValue judgementTextModelProviderObserveValue = BeanProperties.value("judgementText").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_22ObserveWidget, judgementTextModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_23ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_23);
-		IObservableValue held1ModelProviderObserveValue = BeanProperties.value(
-				"held1").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_23ObserveWidget,
-				held1ModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_23ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_23);
+		IObservableValue held1ModelProviderObserveValue = BeanProperties.value("held1").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_23ObserveWidget, held1ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_24ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_24);
-		IObservableValue headnote1ModelProviderObserveValue = BeanProperties
-				.value("headnote1").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_24ObserveWidget,
-				headnote1ModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_24ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_24);
+		IObservableValue headnote1ModelProviderObserveValue = BeanProperties.value("headnote1").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_24ObserveWidget, headnote1ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_25ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_25);
-		IObservableValue held2ModelProviderObserveValue = BeanProperties.value(
-				"held2").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_25ObserveWidget,
-				held2ModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_25ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_25);
+		IObservableValue held2ModelProviderObserveValue = BeanProperties.value("held2").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_25ObserveWidget, held2ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_26ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_26);
-		IObservableValue headnote2ModelProviderObserveValue = BeanProperties
-				.value("headnote2").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_26ObserveWidget,
-				headnote2ModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_26ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_26);
+		IObservableValue headnote2ModelProviderObserveValue = BeanProperties.value("headnote2").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_26ObserveWidget, headnote2ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_27ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_27);
-		IObservableValue held3ModelProviderObserveValue = BeanProperties.value(
-				"held3").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_27ObserveWidget,
-				held3ModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_27ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_27);
+		IObservableValue held3ModelProviderObserveValue = BeanProperties.value("held3").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_27ObserveWidget, held3ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_28ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_28);
-		IObservableValue headnote3ModelProviderObserveValue = BeanProperties
-				.value("headnote3").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_28ObserveWidget,
-				headnote3ModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_28ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_28);
+		IObservableValue headnote3ModelProviderObserveValue = BeanProperties.value("headnote3").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_28ObserveWidget, headnote3ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_29ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_29);
-		IObservableValue held4ModelProviderObserveValue = BeanProperties.value(
-				"held4").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_29ObserveWidget,
-				held4ModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_29ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_29);
+		IObservableValue held4ModelProviderObserveValue = BeanProperties.value("held4").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_29ObserveWidget, held4ModelProviderObserveValue, null, null);
 		//
-		IObservableValue observeTextText_30ObserveWidget = WidgetProperties
-				.text(SWT.Modify).observe(text_30);
-		IObservableValue headnote4ModelProviderObserveValue = BeanProperties
-				.value("headnote4").observe(modelProvider);
-		bindingContext.bindValue(observeTextText_30ObserveWidget,
-				headnote4ModelProviderObserveValue, null, null);
+		IObservableValue observeTextText_30ObserveWidget = WidgetProperties.text(SWT.Modify).observe(text_30);
+		IObservableValue headnote4ModelProviderObserveValue = BeanProperties.value("headnote4").observe(modelProvider);
+		bindingContext.bindValue(observeTextText_30ObserveWidget, headnote4ModelProviderObserveValue, null, null);
+		//
+		IObservableValue text_31ObserveTextObserveWidget = SWTObservables.observeText(text_31, SWT.Modify);
+		IObservableValue modelProviderCasesReferredObserveValue = BeansObservables.observeValue(modelProvider, "casesReferred");
+		bindingContext.bindValue(text_31ObserveTextObserveWidget, modelProviderCasesReferredObserveValue, null, null);
 		//
 		return bindingContext;
 	}

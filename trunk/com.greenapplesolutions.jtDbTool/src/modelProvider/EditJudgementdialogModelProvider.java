@@ -71,6 +71,7 @@ public class EditJudgementdialogModelProvider {
 	private String headnote2;
 	private String headnote3;
 	private String headnote4;
+	private String casesReferred;
 	private Judgement judgement;
 
 	public Judgement getJudgement() {
@@ -90,8 +91,11 @@ public class EditJudgementdialogModelProvider {
 			setCaseDate(judgement.CaseDate);
 		if (!Util.isStringNullOrEmpty(judgement.FullText))
 			setJudgementText(judgement.FullText);
+		if (!Util.isStringNullOrEmpty(judgement.CasesReferred))
+			setCasesReferred(judgement.CasesReferred.trim());
 		if (!Util.isStringNullOrEmpty(judgement.Advocates))
 			setAdvocates(judgement.Advocates.trim());
+
 		for (int index = 0; index < judgement.Citations.size(); ++index) {
 			setCitation(index, judgement.Citations.get(index));
 		}
@@ -319,6 +323,7 @@ public class EditJudgementdialogModelProvider {
 		j.CaseDate = cal.getTime();
 		j.CaseNumber = "";
 		j.Court = "";
+		j.CasesReferred = "";
 		j.Citations = new ArrayList<Citation>();
 		j.FullText = "";
 		j.headnotesAndHelds = new ArrayList<HeadnoteAndHeld>();
@@ -340,6 +345,8 @@ public class EditJudgementdialogModelProvider {
 			judgement.Judges = getJudges();
 		if (!Util.isStringNullOrEmpty(getAdvocates()))
 			judgement.Advocates = getAdvocates();
+		if (!Util.isStringNullOrEmpty(getCasesReferred()))
+			judgement.CasesReferred = getCasesReferred();
 		if (!Util.isStringNullOrEmpty(getJudgementText()))
 			judgement.FullText = getJudgementText();
 		if (getCaseDate() != null)
@@ -774,6 +781,15 @@ public class EditJudgementdialogModelProvider {
 	public void setHeadnote4(String headnote4) {
 		propertyChangeSupport.firePropertyChange("headnote4", this.headnote4,
 				this.headnote4 = headnote4);
+	}
+
+	public String getCasesReferred() {
+		return casesReferred;
+	}
+
+	public void setCasesReferred(String casesReferred) {
+		propertyChangeSupport.firePropertyChange("casesReferred",
+				this.casesReferred, this.casesReferred = casesReferred);
 	}
 
 }
