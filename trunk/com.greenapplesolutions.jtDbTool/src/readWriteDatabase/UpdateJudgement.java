@@ -120,7 +120,7 @@ public class UpdateJudgement {
 
 	}
 
-	public void updateJudgement(Judgement j) {
+	public void reviewJudgement(Judgement j) {
 
 		try {
 
@@ -164,7 +164,50 @@ public class UpdateJudgement {
 		}
 
 	}
+	public void updateJudgement(Judgement j) {
 
+		try {
+
+			PreparedStatement pst = null;
+			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			pst = connect.prepareStatement(query);
+			pst.setString(1, null);
+			pst.setString(2, j.Keycode);
+			pst.setString(3, SelectedCourt.getInstance().getSelectedCourt());
+			pst.setString(4, j.Judges);
+			pst.setInt(5, j.Bench);
+			pst.setString(6, j.CaseNumber);
+			pst.setString(7, j.Appellant);
+			pst.setString(8, j.Respondant);
+			pst.setDate(9, new java.sql.Date(j.CaseDate.getTime()));
+			pst.setString(10, j.Advocates);
+			pst.setString(11, j.CasesReferred);
+			pst.setString(12, j.FullText);
+			pst.setBoolean(13, false);
+
+			System.out.println("dumping row with keycode " + j.Keycode);
+			try {
+				pst.executeUpdate();
+				pst.close();
+				dumpToCitations(j.Citations);
+				dumpToHeadnotes(j.headnotesAndHelds);
+			} catch (Exception e) {
+				JTLogger.getInstance().setError(
+						"Exception in dumping judgement " + j.Keycode
+								+ "where appellant is " + j.Appellant
+								+ "due to " + e.getMessage() + "\n\n");
+
+			}
+
+		} catch (Exception e) {
+			System.out.println("error in dumping judgment" + e.getMessage());
+			JTLogger.getInstance().setError(
+					"Exception in dumping judgement " + j.Keycode
+							+ "where appellant is " + j.Appellant + "due to "
+							+ e.getMessage() + "\n\n");
+		}
+
+	}
 	private void dumpToCitations(List<Citation> citations) {
 
 		try {

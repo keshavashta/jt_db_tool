@@ -80,7 +80,7 @@ public class EditJudgementdialogModelProvider {
 	}
 
 	private void setJudgement() {
-		
+
 		if (!Util.isStringNullOrEmpty(judgement.Appellant))
 			setAppellant(judgement.Appellant.trim());
 		if (!Util.isStringNullOrEmpty(getJudgement().Respondant))
@@ -97,7 +97,7 @@ public class EditJudgementdialogModelProvider {
 			setCasesReferred(judgement.CasesReferred.trim());
 		if (!Util.isStringNullOrEmpty(judgement.Advocates))
 			setAdvocates(judgement.Advocates.trim());
-		
+
 		for (int index = 0; index < judgement.Citations.size(); ++index) {
 			setCitation(index, judgement.Citations.get(index));
 		}
@@ -846,6 +846,38 @@ public class EditJudgementdialogModelProvider {
 		setCitation6_volume("");
 		setCitation6_year("");
 
+	}
+
+	public boolean judgementVerified() {
+		Judgement judgement = getEmptyJudgement();
+		judgement.Keycode = keycode;
+		if (!Util.isStringNullOrEmpty(getAppellant()))
+			judgement.Appellant = getAppellant();
+		if (!Util.isStringNullOrEmpty(getCaseNumber()))
+			judgement.CaseNumber = getCaseNumber();
+		if (!Util.isStringNullOrEmpty(getRespondant()))
+			judgement.Respondant = getRespondant();
+		if (!Util.isStringNullOrEmpty(getJudges()))
+			judgement.Judges = getJudges();
+		if (!Util.isStringNullOrEmpty(getAdvocates()))
+			judgement.Advocates = getAdvocates();
+		if (!Util.isStringNullOrEmpty(getCasesReferred()))
+			judgement.CasesReferred = getCasesReferred();
+		if (!Util.isStringNullOrEmpty(getJudgementText()))
+			judgement.FullText = getJudgementText();
+		if (getCaseDate() != null)
+			judgement.CaseDate = getCaseDate();
+		judgement.Citations = getCitations();
+		judgement.headnotesAndHelds = getHeadnoteAndHeld();
+		UpdateJudgement upInstance = new UpdateJudgement(SelectedCourt
+				.getInstance().getSelectedDatabaseName(), "localhost", "root",
+				"");
+		if (upInstance.connectToDatabse()) {
+			upInstance.deleteJudgement(keycode);
+			upInstance.reviewJudgement(judgement);
+			return true;
+		} else
+			return false;
 	}
 
 }

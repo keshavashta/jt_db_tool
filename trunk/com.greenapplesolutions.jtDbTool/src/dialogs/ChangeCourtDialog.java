@@ -21,6 +21,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import util.SelectedCourt;
+import util.Util;
+
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.wb.swt.ResourceManager;
@@ -69,7 +71,8 @@ public class ChangeCourtDialog extends Dialog {
 		modelProvider = new ChangeCourtDialogModelProvider();
 		shlChangeCourt = new Shell(getParent());
 		shlChangeCourt.setImage(ResourceManager.getPluginImage("com.greenapplesolutions.jtDbTool", "icons/appIcons/court32x32.png"));
-		shlChangeCourt.setSize(379, 160);
+//		shlChangeCourt.setSize(379, 160);
+		shlChangeCourt.setBounds(Util.getBounds(379, 160));
 		shlChangeCourt.setText("Change Court");
 		shlChangeCourt.setLayout(new FormLayout());
 

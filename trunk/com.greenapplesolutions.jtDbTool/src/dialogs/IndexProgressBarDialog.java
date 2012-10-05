@@ -24,6 +24,8 @@ import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import util.Util;
+
 public class IndexProgressBarDialog extends Dialog {
 	private DataBindingContext m_bindingContext;
 
@@ -74,7 +76,7 @@ public class IndexProgressBarDialog extends Dialog {
 	private void createContents() {
 		shlIndexingJudgements = new Shell(getParent(),SWT.DIALOG_TRIM
 				| SWT.APPLICATION_MODAL);
-		shlIndexingJudgements.setSize(450, 300);
+		shlIndexingJudgements.setBounds(Util.getBounds(450, 300));
 		shlIndexingJudgements.setText("Indexing Judgements");
 		shlIndexingJudgements.setLayout(new FormLayout());
 

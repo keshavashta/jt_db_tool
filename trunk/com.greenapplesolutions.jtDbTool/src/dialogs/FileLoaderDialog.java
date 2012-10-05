@@ -73,7 +73,8 @@ public class FileLoaderDialog extends Dialog {
 	 */
 	private void createContents() {
 		shlFileLoader = new Shell(getParent());
-		shlFileLoader.setSize(450, 300);
+//		shlFileLoader.setSize(450, 300);
+		shlFileLoader.setBounds(Util.getBounds(450, 300));
 		shlFileLoader.setText("File Loader");
 		shlFileLoader.setLayout(new FormLayout());
 

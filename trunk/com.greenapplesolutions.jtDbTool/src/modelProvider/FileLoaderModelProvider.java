@@ -242,7 +242,7 @@ public class FileLoaderModelProvider {
 			++index;
 		}
 		judgment.CasesReferred = casesReferred.replaceFirst(
-				"(?i)cases referre(d|(d:))", "").trim();
+				"(?i)cases referre(d:|(d))", "").trim();
 
 		return index;
 	}
@@ -289,7 +289,7 @@ public class FileLoaderModelProvider {
 
 	private int processParty(String[] textArray, int index, Judgement judgement) {
 		isPartyProcessed = true;
-		String party[] = textArray[index].split("(?i)v\\.");
+		String party[] = textArray[index].split("(?i) v\\. ");
 		judgement.Appellant = party[0];
 		judgement.Respondant = party[1];
 		while (true && index < textArray.length - 1) {
