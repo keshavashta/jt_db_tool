@@ -2,11 +2,16 @@ package modelProvider;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
 import readWriteDatabase.LoadJudgments;
-import readWriteDatabase.UpdateJudgement;
+import util.JTLogger;
 import util.SelectedCourt;
+import util.Util;
 
 import com.greenapplesolutions.lawsearch.desktopapp.customEvents.PropertyChangeEvent;
 
@@ -15,10 +20,12 @@ public class IndexProgressbarDialogModelProvider {
 	private String logMessage = "";
 	private List<String> courts;
 	private String path;
+	public IndexProgressbarDialogModelProvider ipdmInstance;
 
 	public IndexProgressbarDialogModelProvider(List<String> courts, String path) {
 		this.courts = courts;
 		this.path = path;
+		ipdmInstance = this;
 		indexJudgements();
 	}
 
@@ -26,18 +33,31 @@ public class IndexProgressbarDialogModelProvider {
 		Runnable worker = new Runnable() {
 			@Override
 			public synchronized void run() {
+				File idxFolder = new File(path + "\\idx");
+				if (!idxFolder.isDirectory())
+					idxFolder.mkdir();
+				File judFolder = new File(path + "\\idx\\j");
+				if (!judFolder.isDirectory())
+					judFolder.mkdir();
+				File dicFolder = new File(path + "\\idx\\d");
+				File utilFolder = new File(path + "\\utility files");
+				if (!utilFolder.isDirectory())
+					utilFolder.mkdir();
+				if (!dicFolder.isDirectory())
+					dicFolder.mkdir();
 
 				for (int index = 0; index < courts.size(); ++index) {
 					LoadJudgments ins = new LoadJudgments(SelectedCourt
 							.getInstance().getDatabaseName(courts.get(index)),
-							"localhost", "root", "", path);
+							"localhost", "root", "",
+							judFolder.getAbsolutePath());
 					setIndexLabelMessage("Indexing " + courts.get(index) + " ,"
 							+ (courts.size() - (index + 1)) + " courts left.");
 					if (ins.connectToDatabse()) {
 						setLogMessage((logMessage + "\n Indexing "
 								+ courts.get(index) + " judgements").trim());
 
-						ins.indexJudgements();
+						ins.indexJudgements(ipdmInstance);
 						setLogMessage(logMessage + "\n" + courts.get(index)
 								+ " where index is" + index
 								+ " Log Message".trim());
@@ -51,6 +71,27 @@ public class IndexProgressbarDialogModelProvider {
 							"totalProgress", index + 1));
 
 				}
+				setIndexLabelMessage("Indexing Completed , Please wait while we are moving utility files.");
+				try {
+					FileUtils.copyDirectory(new File(Util.getRelativePath()
+							+ "/utility files"), utilFolder);
+					setLogMessage((logMessage + "\n moving utility files"));
+				} catch (IOException e) {
+					JTLogger.getInstance().setError(
+							"Error in moving Files, due to " + e.getMessage());
+					setLogMessage((logMessage + "\n Error in moving utility files"));
+				}
+				setIndexLabelMessage("moving dictionary index files.");
+				try {
+					FileUtils.copyDirectory(new File(Util.getRelativePath()
+							+ "/d"), dicFolder);
+					setLogMessage((logMessage + "\n moving dictionary idx files"));
+				} catch (IOException e) {
+					JTLogger.getInstance().setError(
+							"Error in moving dictionary idx files, due to "
+									+ e.getMessage());
+					setLogMessage((logMessage + "\n Error in moving dictionary idx files"));
+				}
 				setIndexLabelMessage("Completed");
 			}
 		};
@@ -59,7 +100,8 @@ public class IndexProgressbarDialogModelProvider {
 		try {
 			workerThread.join();
 		} catch (InterruptedException e) {
-
+			JTLogger.getInstance().setError(
+					"Error in joining thread, due to " + e.getMessage());
 		}
 		workerThread.start();
 	}

@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
@@ -89,9 +88,9 @@ public class EditJudgementDialog extends Dialog {
 	 * @param parent
 	 * @param style
 	 */
-	public EditJudgementDialog(Shell parent, String keycode) {
+	public EditJudgementDialog(Shell parent, String keycode, String courtName) {
 		super(parent);
-		modelProvider = new EditJudgementdialogModelProvider(keycode);
+		modelProvider = new EditJudgementdialogModelProvider(keycode, courtName);
 		setText("SWT Dialog");
 	}
 
@@ -120,6 +119,7 @@ public class EditJudgementDialog extends Dialog {
 		int headnoteTextHeight = 200;
 		shlVieweditJudgement = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.MAX
 				| SWT.APPLICATION_MODAL);
+		shlVieweditJudgement.setSize(532, 493);
 		shlVieweditJudgement.setImage(ResourceManager.getPluginImage(
 				"com.greenapplesolutions.jtDbTool",
 				"icons/appIcons/edit_txt32x32.png"));
@@ -192,7 +192,7 @@ public class EditJudgementDialog extends Dialog {
 		lblDate.setLayoutData(fd_lblDate);
 		lblDate.setText("Date");
 
-		dateTime = new DateTime(composite, SWT.BORDER);
+		dateTime = new DateTime(composite, SWT.BORDER | SWT.DROP_DOWN);
 		FormData fd_dateTime = new FormData();
 		fd_dateTime.top = new FormAttachment(lblDate, 6);
 		fd_dateTime.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
@@ -214,36 +214,35 @@ public class EditJudgementDialog extends Dialog {
 
 		Label lblJudgement = new Label(composite, SWT.NONE);
 		FormData fd_lblJudgement = new FormData();
-		fd_lblJudgement.left = new FormAttachment(0, 10);
+		fd_lblJudgement.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
 		fd_lblJudgement.right = new FormAttachment(0, 472);
 		lblJudgement.setLayoutData(fd_lblJudgement);
 		lblJudgement.setText("Judgement");
 
 		text_22 = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL
 				| SWT.MULTI);
-		fd_lblJudgement.bottom = new FormAttachment(100, -166);
 		FormData fd_text_22 = new FormData();
 		fd_text_22.top = new FormAttachment(lblJudgement, 6);
 		fd_text_22.right = new FormAttachment(text, 0, SWT.RIGHT);
 		fd_text_22.left = new FormAttachment(0, 10);
-		fd_text_22.bottom = new FormAttachment(100);
+		fd_text_22.bottom = new FormAttachment(100, -10);
 		text_22.setLayoutData(fd_text_22);
 
 		Label lblCasesReferred = new Label(composite, SWT.NONE);
 		FormData fd_lblCasesReferred = new FormData();
-		fd_lblCasesReferred.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
+		fd_lblCasesReferred.right = new FormAttachment(100, -1094);
+		fd_lblCasesReferred.left = new FormAttachment(0, 10);
 		lblCasesReferred.setLayoutData(fd_lblCasesReferred);
 		lblCasesReferred.setText("Cases Referred");
 
 		text_31 = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL
 				| SWT.MULTI);
-		fd_lblCasesReferred.bottom = new FormAttachment(text_31, -6);
 		fd_lblJudgement.top = new FormAttachment(text_31, 6);
 		FormData fd_text_31 = new FormData();
-		fd_text_31.top = new FormAttachment(0, 334);
+		fd_text_31.top = new FormAttachment(lblCasesReferred, 6);
 		fd_text_31.right = new FormAttachment(text, 0, SWT.RIGHT);
 		fd_text_31.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
-		fd_text_31.bottom = new FormAttachment(100, -187);
+		fd_text_31.bottom = new FormAttachment(lblCasesReferred, 100);
 		text_31.setLayoutData(fd_text_31);
 
 		Label lblCaseNumber = new Label(composite, SWT.NONE);
@@ -253,11 +252,11 @@ public class EditJudgementDialog extends Dialog {
 		lblCaseNumber.setLayoutData(fd_lblCaseNumber);
 		lblCaseNumber.setText("Case Number");
 
-		text_23 = new Text(composite, SWT.BORDER);
+		text_23 = new Text(composite, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
 		fd_lblCasesReferred.top = new FormAttachment(text_23, 6);
 		FormData fd_text_23 = new FormData();
+		fd_text_23.bottom = new FormAttachment(lblCaseNumber, 48, SWT.BOTTOM);
 		fd_text_23.right = new FormAttachment(100, -10);
-		fd_text_23.bottom = new FormAttachment(lblCaseNumber, 24, SWT.BOTTOM);
 		fd_text_23.top = new FormAttachment(lblCaseNumber, 3);
 		fd_text_23.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
 		text_23.setLayoutData(fd_text_23);
@@ -630,7 +629,7 @@ public class EditJudgementDialog extends Dialog {
 
 		Label label_30 = new Label(group_3, SWT.SEPARATOR | SWT.VERTICAL);
 		FormData fd_label_30 = new FormData();
-		fd_label_30.left = new FormAttachment(text_32, 6);
+		fd_label_30.left = new FormAttachment(text_32, 10);
 		fd_label_30.top = new FormAttachment(0);
 		fd_label_30.bottom = new FormAttachment(100);
 		label_30.setLayoutData(fd_label_30);
@@ -679,7 +678,7 @@ public class EditJudgementDialog extends Dialog {
 		FormData fd_label_32 = new FormData();
 		fd_label_32.bottom = new FormAttachment(100);
 		fd_label_32.top = new FormAttachment(0);
-		fd_label_32.left = new FormAttachment(text_34, 6);
+		fd_label_32.left = new FormAttachment(text_34, 10);
 		label_32.setLayoutData(fd_label_32);
 
 		Label label_33 = new Label(grpHeadnoteAndHeld_1, SWT.NONE);
@@ -726,7 +725,7 @@ public class EditJudgementDialog extends Dialog {
 		FormData fd_label_35 = new FormData();
 		fd_label_35.bottom = new FormAttachment(100);
 		fd_label_35.top = new FormAttachment(0);
-		fd_label_35.left = new FormAttachment(scHeadnote3, 6);
+		fd_label_35.left = new FormAttachment(scHeadnote3, 10);
 		label_35.setLayoutData(fd_label_35);
 
 		Label label_36 = new Label(grpHeadnoteAndHeld_2, SWT.NONE);
@@ -773,7 +772,7 @@ public class EditJudgementDialog extends Dialog {
 		FormData fd_label_38 = new FormData();
 		fd_label_38.bottom = new FormAttachment(100);
 		fd_label_38.top = new FormAttachment(0);
-		fd_label_38.left = new FormAttachment(scHeadnote4, 6);
+		fd_label_38.left = new FormAttachment(scHeadnote4, 10);
 		label_38.setLayoutData(fd_label_38);
 
 		Label label_39 = new Label(grpHeadnoteAndHeld_3, SWT.NONE);

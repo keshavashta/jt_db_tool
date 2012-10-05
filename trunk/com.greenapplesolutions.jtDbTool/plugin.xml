@@ -95,5 +95,37 @@
             name="Index Judgements">
       </editor>
    </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="com.greenapplesolutions.jtDbTool.application"
+            name="JT Database Tool">
+         <property
+               name="appName"
+               value="JT Database Tool">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/appIcons/1337244026_balance16.png,icons/appIcons/1337244053_balance32.png,icons/appIcons/1337244064_balance48.png,icons/appIcons/1337244078_balance64.png,icons/appIcons/rsz_1337244178_balance128.png">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="FFFFFF">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="5,230,440,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="0,255,450,20">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+      </product>
+   </extension>
 
 </plugin>

@@ -23,6 +23,7 @@ import org.eclipse.ui.PlatformUI;
 
 import readWriteDatabase.UpdateJudgement;
 
+import util.JTLogger;
 import util.SelectedCourt;
 import util.Util;
 
@@ -82,8 +83,8 @@ public class FileLoaderModelProvider {
 			fis.read(b);
 			fileText = new String(b);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JTLogger.getInstance().setError(
+					"Error in Reading File, due to " + e.getMessage());
 		}
 		return fileText;
 
@@ -267,6 +268,7 @@ public class FileLoaderModelProvider {
 			++index;
 		}
 		hh.Headnote = headnote;
+		if(!Util.isStringNullOrEmpty(headnote))
 		hhList.add(hh);
 		judgment.headnotesAndHelds = hhList;
 		return index;
@@ -281,8 +283,9 @@ public class FileLoaderModelProvider {
 				judgment.CaseDate = sdf.parse(extractDateMatcher.group()
 						.replace(" ", ""));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				JTLogger.getInstance().setError(
+						"Error in processing date in file loader, due to"
+								+ e.getMessage());
 			}
 		return index;
 	}
@@ -327,7 +330,7 @@ public class FileLoaderModelProvider {
 	public void setSelectedCourt(String selectedCourt) {
 		propertyChangeSupport.firePropertyChange("selectedCourt",
 				this.selectedCourt, this.selectedCourt = selectedCourt);
-		 SelectedCourt.getInstance().setSelectedCourt(selectedCourt);
+		SelectedCourt.getInstance().setSelectedCourt(selectedCourt);
 	}
 
 	public String getFilePath() {
@@ -408,7 +411,9 @@ public class FileLoaderModelProvider {
 								isResultsDisplayed = true;
 
 							} catch (PartInitException e3) {
-								e3.printStackTrace();
+								JTLogger.getInstance().setError(
+										"Error in opening review judgement from file loader , due to "
+												+ e3.getMessage());
 							}
 						}
 					});
@@ -417,9 +422,13 @@ public class FileLoaderModelProvider {
 				}
 			});
 		} catch (InvocationTargetException e1) {
-			e1.printStackTrace();
+			JTLogger.getInstance().setError(
+					"Error in opening review judgement from file loader , due to "
+							+ e1.getMessage());
 		} catch (InterruptedException e1) {
-			e1.printStackTrace();
+			JTLogger.getInstance().setError(
+					"Error in opening review judgement from file loader , due to "
+							+ e1.getMessage());
 		}
 
 	}

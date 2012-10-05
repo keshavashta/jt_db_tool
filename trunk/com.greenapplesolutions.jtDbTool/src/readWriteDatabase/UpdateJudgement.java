@@ -52,7 +52,7 @@ public class UpdateJudgement {
 		return true;
 	}
 
-	public void deleteJudgement(String keycode) {
+	public boolean deleteJudgement(String keycode) {
 		try {
 			Statement st = connect.createStatement();
 			st.addBatch("DELETE FROM judgements where Keycode="
@@ -64,10 +64,12 @@ public class UpdateJudgement {
 			st.executeBatch();
 			st.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JTLogger.getInstance().setError(
+					"Error in deleteing judgement where keycode is " + keycode
+							+ ", due to " + e.getMessage());
+			return false;
 		}
-
+		return true;
 	}
 
 	public void insertJudgements(List<Judgement> judgements) {
@@ -164,6 +166,7 @@ public class UpdateJudgement {
 		}
 
 	}
+
 	public void updateJudgement(Judgement j) {
 
 		try {
@@ -208,6 +211,7 @@ public class UpdateJudgement {
 		}
 
 	}
+
 	private void dumpToCitations(List<Citation> citations) {
 
 		try {
@@ -298,7 +302,9 @@ public class UpdateJudgement {
 				connect.close();
 			}
 		} catch (Exception e) {
-
+			JTLogger.getInstance().setError(
+					"Error in closing connection" + ", due to "
+							+ e.getMessage());
 		}
 	}
 }

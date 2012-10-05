@@ -18,9 +18,11 @@ import com.greenapplesolutions.dbloader.domain.Judgement;
 
 public class EditJudgementdialogModelProvider {
 	private List<String> journals;
+	private String courtName;
 
-	public EditJudgementdialogModelProvider(String keycode) {
+	public EditJudgementdialogModelProvider(String keycode, String courtName) {
 		this.keycode = keycode;
+		this.courtName = courtName;
 		getJudgementFromdatabase();
 		journals = new ArrayList<String>();
 		journals.add("");
@@ -28,6 +30,7 @@ public class EditJudgementdialogModelProvider {
 		journals.add("JT");
 		journals.add("SCC");
 		journals.add("SCR");
+
 		setJudgement();
 
 	}
@@ -361,10 +364,11 @@ public class EditJudgementdialogModelProvider {
 			judgement.FullText = getJudgementText();
 		if (getCaseDate() != null)
 			judgement.CaseDate = getCaseDate();
+
 		judgement.Citations = getCitations();
 		judgement.headnotesAndHelds = getHeadnoteAndHeld();
 		UpdateJudgement upInstance = new UpdateJudgement(SelectedCourt
-				.getInstance().getSelectedDatabaseName(), "localhost", "root",
+				.getInstance().getDatabaseName(courtName), "localhost", "root",
 				"");
 		if (upInstance.connectToDatabse()) {
 			upInstance.deleteJudgement(keycode);
@@ -403,7 +407,7 @@ public class EditJudgementdialogModelProvider {
 
 	private void getJudgementFromdatabase() {
 		ReadJudgement ins = new ReadJudgement(SelectedCourt.getInstance()
-				.getSelectedDatabaseName(), "localhost", "root", "");
+				.getDatabaseName(courtName), "localhost", "root", "");
 		if (ins.connectToDatabse()) {
 			this.judgement = ins.getJudgement(keycode);
 		}
@@ -870,7 +874,7 @@ public class EditJudgementdialogModelProvider {
 		judgement.Citations = getCitations();
 		judgement.headnotesAndHelds = getHeadnoteAndHeld();
 		UpdateJudgement upInstance = new UpdateJudgement(SelectedCourt
-				.getInstance().getSelectedDatabaseName(), "localhost", "root",
+				.getInstance().getDatabaseName(courtName), "localhost", "root",
 				"");
 		if (upInstance.connectToDatabse()) {
 			upInstance.deleteJudgement(keycode);

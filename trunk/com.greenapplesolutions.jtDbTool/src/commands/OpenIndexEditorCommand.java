@@ -8,6 +8,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import util.JTLogger;
+
 import editorInput.IndexJudgementsditorInput;
 import editorInput.JudgmentEditorInput;
 import editors.IndexJudgementsEditor;
@@ -34,10 +36,12 @@ public class OpenIndexEditorCommand implements IHandler {
 
 		try {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage().openEditor(input1, IndexJudgementsEditor.ID);
+					.getActivePage()
+					.openEditor(input1, IndexJudgementsEditor.ID);
 
 		} catch (PartInitException e3) {
-			e3.printStackTrace();
+			JTLogger.getInstance().setError(
+					"Error in opening index judgement editor");
 		}
 		return null;
 	}

@@ -34,7 +34,8 @@ public final class Fields {
 	public static String UAdvocate = "UAdvocate";
 	public static String UCourt = "UCourt";
 	public static String Parties = "Parties";
-
+	public static String CreatedDate = "CreatedDate";
+	public static String ModifiedDate = "ModifiedDate";
 	// citation
 	public static String Journal = "Journal";
 	public static String Year = "Year";

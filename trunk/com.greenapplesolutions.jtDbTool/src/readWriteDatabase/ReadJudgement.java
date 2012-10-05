@@ -86,13 +86,7 @@ public class ReadJudgement {
 					judgement.CasesReferred = resultSet
 							.getString(Fields.CasesReferred) == null ? ""
 							: resultSet.getString(Fields.CasesReferred);
-					// try {
-					// j.Bench = Integer.parseInt(resultSet.getString(
-					// Fields.Bench).toString());
-					// } catch (Exception ex) {
-					// // LELogger.INSTANCE().setError(ex.getMessage());
-					// j.Bench = 0;
-					// }
+
 					try {
 						judgement.CaseDate = (Date) resultSet
 								.getDate(Fields.CaseDate);
@@ -127,7 +121,11 @@ public class ReadJudgement {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("Error in main" + e.getMessage());
+			JTLogger.getInstance()
+					.setError(
+							"Error in retrieving judgement, where keycode is "
+									+ keycode + " and database name is "
+									+ databaseName);
 		}
 		close();
 		return judgement;
@@ -157,12 +155,18 @@ public class ReadJudgement {
 					citationList.add(j);
 
 				} catch (Exception e) {
-					System.out.println("Error in processing indiv"
-							+ e.getMessage());
+					JTLogger.getInstance().setError(
+							"Error in retrieving single citation where keycode is "
+									+ keycode + " and database name is "
+									+ databaseName + " due to "
+									+ e.getMessage());
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("Error in main" + e.getMessage());
+			JTLogger.getInstance().setError(
+					"Error in retrieving citations where keycode is " + keycode
+							+ " and database name is " + databaseName
+							+ " due to " + e.getMessage());
 		}
 		return citationList;
 	}
@@ -185,12 +189,18 @@ public class ReadJudgement {
 					headnoteList.add(hh);
 
 				} catch (Exception e) {
-					System.out.println("Error in processing indiv"
-							+ e.getMessage());
+					JTLogger.getInstance().setError(
+							"Error in retrieving single headnote and held where keycode is "
+									+ keycode + " and database name is "
+									+ databaseName + " due to "
+									+ e.getMessage());
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("Error in main" + e.getMessage());
+			JTLogger.getInstance().setError(
+					"Error in retrieving headnotes where keycode is " + keycode
+							+ " and database name is " + databaseName
+							+ " due to " + e.getMessage());
 		}
 		return headnoteList;
 	}
@@ -200,7 +210,7 @@ public class ReadJudgement {
 		instance.set(1111, 10, 11);
 		Date invalidDate = instance.getTime();
 
-		String query = "select Keycode,Date,Advocates,CasesReferred,Appellant,Respondent,Judges ,CaseNo from "
+		String query = "select Keycode,COURT,Date,Advocates,CasesReferred,Appellant,Respondent,Judges ,CaseNo from "
 				+ databaseName
 				+ ".judgements where Is_Verified=0 order by Date desc";
 
@@ -218,6 +228,7 @@ public class ReadJudgement {
 							: resultSet.getString(Fields.Appellant);
 					j.CasesReferred = resultSet.getString(Fields.CasesReferred) == null ? ""
 							: resultSet.getString(Fields.CasesReferred);
+
 					// try {
 					// j.Bench = Integer.parseInt(resultSet.getString(
 					// Fields.Bench).toString());
@@ -225,10 +236,24 @@ public class ReadJudgement {
 					// // LELogger.INSTANCE().setError(ex.getMessage());
 					// j.Bench = 0;
 					// }
+					j.Court = resultSet.getString(Fields.Court) == null ? ""
+							: resultSet.getString(Fields.Court);
 					try {
 						j.CaseDate = (Date) resultSet.getDate(Fields.CaseDate);
 					} catch (Exception e) {
 						j.CaseDate = invalidDate;
+					}
+					try {
+						j.CreatedDate = (Date) resultSet
+								.getDate(Fields.CreatedDate);
+					} catch (Exception e) {
+						j.CreatedDate = invalidDate;
+					}
+					try {
+						j.ModifiedDate = (Date) resultSet
+								.getDate(Fields.ModifiedDate);
+					} catch (Exception e) {
+						j.ModifiedDate = invalidDate;
 					}
 
 					j.CaseNumber = resultSet.getString(Fields.CaseNumber) == null ? ""
@@ -273,7 +298,7 @@ public class ReadJudgement {
 				connect.close();
 			}
 		} catch (Exception e) {
-
+			JTLogger.getInstance().setError("Error in closing connection");
 		}
 	}
 }

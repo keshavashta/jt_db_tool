@@ -18,6 +18,8 @@ public class Judgement implements Comparable<Judgement> {
 	public String CaseNumber;
 	public String CasesReferred;
 	public String Keycode;
+	public Date CreatedDate;
+	public Date ModifiedDate;
 	public int Bench;
 	public String Parties;
 	public List<Statue> Statues;

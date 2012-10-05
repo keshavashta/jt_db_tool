@@ -5,6 +5,7 @@ import java.util.List;
 
 import modelProvider.JudgmentsEditorModelProvider;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -30,6 +31,7 @@ import org.eclipse.swt.events.SelectionEvent;
 
 import com.greenapplesolutions.dbloader.domain.Judgement;
 
+import dialogs.AddJudgementDialog;
 import dialogs.EditJudgementDialog;
 import editorInput.JudgmentEditorInput;
 
@@ -59,6 +61,7 @@ public class JudgmentsEditor extends EditorPart {
 	private Label lblNewLabel;
 
 	public void createPartControl(Composite parent) {
+
 		parent.setLayout(new FormLayout());
 
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -81,8 +84,6 @@ public class JudgmentsEditor extends EditorPart {
 
 		Button btnNewButton_1 = new Button(group, SWT.NONE);
 		FormData fd_btnNewButton_1 = new FormData();
-		fd_btnNewButton_1.right = new FormAttachment(100, -10);
-		fd_btnNewButton_1.top = new FormAttachment(0, -1);
 		btnNewButton_1.setLayoutData(fd_btnNewButton_1);
 		btnNewButton_1.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -95,7 +96,9 @@ public class JudgmentsEditor extends EditorPart {
 				else {
 					EditJudgementDialog dialog = new EditJudgementDialog(
 							new Shell(), modelProvider.getJudgements().get(
-									index).Keycode);
+									index).Keycode, modelProvider
+									.getJudgements().get(0).Court.trim()
+									.toUpperCase());
 					dialog.open();
 				}
 			}
@@ -104,10 +107,71 @@ public class JudgmentsEditor extends EditorPart {
 
 		lblNewLabel = new Label(group, SWT.NONE);
 		FormData fd_lblNewLabel = new FormData();
-		fd_lblNewLabel.top = new FormAttachment(0, 4);
-		fd_lblNewLabel.right = new FormAttachment(btnNewButton_1, -93);
-		fd_lblNewLabel.left = new FormAttachment(0, 10);
+		fd_lblNewLabel.left = new FormAttachment(0, 22);
+		fd_lblNewLabel.bottom = new FormAttachment(100, -3);
 		lblNewLabel.setLayoutData(fd_lblNewLabel);
+
+		Button btnNewButton = new Button(group, SWT.NONE);
+		btnNewButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Table table = viewer.getTable();
+				int index = table.getSelectionIndex();
+				if (modelProvider.getJudgements().size() < index || index == -1)
+					MessageDialog.openInformation(new Shell(), "",
+							"Select a judgement to delete");
+				else {
+					if (!modelProvider.deleteJudgement(modelProvider
+							.getJudgements().get(index).Keycode))
+						MessageDialog.openError(new Shell(), "", "");
+					else
+						table.remove(index);
+				}
+			}
+		});
+		fd_btnNewButton_1.bottom = new FormAttachment(btnNewButton, 0,
+				SWT.BOTTOM);
+		fd_btnNewButton_1.right = new FormAttachment(btnNewButton, -4);
+		FormData fd_btnNewButton = new FormData();
+		fd_btnNewButton.top = new FormAttachment(0);
+		fd_btnNewButton.right = new FormAttachment(100, -10);
+		btnNewButton.setLayoutData(fd_btnNewButton);
+		btnNewButton.setText("Delete");
+
+		Button btnNewButton_2 = new Button(group, SWT.NONE);
+		btnNewButton_2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (modelProvider.getJudgements().size() == 0) {
+					if (MessageDialog
+							.openConfirm(new Shell(), "Verify",
+									"Before adding Please verify is selected court is same as Result courts")) {
+						AddJudgementDialog dialog = new AddJudgementDialog(
+								new Shell(), RandomStringUtils
+										.randomAlphanumeric(45).toUpperCase(),
+								modelProvider.getJudgements().get(0).Court
+										.trim().toUpperCase());
+						dialog.open();
+					}
+
+				} else {
+					AddJudgementDialog dialog = new AddJudgementDialog(
+							new Shell(), RandomStringUtils.randomAlphanumeric(
+									45).toUpperCase(), modelProvider
+									.getJudgements().get(0).Court.trim()
+									.toUpperCase());
+					dialog.open();
+
+				}
+			}
+		});
+		fd_lblNewLabel.right = new FormAttachment(btnNewButton_2, -138);
+		FormData fd_btnNewButton_2 = new FormData();
+		fd_btnNewButton_2.bottom = new FormAttachment(btnNewButton, 0,
+				SWT.BOTTOM);
+		fd_btnNewButton_2.right = new FormAttachment(btnNewButton_1, -6);
+		btnNewButton_2.setLayoutData(fd_btnNewButton_2);
+		btnNewButton_2.setText("Add Judgement");
 		m_bindingContext = initDataBindings();
 	}
 

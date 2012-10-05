@@ -10,6 +10,7 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.LockObtainFailedException;
 
+import util.JTLogger;
 import util.Util;
 
 import com.greenapplesolutions.dbloader.domain.Citation;
@@ -104,7 +105,7 @@ public class CaseIndexer {
 
 					doc.add(new NumericField(Fields.Bench, Field.Store.YES,
 							true).setIntValue(judgement.Bench));
-					
+
 					for (HeadnoteAndHeld hh : judgement.headnotesAndHelds) {
 						Document citationDoc = new Document();
 						citationDoc.add(new Field(Fields.DocumentType,
@@ -167,8 +168,9 @@ public class CaseIndexer {
 					System.out.println("Added document with keycode : "
 							+ judgement.Keycode);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					JTLogger.getInstance().setError(
+							"Error in indexing judgement (Lucene index), due to"
+									+ e.getMessage());
 				}
 
 			}
@@ -183,13 +185,18 @@ public class CaseIndexer {
 
 			documents.clear();
 		} catch (CorruptIndexException e) {
-			e.printStackTrace();
+			JTLogger.getInstance().setError(
+					"Error in indexing judgement (Lucene index), due to"
+							+ e.getMessage());
 
 		} catch (LockObtainFailedException e) {
-			e.printStackTrace();
+			JTLogger.getInstance().setError(
+					"Error in indexing judgement (Lucene index), due to"
+							+ e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			JTLogger.getInstance().setError(
+					"Error in indexing judgement (Lucene index), due to"
+							+ e.getMessage());
 		}
 	}
-
 }

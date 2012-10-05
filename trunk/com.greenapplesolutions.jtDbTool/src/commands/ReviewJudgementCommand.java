@@ -20,6 +20,7 @@ import editorInput.JudgmentEditorInput;
 import editors.JudgmentsEditor;
 
 import readWriteDatabase.ReadJudgement;
+import util.JTLogger;
 import util.SelectedCourt;
 
 public class ReviewJudgementCommand implements IHandler {
@@ -51,10 +52,16 @@ public class ReviewJudgementCommand implements IHandler {
 						.getActivePage().openEditor(input, JudgmentsEditor.ID);
 
 			} catch (PartInitException e3) {
-				e3.printStackTrace();
+				JTLogger.getInstance().setError(
+						"Error in opening review judgements editor, due to "
+								+ e3.getMessage());
 			}
-		}else
-		MessageDialog.openInformation(new Shell(), "Error", "Error in connecting with database either database not found or database server is off.");
+		} else
+			MessageDialog
+					.openInformation(
+							new Shell(),
+							"Error",
+							"Error in connecting with database either database not found or database server is off.");
 		return null;
 	}
 

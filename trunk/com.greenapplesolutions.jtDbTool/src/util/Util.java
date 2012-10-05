@@ -2,6 +2,7 @@ package util;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,11 +35,16 @@ public class Util {
 
 		return value;
 	}
-
+	
 	public static String getDateInString(String format, Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		String d = sdf.format(date);
 		return d;
+	}
+
+	public static String getRelativePath() {
+		File f = new File("");
+		return f.getAbsolutePath();
 	}
 
 	public static String encryptText(String plainText) {
@@ -62,7 +68,7 @@ public class Util {
 
 	public static Rectangle getBounds(int x, int y) {
 		Point p = getScreenSize();
-		return new Rectangle((p.x / 2)- (x/2), 100, x, y);
+		return new Rectangle((p.x / 2) - (x / 2), 100, x, y);
 	}
 
 	public static String unWrapQuotes(String quotedString) {

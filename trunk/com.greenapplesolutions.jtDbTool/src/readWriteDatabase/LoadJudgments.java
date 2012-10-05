@@ -2,6 +2,7 @@ package readWriteDatabase;
 
 import indexer.CaseIndexer;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -12,6 +13,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import modelProvider.IndexProgressbarDialogModelProvider;
+
+import util.JTLogger;
 import util.Util;
 
 import com.greenapplesolutions.dbloader.domain.Citation;
@@ -64,28 +68,50 @@ public class LoadJudgments {
 		this.directoryPath = directoryPath;
 	}
 
-	public void indexJudgements() {
+	public void indexJudgements(IndexProgressbarDialogModelProvider ipdmInstance) {
+		System.gc();
+		int count = 0;
+		try {
+			Statement st = connect.createStatement();
+			ResultSet res = st.executeQuery("SELECT COUNT(*) FROM judgements");
+
+			while (res.next()) {
+				count = res.getInt(1);
+			}
+		} catch (SQLException e1) {
+			JTLogger.getInstance().setError(
+					"Error in getting total number of judgements from database : "
+							+ databaseName);
+		}
 		Calendar instance = Calendar.getInstance();
 		instance.set(1111, 10, 11);
 		Date invalidDate = instance.getTime();
+		ipdmInstance.setLogMessage(ipdmInstance.getLogMessage()
+				+ "\n Judgements found in " + databaseName + count);
 		LuceneConfig config = LuceneConfig.INSTANCE();
+
 		config.setIndexPath(directoryPath);
 		CaseIndexer caseIndexer = new CaseIndexer();
 
 		String query = "select Keycode,Date,Advocates,Appellant,Respondent,Judges ,COURT,CasesReferred,CaseNo,Judgement from "
-				+ databaseName + ".judgements order by Date";
-
+				+ databaseName
+				+ ".judgements where is_verified = true order by Date";
+		int judgementsLeft = count;
 		// List<Judgement> judgementList = new ArrayList<Judgement>();
 		List<Judgement> judgementList = new ArrayList<Judgement>();
 		try {
-			statement = connect.createStatement();
+			statement = connect.createStatement(
+					java.sql.ResultSet.TYPE_FORWARD_ONLY,
+					java.sql.ResultSet.CONCUR_READ_ONLY);
+			statement.setFetchSize(Integer.MIN_VALUE);
 			resultSet = statement.executeQuery(query);
 			while (resultSet.next()) {
 				try {
 					Judgement judgement = new Judgement();
 					judgement.Advocates = resultSet.getString(Fields.Advocates) == null ? ""
 							: resultSet.getString(Fields.Advocates);
-					judgement.CasesReferred = resultSet.getString(Fields.CasesReferred) == null ? ""
+					judgement.CasesReferred = resultSet
+							.getString(Fields.CasesReferred) == null ? ""
 							: resultSet.getString(Fields.CasesReferred);
 					judgement.Appellant = resultSet.getString(Fields.Appellant) == null ? ""
 							: resultSet.getString(Fields.Appellant);
@@ -96,6 +122,7 @@ public class LoadJudgments {
 					// // LELogger.INSTANCE().setError(ex.getMessage());
 					// j.Bench = 0;
 					// }
+
 					try {
 						judgement.CaseDate = (Date) resultSet
 								.getDate(Fields.CaseDate);
@@ -108,7 +135,7 @@ public class LoadJudgments {
 							: resultSet.getString(Fields.CaseNumber);
 
 					judgement.Court = resultSet.getString(Fields.Court) == null ? ""
-					 : resultSet.getString(Fields.Court);
+							: resultSet.getString(Fields.Court);
 					judgement.FullText = resultSet.getString(Fields.FullText) == null ? ""
 							: resultSet.getString(Fields.FullText);
 					// j.Headnote = resultSet.getString(Fields.Headnote) == null
@@ -124,25 +151,37 @@ public class LoadJudgments {
 					judgement.Citations = getCitations(judgement.Keycode);
 					judgement.headnotesAndHelds = getHeadnoteAndHelds(judgement.Keycode);
 					judgementList.add(judgement);
-					if (judgementList.size() > 1000) {
+					if (judgementList.size() > 500) {
+						judgementsLeft = judgementsLeft - judgementList.size();
+						ipdmInstance.setLogMessage(ipdmInstance.getLogMessage()
+								+ "\n Judgements left to read is: "
+								+ judgementsLeft);
 						caseIndexer.indexJudgements(judgementList);
 						judgementList.clear();
+						System.gc();
 					}
 
 				} catch (Exception e) {
-					System.out.println("Error in processing indiv"
-							+ e.getMessage());
+					JTLogger.getInstance().setError(
+							"Error in indexing judgements due to "
+									+ e.getMessage());
 				}
 			}
+
 			if (judgementList.size() > 0) {
+				judgementsLeft = judgementsLeft - judgementList.size();
+				ipdmInstance.setLogMessage(ipdmInstance.getLogMessage()
+						+ "\n Judgements left to read is: " + judgementsLeft);
 				caseIndexer.indexJudgements(judgementList);
 				judgementList.clear();
+				System.gc();
 			}
 		} catch (Exception e) {
-			System.out.println("Error in main" + e.getMessage());
+			JTLogger.getInstance().setError(
+					"Error in indexing judgements(outer loop) ,due to "
+							+ e.getMessage());
 		}
 		close();
-
 	}
 
 	private List<Citation> getCitations(String keycode) {
@@ -169,12 +208,15 @@ public class LoadJudgments {
 					citationList.add(j);
 
 				} catch (Exception e) {
-					System.out.println("Error in processing indiv"
-							+ e.getMessage());
+					JTLogger.getInstance().setError(
+							"Error in retrieving single citation where keycode is "
+									+ keycode + ", due to " + e.getMessage());
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("Error in main" + e.getMessage());
+			JTLogger.getInstance().setError(
+					"Error in retrieving citations where keycode is " + keycode
+							+ ", due to " + e.getMessage());
 		}
 		return citationList;
 	}
@@ -198,12 +240,15 @@ public class LoadJudgments {
 					headnoteList.add(hh);
 
 				} catch (Exception e) {
-					System.out.println("Error in processing indiv"
-							+ e.getMessage());
+					JTLogger.getInstance().setError(
+							"Error in retrieving single Headnote and held where keycode is "
+									+ keycode + ", due to " + e.getMessage());
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("Error in main" + e.getMessage());
+			JTLogger.getInstance().setError(
+					"Error in retrieving Headnotes where keycode is " + keycode
+							+ ", due to " + e.getMessage());
 		}
 		return headnoteList;
 	}
@@ -219,7 +264,9 @@ public class LoadJudgments {
 				connect.close();
 			}
 		} catch (Exception e) {
-
+			JTLogger.getInstance().setError(
+					"Error in closing connection" + ", due to "
+							+ e.getMessage());
 		}
 	}
 }

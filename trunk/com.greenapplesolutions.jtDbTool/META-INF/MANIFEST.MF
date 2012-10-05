@@ -26,4 +26,6 @@ Bundle-ClassPath: lib/log4j-1.2.7.jar,
  lib/lucene-highlighter-3.5.0.jar,
  lib/lucene-join-3.5.0.jar,
  lib/lucene-memory-3.5.0.jar,
- lib/lucene-queries-3.5.0.jar
+ lib/lucene-queries-3.5.0.jar,
+ lib/commons-io-2.4.jar,
+ lib/commons-logging-1.1.1.jar

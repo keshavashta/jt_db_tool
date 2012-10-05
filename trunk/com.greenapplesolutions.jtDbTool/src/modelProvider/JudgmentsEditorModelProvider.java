@@ -4,6 +4,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 
+import readWriteDatabase.UpdateJudgement;
+
 import util.SelectedCourt;
 
 import com.greenapplesolutions.dbloader.domain.Judgement;
@@ -54,4 +56,15 @@ public class JudgmentsEditorModelProvider {
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
 		propertyChangeSupport.removePropertyChangeListener(listener);
 	}
+
+	public boolean deleteJudgement(String keycode) {
+		UpdateJudgement ujInstance = new UpdateJudgement(
+				getJudgements().get(0).Court.trim().toUpperCase(), "localhost",
+				"root", "");
+		boolean isDeleted = false;
+		if (ujInstance.connectToDatabse())
+			isDeleted = ujInstance.deleteJudgement(keycode);
+		return isDeleted;
+	}
+
 }

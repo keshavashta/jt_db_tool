@@ -28,6 +28,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import com.greenapplesolutions.dbloader.domain.Judgement;
 
 import util.Util;
+import org.eclipse.wb.swt.ResourceManager;
 
 public class FileLoaderDialog extends Dialog {
 	private DataBindingContext m_bindingContext;
@@ -73,6 +74,7 @@ public class FileLoaderDialog extends Dialog {
 	 */
 	private void createContents() {
 		shlFileLoader = new Shell(getParent());
+		shlFileLoader.setImage(ResourceManager.getPluginImage("com.greenapplesolutions.jtDbTool", "icons/appIcons/add-db16.png"));
 //		shlFileLoader.setSize(450, 300);
 		shlFileLoader.setBounds(Util.getBounds(450, 300));
 		shlFileLoader.setText("File Loader");
