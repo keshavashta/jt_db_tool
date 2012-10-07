@@ -44,6 +44,7 @@ import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.wb.swt.ResourceManager;
 
+import util.SelectedCourt;
 import util.Util;
 
 public class JudgmentsEditor extends EditorPart {
@@ -98,7 +99,7 @@ public class JudgmentsEditor extends EditorPart {
 							new Shell(), modelProvider.getJudgements().get(
 									index).Keycode, modelProvider
 									.getJudgements().get(0).Court.trim()
-									.toUpperCase());
+									.toUpperCase(), viewer.getTable());
 					dialog.open();
 				}
 			}
@@ -149,8 +150,7 @@ public class JudgmentsEditor extends EditorPart {
 						AddJudgementDialog dialog = new AddJudgementDialog(
 								new Shell(), RandomStringUtils
 										.randomAlphanumeric(45).toUpperCase(),
-								modelProvider.getJudgements().get(0).Court
-										.trim().toUpperCase());
+								SelectedCourt.getInstance().getSelectedCourt());
 						dialog.open();
 					}
 

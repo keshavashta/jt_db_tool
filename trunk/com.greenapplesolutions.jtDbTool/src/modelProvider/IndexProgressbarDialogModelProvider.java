@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -21,12 +22,18 @@ public class IndexProgressbarDialogModelProvider {
 	private List<String> courts;
 	private String path;
 	public IndexProgressbarDialogModelProvider ipdmInstance;
+	private Date fromDate;
 
-	public IndexProgressbarDialogModelProvider(List<String> courts, String path) {
+	public IndexProgressbarDialogModelProvider(List<String> courts,
+			String path, Date fromDate) {
 		this.courts = courts;
 		this.path = path;
 		ipdmInstance = this;
-		indexJudgements();
+		this.fromDate = fromDate;
+		if (fromDate == null)
+			indexJudgements();
+		else
+			partialindexJudgements();
 	}
 
 	private void indexJudgements() {
@@ -58,6 +65,83 @@ public class IndexProgressbarDialogModelProvider {
 								+ courts.get(index) + " judgements").trim());
 
 						ins.indexJudgements(ipdmInstance);
+						setLogMessage(logMessage + "\n" + courts.get(index)
+								+ " where index is" + index
+								+ " Log Message".trim());
+					} else
+						setLogMessage((logMessage
+								+ "\n Error in connecting with database "
+								+ SelectedCourt.getInstance().getDatabaseName(
+										courts.get(index)) + "where court is  "
+								+ courts.get(index) + " judgements").trim());
+					fireCustomPropertyChangeEvent(new PropertyChangeEvent(this,
+							"totalProgress", index + 1));
+
+				}
+				setIndexLabelMessage("Indexing Completed , Please wait while we are moving utility files.");
+				try {
+					FileUtils.copyDirectory(new File(Util.getRelativePath()
+							+ "/utility files"), utilFolder);
+					setLogMessage((logMessage + "\n moving utility files"));
+				} catch (IOException e) {
+					JTLogger.getInstance().setError(
+							"Error in moving Files, due to " + e.getMessage());
+					setLogMessage((logMessage + "\n Error in moving utility files"));
+				}
+				setIndexLabelMessage("moving dictionary index files.");
+				try {
+					FileUtils.copyDirectory(new File(Util.getRelativePath()
+							+ "/d"), dicFolder);
+					setLogMessage((logMessage + "\n moving dictionary idx files"));
+				} catch (IOException e) {
+					JTLogger.getInstance().setError(
+							"Error in moving dictionary idx files, due to "
+									+ e.getMessage());
+					setLogMessage((logMessage + "\n Error in moving dictionary idx files"));
+				}
+				setIndexLabelMessage("Completed");
+			}
+		};
+
+		Thread workerThread = new Thread(worker);
+		try {
+			workerThread.join();
+		} catch (InterruptedException e) {
+			JTLogger.getInstance().setError(
+					"Error in joining thread, due to " + e.getMessage());
+		}
+		workerThread.start();
+	}
+
+	private void partialindexJudgements() {
+		Runnable worker = new Runnable() {
+			@Override
+			public synchronized void run() {
+				File idxFolder = new File(path + "\\idx");
+				if (!idxFolder.isDirectory())
+					idxFolder.mkdir();
+				File judFolder = new File(path + "\\idx\\j");
+				if (!judFolder.isDirectory())
+					judFolder.mkdir();
+				File dicFolder = new File(path + "\\idx\\d");
+				File utilFolder = new File(path + "\\utility files");
+				if (!utilFolder.isDirectory())
+					utilFolder.mkdir();
+				if (!dicFolder.isDirectory())
+					dicFolder.mkdir();
+
+				for (int index = 0; index < courts.size(); ++index) {
+					LoadJudgments ins = new LoadJudgments(SelectedCourt
+							.getInstance().getDatabaseName(courts.get(index)),
+							"localhost", "root", "",
+							judFolder.getAbsolutePath());
+					setIndexLabelMessage("Indexing " + courts.get(index) + " ,"
+							+ (courts.size() - (index + 1)) + " courts left.");
+					if (ins.connectToDatabse()) {
+						setLogMessage((logMessage + "\n Indexing "
+								+ courts.get(index) + " judgements").trim());
+
+						ins.indexPartialJudgements(ipdmInstance,Util.getDateInString("yyyy-MM-dd", fromDate));
 						setLogMessage(logMessage + "\n" + courts.get(index)
 								+ " where index is" + index
 								+ " Log Message".trim());

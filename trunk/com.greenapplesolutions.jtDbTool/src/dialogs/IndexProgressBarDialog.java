@@ -1,5 +1,6 @@
 package dialogs;
 
+import java.util.Date;
 import java.util.List;
 
 import modelProvider.IndexProgressbarDialogModelProvider;
@@ -44,12 +45,12 @@ public class IndexProgressBarDialog extends Dialog {
 	 * @param style
 	 */
 	public IndexProgressBarDialog(Shell parent, List<String> courts,
-			String filePath) {
+			String filePath, Date fromDate) {
 		super(parent);
 		setText("SWT Dialog");
 		this.courts = courts;
 		modelProvider = new IndexProgressbarDialogModelProvider(courts,
-				filePath);
+				filePath, fromDate);
 	}
 
 	/**
@@ -74,7 +75,7 @@ public class IndexProgressBarDialog extends Dialog {
 	 * Create contents of the dialog.
 	 */
 	private void createContents() {
-		shlIndexingJudgements = new Shell(getParent(),SWT.DIALOG_TRIM
+		shlIndexingJudgements = new Shell(getParent(), SWT.DIALOG_TRIM
 				| SWT.APPLICATION_MODAL);
 		shlIndexingJudgements.setBounds(Util.getBounds(450, 300));
 		shlIndexingJudgements.setText("Indexing Judgements");

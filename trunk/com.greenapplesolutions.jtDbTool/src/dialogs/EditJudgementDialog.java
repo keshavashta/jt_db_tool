@@ -14,6 +14,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Group;
@@ -81,6 +82,7 @@ public class EditJudgementDialog extends Dialog {
 	private Text scHeadnote4;
 	private Text scHeld4;
 	private Text text_23;
+	private Table resultsTable;
 
 	/**
 	 * Create the dialog.
@@ -88,8 +90,10 @@ public class EditJudgementDialog extends Dialog {
 	 * @param parent
 	 * @param style
 	 */
-	public EditJudgementDialog(Shell parent, String keycode, String courtName) {
+	public EditJudgementDialog(Shell parent, String keycode, String courtName,
+			Table table) {
 		super(parent);
+		resultsTable = table;
 		modelProvider = new EditJudgementdialogModelProvider(keycode, courtName);
 		setText("SWT Dialog");
 	}
@@ -826,9 +830,10 @@ public class EditJudgementDialog extends Dialog {
 		btnIsverified.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (modelProvider.judgementVerified())
+				if (modelProvider.judgementVerified()) {
 					shlVieweditJudgement.close();
-				else
+					resultsTable.remove(resultsTable.getSelectionIndex());
+				} else
 					MessageDialog.openError(new Shell(), "Error",
 							"Error in connecting with database.");
 			}

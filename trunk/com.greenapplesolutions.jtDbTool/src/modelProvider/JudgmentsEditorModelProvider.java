@@ -4,7 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 
-import readWriteDatabase.UpdateJudgement;
+import readWriteDatabase.WriteJudgement;
 
 import util.SelectedCourt;
 
@@ -58,7 +58,7 @@ public class JudgmentsEditorModelProvider {
 	}
 
 	public boolean deleteJudgement(String keycode) {
-		UpdateJudgement ujInstance = new UpdateJudgement(
+		WriteJudgement ujInstance = new WriteJudgement(
 				getJudgements().get(0).Court.trim().toUpperCase(), "localhost",
 				"root", "");
 		boolean isDeleted = false;

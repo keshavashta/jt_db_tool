@@ -75,7 +75,7 @@ public class IndexJudgementEditorModelProvider {
 
 	public void indexJudgements() {
 		IndexProgressBarDialog dialog = new IndexProgressBarDialog(new Shell(),
-				selectedCourtList, directoryPath);
+				selectedCourtList, directoryPath, null);
 		dialog.open();
 	}
 }

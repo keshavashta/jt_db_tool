@@ -15,7 +15,7 @@ import com.greenapplesolutions.dbloader.domain.Citation;
 import com.greenapplesolutions.dbloader.domain.HeadnoteAndHeld;
 import com.greenapplesolutions.dbloader.domain.Judgement;
 
-public class UpdateJudgement {
+public class WriteJudgement {
 	private Connection connect = null;
 	private Statement statement = null;
 	private String connectionString;
@@ -25,7 +25,7 @@ public class UpdateJudgement {
 	private String password;
 	private int count;
 
-	public UpdateJudgement(String databaseName, String hostName,
+	public WriteJudgement(String databaseName, String hostName,
 			String userName, String password) {
 		this.databaseName = databaseName;
 		this.hostName = hostName;
@@ -77,12 +77,12 @@ public class UpdateJudgement {
 			insertJudgement(j);
 	}
 
-	public void insertJudgement(Judgement j) {
+	public void updateJudgement(Judgement j) {
 
 		try {
 
 			PreparedStatement pst = null;
-			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			pst = connect.prepareStatement(query);
 			pst.setString(1, null);
 			pst.setString(2, j.Keycode);
@@ -96,7 +96,9 @@ public class UpdateJudgement {
 			pst.setString(10, j.Advocates);
 			pst.setString(11, j.CasesReferred);
 			pst.setString(12, j.FullText);
-			pst.setBoolean(13, false);
+			pst.setDate(13, new java.sql.Date(j.CreatedDate.getTime()));
+			pst.setDate(14, new java.sql.Date(j.ModifiedDate.getTime()));
+			pst.setBoolean(15, false);
 
 			System.out.println("dumping row with keycode " + j.Keycode);
 			try {
@@ -127,7 +129,7 @@ public class UpdateJudgement {
 		try {
 
 			PreparedStatement pst = null;
-			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			pst = connect.prepareStatement(query);
 			pst.setString(1, null);
 			pst.setString(2, j.Keycode);
@@ -141,7 +143,9 @@ public class UpdateJudgement {
 			pst.setString(10, j.Advocates);
 			pst.setString(11, j.CasesReferred);
 			pst.setString(12, j.FullText);
-			pst.setBoolean(13, true);
+			pst.setDate(13, new java.sql.Date(j.CreatedDate.getTime()));
+			pst.setDate(14, new java.sql.Date(j.ModifiedDate.getTime()));
+			pst.setBoolean(15, true);
 
 			System.out.println("dumping row with keycode " + j.Keycode);
 			try {
@@ -167,12 +171,12 @@ public class UpdateJudgement {
 
 	}
 
-	public void updateJudgement(Judgement j) {
+	public void insertJudgement(Judgement j) {
 
 		try {
 
 			PreparedStatement pst = null;
-			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String query = "insert into judgements values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			pst = connect.prepareStatement(query);
 			pst.setString(1, null);
 			pst.setString(2, j.Keycode);
@@ -186,7 +190,9 @@ public class UpdateJudgement {
 			pst.setString(10, j.Advocates);
 			pst.setString(11, j.CasesReferred);
 			pst.setString(12, j.FullText);
-			pst.setBoolean(13, false);
+			pst.setDate(13, new java.sql.Date(j.CreatedDate.getTime()));
+			pst.setDate(14, new java.sql.Date(j.ModifiedDate.getTime()));
+			pst.setBoolean(15, false);
 
 			System.out.println("dumping row with keycode " + j.Keycode);
 			try {

@@ -54,6 +54,13 @@
                   mode="FORCE_TEXT"
                   style="push">
             </command>
+            <command
+                  commandId="com.greenapplesolutions.jtDbTool.partialIndex"
+                  icon="icons/appIcons/db32x32.png"
+                  label="Index Judgements From Date"
+                  mode="FORCE_TEXT"
+                  style="push">
+            </command>
          </toolbar>
       </menuContribution>
    </extension>
@@ -79,6 +86,11 @@
             id="com.greenapplesolutions.jtDbTool.openIndexEditorCommand"
             name="Open Index Editor Command">
       </command>
+      <command
+            defaultHandler="commands.PartialIndexCommand"
+            id="com.greenapplesolutions.jtDbTool.partialIndex"
+            name="Partial Index">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.editors">
@@ -93,6 +105,12 @@
             default="false"
             id="com.greenapplesolutions.jtDbTool.indexJudgements"
             name="Index Judgements">
+      </editor>
+      <editor
+            class="editors.PartialIndexJudgementEditor"
+            default="false"
+            id="com.greenapplesolutions.jtDbTool.partialIndexJudgementEditor"
+            name="PartialIndexEditor">
       </editor>
    </extension>
    <extension
@@ -120,6 +138,38 @@
          <property
                name="startupProgressRect"
                value="0,255,450,20">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+      </product>
+   </extension>
+   <extension
+         id="product1"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="com.greenapplesolutions.jtDbTool.application"
+            name="JT DB TOOL">
+         <property
+               name="appName"
+               value="JT DB TOOL">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/appIcons/1337244026_balance16.png,icons/appIcons/1337244053_balance32.png,icons/appIcons/1337244064_balance48.png,icons/appIcons/1337244078_balance64.png,icons/appIcons/rsz_1337244178_balance128.png">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="FFFFFF">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="5,250,440,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="0,270,440,20">
          </property>
          <property
                name="preferenceCustomization"

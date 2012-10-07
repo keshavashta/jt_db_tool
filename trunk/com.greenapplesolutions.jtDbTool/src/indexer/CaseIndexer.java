@@ -34,7 +34,8 @@ public class CaseIndexer {
 			IndexWriter documentWriter = config.getWriter();
 			List<Document> documents = new ArrayList<Document>();
 			for (Judgement judgement : judgements) {
-
+				JTLogger.getInstance().setInfo(
+						"Appellant Processed" + judgement.Appellant);
 				try {
 					Document doc = new Document();
 
@@ -107,29 +108,31 @@ public class CaseIndexer {
 							true).setIntValue(judgement.Bench));
 
 					for (HeadnoteAndHeld hh : judgement.headnotesAndHelds) {
-						Document citationDoc = new Document();
-						citationDoc.add(new Field(Fields.DocumentType,
+						Document headnoteAndHeldDoc = new Document();
+						headnoteAndHeldDoc.add(new Field(Fields.DocumentType,
 								HeadnoteAndHeld.DocumentType, Field.Store.YES,
 								Field.Index.ANALYZED_NO_NORMS));
-						citationDoc.add(new Field(Fields.Headnote, hh.Headnote,
-								Field.Store.NO, Field.Index.ANALYZED));
-						citationDoc.add(new Field(Fields.CHeadnote, Util
+						headnoteAndHeldDoc.add(new Field(Fields.Headnote,
+								hh.Headnote, Field.Store.NO,
+								Field.Index.ANALYZED));
+						headnoteAndHeldDoc.add(new Field(Fields.CHeadnote, Util
 								.encryptText(hh.Headnote), Field.Store.YES,
 								Field.Index.NO));
 
-						citationDoc.add(new Field(Fields.Held, hh.Held,
+						headnoteAndHeldDoc.add(new Field(Fields.Held, hh.Held,
 								Field.Store.NO, Field.Index.ANALYZED));
-						citationDoc.add(new Field(Fields.CHeld, Util
+						headnoteAndHeldDoc.add(new Field(Fields.CHeld, Util
 								.encryptText(hh.Held), Field.Store.YES,
 								Field.Index.NO));
-						citationDoc
-								.add(new Field(Fields.Keycode, hh.Keycode,
-										Field.Store.YES,
-										Field.Index.ANALYZED_NO_NORMS));
+						headnoteAndHeldDoc.add(new Field(Fields.Keycode,
+								hh.Keycode, Field.Store.YES,
+								Field.Index.ANALYZED_NO_NORMS));
 
-						documents.add(citationDoc);
+						documents.add(headnoteAndHeldDoc);
 					}
 					for (Citation citation : judgement.Citations) {
+						JTLogger.getInstance().setInfo(
+								"Citation  Page:" + citation.Page);
 						Document citationDoc = new Document();
 						citationDoc.add(new Field(Fields.DocumentType,
 								Citation.DocumentType, Field.Store.YES,
@@ -184,6 +187,7 @@ public class CaseIndexer {
 			System.out.println("Finish commit to index ");
 
 			documents.clear();
+			judgements.clear();
 		} catch (CorruptIndexException e) {
 			JTLogger.getInstance().setError(
 					"Error in indexing judgement (Lucene index), due to"

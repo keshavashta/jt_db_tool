@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +22,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-import readWriteDatabase.UpdateJudgement;
+import readWriteDatabase.WriteJudgement;
 
 import util.JTLogger;
 import util.SelectedCourt;
@@ -138,6 +139,8 @@ public class FileLoaderModelProvider {
 		Calendar cal = Calendar.getInstance();
 		cal.set(1111, 10, 11);
 		j.CaseDate = cal.getTime();
+		j.CreatedDate = new Date();
+		j.ModifiedDate = new Date();
 		j.CaseNumber = "";
 		j.Court = selectedCourt;
 		j.Citations = new ArrayList<Citation>();
@@ -218,8 +221,10 @@ public class FileLoaderModelProvider {
 			String headnote = textArray[index].trim();
 			if (textArray[index].trim().endsWith("J.")
 					|| textArray[index].trim().startsWith("ORDER")
-					|| headnote.equals(textArray[index].trim().toUpperCase()))
+					|| headnote.equals(textArray[index].trim().toUpperCase())) {
+				--index;
 				break;
+			}
 			adv += textArray[index].trim();
 			++index;
 		}
@@ -268,8 +273,8 @@ public class FileLoaderModelProvider {
 			++index;
 		}
 		hh.Headnote = headnote;
-		if(!Util.isStringNullOrEmpty(headnote))
-		hhList.add(hh);
+		if (!Util.isStringNullOrEmpty(headnote))
+			hhList.add(hh);
 		judgment.headnotesAndHelds = hhList;
 		return index;
 	}
@@ -386,7 +391,7 @@ public class FileLoaderModelProvider {
 
 					monitor.worked(1);
 					monitor.setTaskName("Inserting Judgements");
-					UpdateJudgement ins = new UpdateJudgement(SelectedCourt
+					WriteJudgement ins = new WriteJudgement(SelectedCourt
 							.getInstance().getDatabaseName(selectedCourt),
 							"localhost", "root", "");
 					if (ins.connectToDatabse()) {

@@ -6,7 +6,7 @@ import modelProvider.FileLoaderModelProvider;
 
 import org.apache.commons.lang.RandomStringUtils;
 
-import readWriteDatabase.UpdateJudgement;
+import readWriteDatabase.WriteJudgement;
 
 import com.greenapplesolutions.dbloader.domain.Judgement;
 
@@ -16,14 +16,16 @@ public class TestString {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
-		FileLoaderModelProvider f = new FileLoaderModelProvider();
-		f.setFilePath("C:\\Users\\saxena.arunesh\\Downloads\\keshav\\JT 2012 (6) 1.txt");
-		List<Judgement> ju = f.extractJudgments();
-		UpdateJudgement ins = new UpdateJudgement("jt_uttrakhand", "localhost",
-				"root", "");
-		if (ins.connectToDatabse()) {
-			ins.insertJudgements(ju);
+		for (int i = 0; i < 300; ++i) {
+			FileLoaderModelProvider f = new FileLoaderModelProvider();
+			f.setFilePath("C:\\Users\\KESHAV\\Downloads\\JT 2012 (6) 1 (1).txt");
+			List<Judgement> ju = f.extractJudgments();
+			WriteJudgement ins = new WriteJudgement("jt_uttarakhand",
+					"localhost", "root", "");
+			if (ins.connectToDatabse()) {
+				ins.insertJudgements(ju);
+			}
+			System.out.println("***********************"+i+"*****************************");
 		}
 	}
 }

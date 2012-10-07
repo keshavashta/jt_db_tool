@@ -4,11 +4,12 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import readWriteDatabase.ReadJudgement;
-import readWriteDatabase.UpdateJudgement;
+import readWriteDatabase.WriteJudgement;
 import util.SelectedCourt;
 import util.Util;
 
@@ -27,10 +28,14 @@ public class EditJudgementdialogModelProvider {
 		journals = new ArrayList<String>();
 		journals.add("");
 		journals.add("AIR");
-		journals.add("JT");
+		journals.add("CRI LJ");
+		journals.add("SCALE");
 		journals.add("SCC");
 		journals.add("SCR");
-
+		journals.add("JT");
+		journals.add("SCC SUPP");
+		journals.add("JT SUPP");
+		Collections.sort(journals);
 		setJudgement();
 
 	}
@@ -337,6 +342,7 @@ public class EditJudgementdialogModelProvider {
 		j.CaseNumber = "";
 		j.Court = "";
 		j.CasesReferred = "";
+		j.ModifiedDate = new Date();
 		j.Citations = new ArrayList<Citation>();
 		j.FullText = "";
 		j.headnotesAndHelds = new ArrayList<HeadnoteAndHeld>();
@@ -364,15 +370,16 @@ public class EditJudgementdialogModelProvider {
 			judgement.FullText = getJudgementText();
 		if (getCaseDate() != null)
 			judgement.CaseDate = getCaseDate();
-
+		judgement.CreatedDate = this.judgement.CreatedDate;
+		judgement.ModifiedDate = new Date();
 		judgement.Citations = getCitations();
 		judgement.headnotesAndHelds = getHeadnoteAndHeld();
-		UpdateJudgement upInstance = new UpdateJudgement(SelectedCourt
-				.getInstance().getDatabaseName(courtName), "localhost", "root",
-				"");
-		if (upInstance.connectToDatabse()) {
-			upInstance.deleteJudgement(keycode);
-			upInstance.updateJudgement(judgement);
+		WriteJudgement writeJudgementInstance = new WriteJudgement(
+				SelectedCourt.getInstance().getDatabaseName(courtName),
+				"localhost", "root", "");
+		if (writeJudgementInstance.connectToDatabse()) {
+			writeJudgementInstance.deleteJudgement(keycode);
+			writeJudgementInstance.updateJudgement(judgement);
 			return true;
 		} else
 			return false;
@@ -872,8 +879,10 @@ public class EditJudgementdialogModelProvider {
 		if (getCaseDate() != null)
 			judgement.CaseDate = getCaseDate();
 		judgement.Citations = getCitations();
+		judgement.ModifiedDate = new Date();
+		judgement.CreatedDate = this.judgement.CreatedDate;
 		judgement.headnotesAndHelds = getHeadnoteAndHeld();
-		UpdateJudgement upInstance = new UpdateJudgement(SelectedCourt
+		WriteJudgement upInstance = new WriteJudgement(SelectedCourt
 				.getInstance().getDatabaseName(courtName), "localhost", "root",
 				"");
 		if (upInstance.connectToDatabse()) {

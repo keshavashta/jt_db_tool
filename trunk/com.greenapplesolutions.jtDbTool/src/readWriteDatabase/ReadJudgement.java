@@ -65,7 +65,7 @@ public class ReadJudgement {
 		Judgement judgement = new Judgement();
 		judgement.Citations = new ArrayList<Citation>();
 		judgement.headnotesAndHelds = new ArrayList<HeadnoteAndHeld>();
-		String query = "select Keycode,Date,Advocates,Appellant,CasesReferred,Respondent,Judges,Judgement ,CaseNo from "
+		String query = "select Keycode,Date,Advocates,Appellant,CreatedDate,ModifiedDate,CasesReferred,Respondent,Judges,Judgement ,CaseNo from "
 				+ databaseName
 				+ ".judgements where Keycode = "
 				+ Util.wrapQuotes(keycode);
@@ -92,6 +92,18 @@ public class ReadJudgement {
 								.getDate(Fields.CaseDate);
 					} catch (Exception e) {
 						judgement.CaseDate = invalidDate;
+					}
+					try {
+						judgement.CreatedDate = (Date) resultSet
+								.getDate(Fields.CreatedDate);
+					} catch (Exception e) {
+						judgement.CreatedDate = invalidDate;
+					}
+					try {
+						judgement.ModifiedDate = (Date) resultSet
+								.getDate(Fields.ModifiedDate);
+					} catch (Exception e) {
+						judgement.ModifiedDate = invalidDate;
 					}
 
 					judgement.CaseNumber = resultSet
@@ -210,7 +222,7 @@ public class ReadJudgement {
 		instance.set(1111, 10, 11);
 		Date invalidDate = instance.getTime();
 
-		String query = "select Keycode,COURT,Date,Advocates,CasesReferred,Appellant,Respondent,Judges ,CaseNo from "
+		String query = "select Keycode,COURT,Date,Advocates,CasesReferred,CreatedDate,ModifiedDate,Appellant,Respondent,Judges ,CaseNo from "
 				+ databaseName
 				+ ".judgements where Is_Verified=0 order by Date desc";
 
