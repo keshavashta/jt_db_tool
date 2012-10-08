@@ -12,7 +12,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-import com.greenapplesolutions.dbloader.domain.Judgement;
+import com.greenapplesolutions.jtdbtool.domain.Judgement;
 
 import dialogs.FileLoaderDialog;
 

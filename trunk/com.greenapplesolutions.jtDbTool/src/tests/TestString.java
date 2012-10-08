@@ -8,7 +8,7 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import readWriteDatabase.WriteJudgement;
 
-import com.greenapplesolutions.dbloader.domain.Judgement;
+import com.greenapplesolutions.jtdbtool.domain.Judgement;
 
 public class TestString {
 

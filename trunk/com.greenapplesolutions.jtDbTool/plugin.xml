@@ -54,13 +54,6 @@
                   mode="FORCE_TEXT"
                   style="push">
             </command>
-            <command
-                  commandId="com.greenapplesolutions.jtDbTool.partialIndex"
-                  icon="icons/appIcons/db32x32.png"
-                  label="Index Judgements From Date"
-                  mode="FORCE_TEXT"
-                  style="push">
-            </command>
          </toolbar>
       </menuContribution>
    </extension>

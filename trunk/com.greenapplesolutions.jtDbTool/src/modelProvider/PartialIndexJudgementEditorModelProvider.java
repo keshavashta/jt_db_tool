@@ -10,8 +10,6 @@ import java.util.List;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Shell;
 
-import util.Util;
-
 import dialogs.IndexProgressBarDialog;
 
 public class PartialIndexJudgementEditorModelProvider {

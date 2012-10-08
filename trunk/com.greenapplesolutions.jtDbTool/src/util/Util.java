@@ -13,7 +13,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.text.BasicTextEncryptor;
 
-import com.greenapplesolutions.lawsearch.config.LuceneConfig;
+import com.greenapplesolutions.jtbbtool.config.LuceneConfig;
 
 public class Util {
 
@@ -35,7 +35,44 @@ public class Util {
 
 		return value;
 	}
-	
+
+	public static  Date getDefaultDate() {
+		return new Date();
+	}
+
+	public static String replaceSpecialCharacters(String val) {
+		if (isStringNullOrEmpty(val))
+			return "";
+		return val.replace("}", "}").replace("€", "e").replace("‚", ",")
+				.replace("ƒ", "f").replace("„", "\"").replace("…", "…")
+				.replace("†", "+").replace("‡", "++").replace("ˆ", "^")
+				.replace("‰", "%").replace("Š", "S").replace("‹on", "<on")
+				.replace("Œ", "CE").replace("Ž", "Z").replace("‘", "'")
+				.replace("’", "'").replace("“", "\"").replace("”", "\"")
+				.replace("•", ".").replace("–", "-").replace("—", "-")
+				.replace("˜", "~").replace("™", "tm").replace("›on", ">on")
+				.replace("Ÿ", "y").replace("¡", "i").replace("¢", "c")
+				.replace("¤", "o").replace("¥", "y").replace("¦", "|")
+				.replace("§", "s").replace("¨", "'").replace("ª", "a")
+				.replace("«", "<<").replace("¬", "-").replace("®", "o")
+				.replace("¯", "-").replace("°", "o").replace("²", "2")
+				.replace("³", "3").replace("´", "'").replace("µ", "u")
+				.replace("·", ".").replace("¸", ",").replace("¹", "1")
+				.replace("º", "o").replace("»", ">>").replace("¼", "1/4")
+				.replace("½", "1/2").replace("¾", "3/4").replace("¿", "?")
+				.replace("À", "A").replace("Á", "A").replace("Â", "A")
+				.replace("Ã", "A").replace("Ä", "A").replace("Å", "A")
+				.replace("Æ", "AE").replace("Ç", "C").replace("È", "E")
+				.replace("É", "E").replace("Ê", "E").replace("Ë", "E")
+				.replace("Ì", "I").replace("Í", "I").replace("Î", "I")
+				.replace("Ï", "I").replace("Ð", "D").replace("Ñ", "N")
+				.replace("Ò", "O").replace("Ó", "O").replace("Ô", "O")
+				.replace("Õ", "O").replace("Ö", "O").replace("×", "x")
+				.replace("Ø", "0").replace("Ù", "u").replace("Ú", "u")
+				.replace("Û", "u").replace("Ü", "u").replace("Ý", "y")
+				.replace("Þ", "p").replace("ß", "b");
+	}
+
 	public static String getDateInString(String format, Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		String d = sdf.format(date);

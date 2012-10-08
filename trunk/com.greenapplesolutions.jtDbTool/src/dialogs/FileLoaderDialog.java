@@ -25,7 +25,7 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
-import com.greenapplesolutions.dbloader.domain.Judgement;
+import com.greenapplesolutions.jtdbtool.domain.Judgement;
 
 import util.Util;
 import org.eclipse.wb.swt.ResourceManager;

@@ -11,9 +11,9 @@ import util.JTLogger;
 import util.SelectedCourt;
 import util.Util;
 
-import com.greenapplesolutions.dbloader.domain.Citation;
-import com.greenapplesolutions.dbloader.domain.HeadnoteAndHeld;
-import com.greenapplesolutions.dbloader.domain.Judgement;
+import com.greenapplesolutions.jtdbtool.domain.Citation;
+import com.greenapplesolutions.jtdbtool.domain.HeadnoteAndHeld;
+import com.greenapplesolutions.jtdbtool.domain.Judgement;
 
 public class WriteJudgement {
 	private Connection connect = null;
@@ -270,9 +270,9 @@ public class WriteJudgement {
 			for (HeadnoteAndHeld hh : headnoteAndHelds) {
 				pst.setString(1, null);
 				pst.setString(2, hh.Keycode);
-				pst.setString(3, hh.Headnote);
+				pst.setString(3, hh.Held);
 
-				pst.setString(4, hh.Held);
+				pst.setString(4, hh.Headnote);
 				System.out.println("dumping citation with keycode "
 						+ hh.Keycode);
 				try {

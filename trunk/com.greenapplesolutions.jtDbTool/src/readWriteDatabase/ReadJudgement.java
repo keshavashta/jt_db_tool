@@ -13,10 +13,10 @@ import java.util.List;
 import util.JTLogger;
 import util.Util;
 
-import com.greenapplesolutions.dbloader.domain.Citation;
-import com.greenapplesolutions.dbloader.domain.Fields;
-import com.greenapplesolutions.dbloader.domain.HeadnoteAndHeld;
-import com.greenapplesolutions.dbloader.domain.Judgement;
+import com.greenapplesolutions.jtdbtool.domain.Citation;
+import com.greenapplesolutions.jtdbtool.domain.Fields;
+import com.greenapplesolutions.jtdbtool.domain.HeadnoteAndHeld;
+import com.greenapplesolutions.jtdbtool.domain.Judgement;
 
 public class ReadJudgement {
 	private Connection connect = null;
@@ -69,9 +69,6 @@ public class ReadJudgement {
 				+ databaseName
 				+ ".judgements where Keycode = "
 				+ Util.wrapQuotes(keycode);
-		Calendar instance = Calendar.getInstance();
-		instance.set(1111, 10, 11);
-		Date invalidDate = instance.getTime();
 
 		try {
 			statement = connect.createStatement();
@@ -91,19 +88,19 @@ public class ReadJudgement {
 						judgement.CaseDate = (Date) resultSet
 								.getDate(Fields.CaseDate);
 					} catch (Exception e) {
-						judgement.CaseDate = invalidDate;
+						judgement.CaseDate = Util.getDefaultDate();
 					}
 					try {
 						judgement.CreatedDate = (Date) resultSet
 								.getDate(Fields.CreatedDate);
 					} catch (Exception e) {
-						judgement.CreatedDate = invalidDate;
+						judgement.CreatedDate = Util.getDefaultDate();
 					}
 					try {
 						judgement.ModifiedDate = (Date) resultSet
 								.getDate(Fields.ModifiedDate);
 					} catch (Exception e) {
-						judgement.ModifiedDate = invalidDate;
+						judgement.ModifiedDate = Util.getDefaultDate();
 					}
 
 					judgement.CaseNumber = resultSet
@@ -218,9 +215,7 @@ public class ReadJudgement {
 	}
 
 	public List<Judgement> getJudgements() {
-		Calendar instance = Calendar.getInstance();
-		instance.set(1111, 10, 11);
-		Date invalidDate = instance.getTime();
+		
 
 		String query = "select Keycode,COURT,Date,Advocates,CasesReferred,CreatedDate,ModifiedDate,Appellant,Respondent,Judges ,CaseNo from "
 				+ databaseName
@@ -253,19 +248,19 @@ public class ReadJudgement {
 					try {
 						j.CaseDate = (Date) resultSet.getDate(Fields.CaseDate);
 					} catch (Exception e) {
-						j.CaseDate = invalidDate;
+						Util.getDefaultDate();
 					}
 					try {
 						j.CreatedDate = (Date) resultSet
 								.getDate(Fields.CreatedDate);
 					} catch (Exception e) {
-						j.CreatedDate = invalidDate;
+						Util.getDefaultDate();
 					}
 					try {
 						j.ModifiedDate = (Date) resultSet
 								.getDate(Fields.ModifiedDate);
 					} catch (Exception e) {
-						j.ModifiedDate = invalidDate;
+						Util.getDefaultDate();
 					}
 
 					j.CaseNumber = resultSet.getString(Fields.CaseNumber) == null ? ""

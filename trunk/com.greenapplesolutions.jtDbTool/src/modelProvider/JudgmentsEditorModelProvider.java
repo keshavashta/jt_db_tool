@@ -8,7 +8,7 @@ import readWriteDatabase.WriteJudgement;
 
 import util.SelectedCourt;
 
-import com.greenapplesolutions.dbloader.domain.Judgement;
+import com.greenapplesolutions.jtdbtool.domain.Judgement;
 
 public class JudgmentsEditorModelProvider {
 
@@ -58,8 +58,8 @@ public class JudgmentsEditorModelProvider {
 	}
 
 	public boolean deleteJudgement(String keycode) {
-		WriteJudgement ujInstance = new WriteJudgement(
-				getJudgements().get(0).Court.trim().toUpperCase(), "localhost",
+		WriteJudgement ujInstance = new WriteJudgement(SelectedCourt.getInstance().getDatabaseName(
+				getJudgements().get(0).Court.trim().toUpperCase()), "localhost",
 				"root", "");
 		boolean isDeleted = false;
 		if (ujInstance.connectToDatabse())

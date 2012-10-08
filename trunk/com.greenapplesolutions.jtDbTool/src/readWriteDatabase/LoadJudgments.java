@@ -17,11 +17,11 @@ import modelProvider.IndexProgressbarDialogModelProvider;
 import util.JTLogger;
 import util.Util;
 
-import com.greenapplesolutions.dbloader.domain.Citation;
-import com.greenapplesolutions.dbloader.domain.Fields;
-import com.greenapplesolutions.dbloader.domain.HeadnoteAndHeld;
-import com.greenapplesolutions.dbloader.domain.Judgement;
-import com.greenapplesolutions.lawsearch.config.LuceneConfig;
+import com.greenapplesolutions.jtbbtool.config.LuceneConfig;
+import com.greenapplesolutions.jtdbtool.domain.Citation;
+import com.greenapplesolutions.jtdbtool.domain.Fields;
+import com.greenapplesolutions.jtdbtool.domain.HeadnoteAndHeld;
+import com.greenapplesolutions.jtdbtool.domain.Judgement;
 
 public class LoadJudgments {
 	private Connection connect = null;
@@ -110,9 +110,7 @@ public class LoadJudgments {
 					"Error in getting total number of judgements from database : "
 							+ databaseName);
 		}
-		Calendar instance = Calendar.getInstance();
-		instance.set(1111, 10, 11);
-		Date invalidDate = instance.getTime();
+		
 		ipdmInstance.setLogMessage(ipdmInstance.getLogMessage()
 				+ "\n Judgements found in " + databaseName + count);
 		LuceneConfig config = LuceneConfig.INSTANCE();
@@ -155,7 +153,7 @@ public class LoadJudgments {
 						judgement.CaseDate = (Date) resultSet
 								.getDate(Fields.CaseDate);
 					} catch (Exception e) {
-						judgement.CaseDate = invalidDate;
+						Util.getDefaultDate();
 					}
 
 					judgement.CaseNumber = resultSet
@@ -276,9 +274,7 @@ public class LoadJudgments {
 					"Error in getting total number of judgements from database : "
 							+ databaseName);
 		}
-		Calendar instance = Calendar.getInstance();
-		instance.set(1111, 10, 11);
-		Date invalidDate = instance.getTime();
+		
 		ipdmInstance.setLogMessage(ipdmInstance.getLogMessage()
 				+ "\n Judgements found in " + databaseName + count);
 		LuceneConfig config = LuceneConfig.INSTANCE();
@@ -322,7 +318,7 @@ public class LoadJudgments {
 						judgement.CaseDate = (Date) resultSet
 								.getDate(Fields.CaseDate);
 					} catch (Exception e) {
-						judgement.CaseDate = invalidDate;
+						Util.getDefaultDate();
 					}
 
 					judgement.CaseNumber = resultSet

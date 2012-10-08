@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
-import com.greenapplesolutions.dbloader.domain.Judgement;
+import com.greenapplesolutions.jtdbtool.domain.Judgement;
 
 import dialogs.AddJudgementDialog;
 import dialogs.EditJudgementDialog;
@@ -49,11 +49,13 @@ import util.Util;
 
 public class JudgmentsEditor extends EditorPart {
 	private DataBindingContext m_bindingContext;
+	private JudgmentsEditor editor;
 
 	public JudgmentsEditor() {
 		setTitleImage(ResourceManager.getPluginImage(
 				"com.greenapplesolutions.jtDbTool",
 				"icons/appIcons/16x16-1349202770_database_search.png"));
+		this.editor = this;
 	}
 
 	public static final String ID = "com.greenapplesolutions.jtDbTool.judgementeditor";
@@ -99,13 +101,12 @@ public class JudgmentsEditor extends EditorPart {
 							new Shell(), modelProvider.getJudgements().get(
 									index).Keycode, modelProvider
 									.getJudgements().get(0).Court.trim()
-									.toUpperCase(), viewer.getTable());
+									.toUpperCase(), editor);
 					dialog.open();
 				}
 			}
 		});
 		btnNewButton_1.setText("Edit Judgement");
-
 		lblNewLabel = new Label(group, SWT.NONE);
 		FormData fd_lblNewLabel = new FormData();
 		fd_lblNewLabel.left = new FormAttachment(0, 22);
@@ -119,12 +120,14 @@ public class JudgmentsEditor extends EditorPart {
 				Table table = viewer.getTable();
 				int index = table.getSelectionIndex();
 				if (modelProvider.getJudgements().size() < index || index == -1)
-					MessageDialog.openInformation(new Shell(), "",
+					MessageDialog.openInformation(new Shell(),
+							"No Judgement Selected",
 							"Select a judgement to delete");
 				else {
 					if (!modelProvider.deleteJudgement(modelProvider
 							.getJudgements().get(index).Keycode))
-						MessageDialog.openError(new Shell(), "", "");
+						MessageDialog.openError(new Shell(), "Error",
+								"Error in deleting judgement");
 					else
 						table.remove(index);
 				}

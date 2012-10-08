@@ -3,7 +3,6 @@ package modelProvider;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -13,9 +12,9 @@ import readWriteDatabase.WriteJudgement;
 import util.SelectedCourt;
 import util.Util;
 
-import com.greenapplesolutions.dbloader.domain.Citation;
-import com.greenapplesolutions.dbloader.domain.HeadnoteAndHeld;
-import com.greenapplesolutions.dbloader.domain.Judgement;
+import com.greenapplesolutions.jtdbtool.domain.Citation;
+import com.greenapplesolutions.jtdbtool.domain.HeadnoteAndHeld;
+import com.greenapplesolutions.jtdbtool.domain.Judgement;
 
 public class EditJudgementdialogModelProvider {
 	private List<String> journals;
@@ -336,9 +335,8 @@ public class EditJudgementdialogModelProvider {
 		j.Respondant = "";
 		j.Bench = 0;
 		j.Advocates = "";
-		Calendar cal = Calendar.getInstance();
-		cal.set(1111, 10, 11);
-		j.CaseDate = cal.getTime();
+
+		j.CaseDate = Util.getDefaultDate();
 		j.CaseNumber = "";
 		j.Court = "";
 		j.CasesReferred = "";

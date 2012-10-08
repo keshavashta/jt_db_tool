@@ -14,7 +14,7 @@ import util.JTLogger;
 import util.SelectedCourt;
 import util.Util;
 
-import com.greenapplesolutions.lawsearch.desktopapp.customEvents.PropertyChangeEvent;
+import com.greenapplesolutions.jtdbtool.customEvents.PropertyChangeEvent;
 
 public class IndexProgressbarDialogModelProvider {
 	private String indexLabelMessage;
@@ -224,24 +224,24 @@ public class IndexProgressbarDialogModelProvider {
 	protected javax.swing.event.EventListenerList listenerList = new javax.swing.event.EventListenerList();
 
 	public void addCustomEventListener(
-			com.greenapplesolutions.lawsearch.desktopapp.customEvents.PropertyChangeListener listener) {
+			com.greenapplesolutions.jtdbtool.customEvents.PropertyChangeListener listener) {
 		listenerList
-				.add(com.greenapplesolutions.lawsearch.desktopapp.customEvents.PropertyChangeListener.class,
+				.add(com.greenapplesolutions.jtdbtool.customEvents.PropertyChangeListener.class,
 						listener);
 	}
 
 	public void removeCompositeChangeListener(
-			com.greenapplesolutions.lawsearch.desktopapp.customEvents.PropertyChangeListener listener) {
+			com.greenapplesolutions.jtdbtool.customEvents.PropertyChangeListener listener) {
 		listenerList
-				.remove(com.greenapplesolutions.lawsearch.desktopapp.customEvents.PropertyChangeListener.class,
+				.remove(com.greenapplesolutions.jtdbtool.customEvents.PropertyChangeListener.class,
 						listener);
 	}
 
 	public void fireCustomPropertyChangeEvent(PropertyChangeEvent evt) {
 		Object[] listeners = listenerList.getListenerList();
 		for (int i = 0; i < listeners.length; i += 2) {
-			if (listeners[i] == com.greenapplesolutions.lawsearch.desktopapp.customEvents.PropertyChangeListener.class) {
-				((com.greenapplesolutions.lawsearch.desktopapp.customEvents.PropertyChangeListener) listeners[i + 1])
+			if (listeners[i] == com.greenapplesolutions.jtdbtool.customEvents.PropertyChangeListener.class) {
+				((com.greenapplesolutions.jtdbtool.customEvents.PropertyChangeListener) listeners[i + 1])
 						.propertyChanged(evt);
 			}
 		}

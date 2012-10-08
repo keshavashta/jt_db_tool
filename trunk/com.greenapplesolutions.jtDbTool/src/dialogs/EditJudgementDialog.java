@@ -34,6 +34,8 @@ import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
 
+import editors.JudgmentsEditor;
+
 import util.Util;
 
 public class EditJudgementDialog extends Dialog {
@@ -83,6 +85,7 @@ public class EditJudgementDialog extends Dialog {
 	private Text scHeld4;
 	private Text text_23;
 	private Table resultsTable;
+	private JudgmentsEditor editor;
 
 	/**
 	 * Create the dialog.
@@ -91,9 +94,9 @@ public class EditJudgementDialog extends Dialog {
 	 * @param style
 	 */
 	public EditJudgementDialog(Shell parent, String keycode, String courtName,
-			Table table) {
+			JudgmentsEditor editor) {
 		super(parent);
-		resultsTable = table;
+		this.editor = editor;
 		modelProvider = new EditJudgementdialogModelProvider(keycode, courtName);
 		setText("SWT Dialog");
 	}
@@ -813,6 +816,7 @@ public class EditJudgementDialog extends Dialog {
 		btnUpdate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+
 				if (modelProvider.updateJudgement())
 					shlVieweditJudgement.close();
 				else
@@ -830,6 +834,7 @@ public class EditJudgementDialog extends Dialog {
 		btnIsverified.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				resultsTable = editor.getViewer().getTable();
 				if (modelProvider.judgementVerified()) {
 					shlVieweditJudgement.close();
 					resultsTable.remove(resultsTable.getSelectionIndex());
@@ -842,7 +847,7 @@ public class EditJudgementDialog extends Dialog {
 		fd_btnIsverified.bottom = new FormAttachment(btnClose, 0, SWT.BOTTOM);
 		fd_btnIsverified.right = new FormAttachment(btnUpdate, -6);
 		btnIsverified.setLayoutData(fd_btnIsverified);
-		btnIsverified.setText("IsVerified");
+		btnIsverified.setText("Verified");
 		m_bindingContext = initDataBindings();
 
 	}

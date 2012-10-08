@@ -13,11 +13,11 @@ import org.apache.lucene.store.LockObtainFailedException;
 import util.JTLogger;
 import util.Util;
 
-import com.greenapplesolutions.dbloader.domain.Citation;
-import com.greenapplesolutions.dbloader.domain.Fields;
-import com.greenapplesolutions.dbloader.domain.HeadnoteAndHeld;
-import com.greenapplesolutions.dbloader.domain.Judgement;
-import com.greenapplesolutions.lawsearch.config.LuceneConfig;
+import com.greenapplesolutions.jtbbtool.config.LuceneConfig;
+import com.greenapplesolutions.jtdbtool.domain.Citation;
+import com.greenapplesolutions.jtdbtool.domain.Fields;
+import com.greenapplesolutions.jtdbtool.domain.HeadnoteAndHeld;
+import com.greenapplesolutions.jtdbtool.domain.Judgement;
 
 public class CaseIndexer {
 

@@ -28,9 +28,9 @@ import util.JTLogger;
 import util.SelectedCourt;
 import util.Util;
 
-import com.greenapplesolutions.dbloader.domain.Citation;
-import com.greenapplesolutions.dbloader.domain.HeadnoteAndHeld;
-import com.greenapplesolutions.dbloader.domain.Judgement;
+import com.greenapplesolutions.jtdbtool.domain.Citation;
+import com.greenapplesolutions.jtdbtool.domain.HeadnoteAndHeld;
+import com.greenapplesolutions.jtdbtool.domain.Judgement;
 import com.ibm.icu.text.SimpleDateFormat;
 
 import editorInput.JudgmentEditorInput;
@@ -51,8 +51,9 @@ public class FileLoaderModelProvider {
 	private Pattern yearPattern = Pattern.compile("\\s\\d[^\\(]*");
 	private Pattern volumePattern = Pattern.compile("\\(\\d+\\)");
 	private Pattern pagePattern = Pattern.compile("\\d+$");
-	private Pattern partyPattern = Pattern.compile(".*v\\..*");
-	private Pattern casesTeferred = Pattern.compile("Cases Referred:",
+	private Pattern partyPattern = Pattern.compile(".*v\\..*",
+			Pattern.CASE_INSENSITIVE);
+	private Pattern casesTeferred = Pattern.compile("^Cases Referre(d:|d)",
 			Pattern.CASE_INSENSITIVE);
 	private Pattern datePattern = Pattern.compile(
 			"d.*\\d+\\s{0,4}\\.\\s{0,4}\\d+\\s{0,4}\\.\\s{0,4}\\d+",
@@ -136,9 +137,8 @@ public class FileLoaderModelProvider {
 		j.Keycode = RandomStringUtils.randomAlphanumeric(45).toUpperCase();
 		j.Bench = 0;
 		j.Advocates = "";
-		Calendar cal = Calendar.getInstance();
-		cal.set(1111, 10, 11);
-		j.CaseDate = cal.getTime();
+
+		j.CaseDate = Util.getDefaultDate();
 		j.CreatedDate = new Date();
 		j.ModifiedDate = new Date();
 		j.CaseNumber = "";
@@ -196,6 +196,7 @@ public class FileLoaderModelProvider {
 				continue;
 			}
 			if (textArray[index].trim().endsWith("J.")
+					|| textArray[index].trim().endsWith("J")
 					|| textArray[index].trim().startsWith("ORDER")) {
 				processJudgement(textArray, index, judgment);
 				break;
@@ -208,7 +209,8 @@ public class FileLoaderModelProvider {
 			Judgement judgment) {
 		for (; index < textArray.length; ++index)
 			judgment.FullText += textArray[index] + "\n";
-		judgment.FullText = judgment.FullText.trim();
+		judgment.FullText = Util.replaceSpecialCharacters(judgment.FullText)
+				.trim();
 
 	}
 
@@ -220,6 +222,7 @@ public class FileLoaderModelProvider {
 		while (true && index < textArray.length - 2) {
 			String headnote = textArray[index].trim();
 			if (textArray[index].trim().endsWith("J.")
+					|| textArray[index].trim().endsWith("J")
 					|| textArray[index].trim().startsWith("ORDER")
 					|| headnote.equals(textArray[index].trim().toUpperCase())) {
 				--index;
@@ -228,7 +231,8 @@ public class FileLoaderModelProvider {
 			adv += textArray[index].trim();
 			++index;
 		}
-		judgment.Advocates = adv.replaceAll("(?i)Appearances", "");
+		judgment.Advocates = Util.replaceSpecialCharacters(
+				adv.replaceAll("(?i)Appearances", "")).trim();
 		return index;
 	}
 
@@ -240,6 +244,7 @@ public class FileLoaderModelProvider {
 		while (true && index < textArray.length - 2) {
 
 			if (textArray[index].trim().endsWith("J.")
+					|| textArray[index].trim().endsWith("J")
 					|| textArray[index].trim().startsWith("ORDER")) {
 				--index;
 				break;
@@ -247,8 +252,9 @@ public class FileLoaderModelProvider {
 			casesReferred += textArray[index].trim() + "\n";
 			++index;
 		}
-		judgment.CasesReferred = casesReferred.replaceFirst(
-				"(?i)cases referre(d:|(d))", "").trim();
+		judgment.CasesReferred = Util.replaceSpecialCharacters(
+				casesReferred.replaceFirst("(?i)cases referre(d:|(d))", ""))
+				.trim();
 
 		return index;
 	}
@@ -264,6 +270,7 @@ public class FileLoaderModelProvider {
 		while (true && index < textArray.length - 2) {
 			Matcher mat = casesTeferred.matcher(textArray[index]);
 			if (textArray[index].trim().endsWith("J.")
+					|| textArray[index].trim().endsWith("J")
 					|| textArray[index].trim().startsWith("ORDER")
 					|| mat.find()) {
 				--index;
@@ -272,7 +279,7 @@ public class FileLoaderModelProvider {
 			headnote += textArray[index].trim() + "\n";
 			++index;
 		}
-		hh.Headnote = headnote;
+		hh.Headnote = Util.replaceSpecialCharacters(headnote).trim();
 		if (!Util.isStringNullOrEmpty(headnote))
 			hhList.add(hh);
 		judgment.headnotesAndHelds = hhList;
@@ -298,28 +305,30 @@ public class FileLoaderModelProvider {
 	private int processParty(String[] textArray, int index, Judgement judgement) {
 		isPartyProcessed = true;
 		String party[] = textArray[index].split("(?i) v\\. ");
-		judgement.Appellant = party[0];
-		judgement.Respondant = party[1];
+		judgement.Appellant = Util.replaceSpecialCharacters(party[0]).trim();
+		judgement.Respondant = Util.replaceSpecialCharacters(party[1]).trim();
 		while (true && index < textArray.length - 1) {
 			++index;
-			if (textArray[index].trim().endsWith("J.")) {
-				judgement.Judges = textArray[index].trim()
-						.replaceAll("j{1,10}\\.$", "").trim()
-						.replaceAll(",$", "").trim();
+			if (textArray[index].trim().endsWith("J.")
+					|| textArray[index].trim().endsWith("J")) {
+				judgement.Judges = Util.replaceSpecialCharacters(
+						textArray[index].trim().replaceAll("j{1,10}\\.$", "")
+								.trim().replaceAll(",$", "")).trim();
 				break;
 			}
 
 			judgement.CaseNumber += textArray[index] + "\n";
 		}
 		if (!Util.isStringNullOrEmpty(judgement.CaseNumber))
-			judgement.CaseNumber = judgement.CaseNumber.trim();
+			judgement.CaseNumber = Util.replaceSpecialCharacters(
+					judgement.CaseNumber).trim();
 		return index;
 	}
 
 	public List<Judgement> extractJudgments() {
 		List<Judgement> judgments = new ArrayList<Judgement>();
 		String text = readFile();
-		String[] judgementTextArray = text.split("\\*{10}");
+		String[] judgementTextArray = text.split("\\*{9,20}");
 		for (String judgementString : judgementTextArray) {
 			Judgement judgement = extractJudgment(judgementString);
 			if (judgement != null && !judgement.equals(getEmptyJudgement()))

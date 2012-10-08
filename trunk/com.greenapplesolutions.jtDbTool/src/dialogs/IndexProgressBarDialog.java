@@ -16,9 +16,10 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Text;
 
-import com.greenapplesolutions.dbloader.domain.Judgement;
-import com.greenapplesolutions.lawsearch.desktopapp.customEvents.PropertyChangeEvent;
-import com.greenapplesolutions.lawsearch.desktopapp.customEvents.PropertyChangeListener;
+import com.greenapplesolutions.jtdbtool.customEvents.PropertyChangeEvent;
+import com.greenapplesolutions.jtdbtool.customEvents.PropertyChangeListener;
+import com.greenapplesolutions.jtdbtool.domain.Judgement;
+
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
